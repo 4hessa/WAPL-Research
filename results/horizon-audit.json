@@ -1,0 +1,8 @@
+{
+  "rows": 192,
+  "target_labels": 576,
+  "all_horizons_present": true,
+  "one_step_signals_equal": true,
+  "target_not_in_alternative_rollout": true,
+  "thursday_target_consumed": true
+}

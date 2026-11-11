@@ -14,7 +14,8 @@ def main():
     for metadata, filename in [('source.json', 'tinyshakespeare.txt'),
                                ('moby_source.json', 'moby_dick.txt'),
                                ('emma_source.json', 'emma.txt'),
-                               ('persuasion_source.json', 'persuasion.txt')]:
+                               ('persuasion_source.json', 'persuasion.txt'),
+                               ('thursday_source.json', 'thursday.txt')]:
         info = json.loads((ROOT / 'data' / metadata).read_text())
         expected = info.get('text_sha256', info.get('sha256'))
         destination = ROOT / 'data' / filename

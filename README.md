@@ -67,3 +67,7 @@ Install `requirements-transformer.txt` for the pinned CPU PyTorch build. Run `OP
 ## Transformer calibration diagnostic
 
 Run `OPENBLAS_NUM_THREADS=1 python -m experiments.transformer_calibration` to compare first-order update alignment with the measured one-step probe loss change at horizons 1 and 4. See reports 19–20 for the frozen local protocol, limits, and results.
+
+## Horizon-matching diagnostic
+
+Run `OPENBLAS_NUM_THREADS=1 python -m experiments.transformer_horizon`. Reports 21–22 distinguish known continuation schedules from independent alternatives at horizons 1, 4, and 16. The primary horizon-4 comparison was inconclusive; the horizon-16 improvement is secondary and computationally expensive. The Thursday target partition is now exposed.

@@ -1,6 +1,6 @@
 # Reports — التقارير البحثية
 
-تقارير Word عربية ومصادر Markdown، مرتبة حسب مراحل البحث.
+تقارير Word عربية ومصادر Markdown مرتبة حسب مراحل البحث.
 
 | المرحلة | التقرير | Word | Markdown |
 |---|---|---|---|
@@ -24,6 +24,8 @@
 | 18 | المرحلة الثامنة عشرة: نتائج أول تجربة Transformer في النسخة الجديدة | [تحميل Word](18_transformer_results_ar.docx) | [قراءة النص](18_transformer_results_ar.md) |
 | 19 | المرحلة التاسعة عشرة: بروتوكول تشخيص خطأ تقدير المنفعة في Transformer | [تحميل Word](19_calibration_protocol_ar.docx) | [قراءة النص](19_calibration_protocol_ar.md) |
 | 20 | المرحلة العشرون: تشخيص خطأ مقدار المنفعة في Transformer | [تحميل Word](20_calibration_results_ar.docx) | [قراءة النص](20_calibration_results_ar.md) |
+| 21 | المرحلة الحادية والعشرون: بروتوكول مطابقة أفق المنفعة | [تحميل Word](21_horizon_protocol_ar.docx) | [قراءة النص](21_horizon_protocol_ar.md) |
+| 22 | المرحلة الثانية والعشرون: نتائج مطابقة أفق المنفعة في Transformer | [تحميل Word](22_horizon_results_ar.docx) | [قراءة النص](22_horizon_results_ar.md) |
 
 افتح ملف Word ثم اختر **Download raw file**.
-التقارير تحفظ حالة البحث عند صدورها؛ قد تتغير حالة مجموعات التقييم المحجوزة في المراحل اللاحقة.
+التقارير تحفظ حالة البحث عند صدورها؛ تُعلن نتائج المقارنات الرئيسية والثانوية وحدودها وحالة مجموعات التقييم.
