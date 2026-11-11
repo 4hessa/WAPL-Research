@@ -1,0 +1,9 @@
+{
+  "train_generated": 1728,
+  "train_used_per_arm": 576,
+  "dev": 288,
+  "test": 576,
+  "prediction_groups": 144,
+  "source_fixed": "Emma",
+  "reserved_80_100_unused": true
+}

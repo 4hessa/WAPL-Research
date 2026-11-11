@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+
+# Downloaded third-party reference material; retain source URLs and hashes.
+data/*.txt
+research/sources/*.md
+research/phase2/*.txt
+research/papers/*.pdf
+research/papers/*.txt

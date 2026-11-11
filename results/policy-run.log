@@ -1,0 +1,65 @@
+{
+  "summary": {
+    "random": {
+      "final_loss": 4.364245864906516,
+      "mean_policy_seconds": 0.005484443917036212
+    },
+    "alignment": {
+      "final_loss": 4.322704482921654,
+      "mean_policy_seconds": 0.06148460650085023
+    },
+    "baseline": {
+      "final_loss": 4.322872254849048,
+      "mean_policy_seconds": 0.06330928116729713
+    },
+    "centered": {
+      "final_loss": 4.323609180029684,
+      "mean_policy_seconds": 0.07151793966818332
+    }
+  },
+  "comparisons": {
+    "centered minus baseline": {
+      "difference": 0.0007369251806354319,
+      "ci95": [
+        0.00028532776061568896,
+        0.0012529214492511174
+      ]
+    },
+    "centered minus random": {
+      "difference": -0.04063668487683225,
+      "ci95": [
+        -0.043658133450137235,
+        -0.03746952244078374
+      ]
+    },
+    "baseline minus random": {
+      "difference": -0.04137361005746768,
+      "ci95": [
+        -0.04465823103745151,
+        -0.03797634430938914
+      ]
+    },
+    "alignment minus random": {
+      "difference": -0.041541381984862014,
+      "ci95": [
+        -0.044748564039580066,
+        -0.03827460588158658
+      ]
+    }
+  },
+  "fit_seconds": 0.009934408999470179,
+  "total_seconds": 2.565041738000218,
+  "alphas": {
+    "baseline": 10.0,
+    "centered": 10.0
+  },
+  "sha256": {
+    "experiments/policy.py": "01e4e2e2911451a4d91c11b685c1082e781bd7a36f18e662e1805c538ceacc0f",
+    "experiments/text_pilot.py": "d13b65bf470790c64eb0af4e95ef3a6f76899f7d7e72c65f3b448cf3821707a7",
+    "experiments/invariance.py": "301f6673b71a24ce2b00849b0d62d17d0bb471473b93d8f82ec77c1e95c5d7df",
+    "results/centered-records.json": "84d7ecda315189e0f0f1e531db07688188a03d4556b162aa226a0b5e023a7e74",
+    "reports/06_policy_protocol_ar.md": "85a3246b90f8261f43b396b55283b2e72c2b218de379cb5bda0cd7e4702abd31",
+    "data/tinyshakespeare.txt": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed"
+  },
+  "final_partition_now_used": true
+}

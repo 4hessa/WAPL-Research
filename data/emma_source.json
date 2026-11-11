@@ -1,0 +1,6 @@
+{
+  "url": "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/gutenberg.zip",
+  "member": "gutenberg/austen-emma.txt",
+  "sha256": "71b0923d75fcf2f1faa897b22da8de8e2476d7478a2b22388eb58a3420e00215",
+  "license_status": "Edition rights not independently audited; local research diagnostic only"
+}

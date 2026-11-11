@@ -1,0 +1,7 @@
+{
+  "runs": 48,
+  "shared_schedules": true,
+  "equal_initial_losses": true,
+  "accepted_updates_within_deadline": true,
+  "emma_final_partition_now_consumed": true
+}

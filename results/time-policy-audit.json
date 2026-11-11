@@ -1,0 +1,8 @@
+{
+  "runs": 48,
+  "equal_start_and_candidate_schedule": true,
+  "accepted_updates_finished_by_deadline": true,
+  "counts_consistent": true,
+  "schedule_not_exhausted": true,
+  "evaluation_partition": "Moby Dick 80%-100% now consumed"
+}

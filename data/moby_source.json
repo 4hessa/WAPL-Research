@@ -1,0 +1,8 @@
+{
+  "url": "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/gutenberg.zip",
+  "archive_member": "gutenberg/melville-moby_dick.txt",
+  "archive_sha256": "2d3c3ab548c653944310f37f536443ec85d0a0ad855fcae217a0c9efdce2d611",
+  "text_sha256": "dc2466ee3c2e6e2ea1f86233d142e4b5578fdc1d6f0ca657bee7572202a980c7",
+  "bytes": 1242990,
+  "license_status": "NLTK Gutenberg distribution; edition rights not independently audited; local diagnostic only"
+}

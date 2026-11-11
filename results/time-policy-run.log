@@ -1,0 +1,75 @@
+{
+  "summary": {
+    "random": {
+      "final_loss": 2.634904319857867,
+      "mean_updates": 3052.6666666666665,
+      "mean_actual_seconds": 0.5000528741668404,
+      "max_overrun_seconds": 0.00013529799980460666
+    },
+    "alignment": {
+      "final_loss": 3.202057608742521,
+      "mean_updates": 300.25,
+      "mean_actual_seconds": 0.501450911166709,
+      "max_overrun_seconds": 0.005477272000462108
+    },
+    "baseline": {
+      "final_loss": 3.2591139492703314,
+      "mean_updates": 265.6666666666667,
+      "mean_actual_seconds": 0.5009032483334673,
+      "max_overrun_seconds": 0.0018348650000916678
+    },
+    "centered": {
+      "final_loss": 3.3307052150074217,
+      "mean_updates": 238.08333333333334,
+      "mean_actual_seconds": 0.5010788514165748,
+      "max_overrun_seconds": 0.001915584000016679
+    }
+  },
+  "comparisons": {
+    "centered minus random": {
+      "difference": 0.6958008951495546,
+      "ci95": [
+        0.6862344495977969,
+        0.7065679650185445
+      ]
+    },
+    "centered minus baseline": {
+      "difference": 0.07159126573708996,
+      "ci95": [
+        0.05219416235953353,
+        0.0853862088206566
+      ]
+    },
+    "alignment minus random": {
+      "difference": 0.5671532888846543,
+      "ci95": [
+        0.5578930043653769,
+        0.5776339660636395
+      ]
+    },
+    "baseline minus random": {
+      "difference": 0.6242096294124647,
+      "ci95": [
+        0.6120076280174876,
+        0.6410496975914555
+      ]
+    }
+  },
+  "budget_seconds": 0.5,
+  "fit_seconds": 0.009081766000235802,
+  "total_seconds": 24.222263089999615,
+  "alphas": {
+    "baseline": 10.0,
+    "centered": 10.0
+  },
+  "sha256": {
+    "experiments/time_policy.py": "faec63dd3b4c230e8844f2ea488239e2abe053f306c89b6b976ea75fb1db6622",
+    "experiments/policy.py": "01e4e2e2911451a4d91c11b685c1082e781bd7a36f18e662e1805c538ceacc0f",
+    "experiments/text_pilot.py": "d13b65bf470790c64eb0af4e95ef3a6f76899f7d7e72c65f3b448cf3821707a7",
+    "experiments/invariance.py": "301f6673b71a24ce2b00849b0d62d17d0bb471473b93d8f82ec77c1e95c5d7df",
+    "reports/08_time_protocol_ar.md": "392d0d0a134fc0e67511280ceaedb65a81e30783b2f1cbe91461543342c8388a",
+    "data/moby_dick.txt": "dc2466ee3c2e6e2ea1f86233d142e4b5578fdc1d6f0ca657bee7572202a980c7",
+    "results/centered-records.json": "84d7ecda315189e0f0f1e531db07688188a03d4556b162aa226a0b5e023a7e74"
+  },
+  "moby_final_partition_consumed": true
+}

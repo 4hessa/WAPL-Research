@@ -1,0 +1,58 @@
+{
+  "summary": {
+    "random": {
+      "loss": 2.561447036528319,
+      "updates": 3653.0833333333335,
+      "seconds": 1.0008321582495228,
+      "max_overrun": 0.008420137000939576
+    },
+    "alignment": {
+      "loss": 2.6634547716504,
+      "updates": 1592.0833333333333,
+      "seconds": 1.00087023841661,
+      "max_overrun": 0.003969141000197851
+    },
+    "baseline": {
+      "loss": 2.8214322792924498,
+      "updates": 770.6666666666666,
+      "seconds": 1.000692189583636,
+      "max_overrun": 0.002118328999131336
+    },
+    "centered": {
+      "loss": 2.9097942062618416,
+      "updates": 583.6666666666666,
+      "seconds": 1.0007980963335588,
+      "max_overrun": 0.001654019999477896
+    }
+  },
+  "comparisons": {
+    "centered minus baseline": {
+      "difference": 0.088361926969392,
+      "ci95": [
+        0.07600661542352048,
+        0.10247820966984444
+      ]
+    },
+    "alignment minus random": {
+      "difference": 0.10200773512208128,
+      "ci95": [
+        0.09623630534196861,
+        0.10755865495154653
+      ]
+    },
+    "centered minus random": {
+      "difference": 0.3483471697335229,
+      "ci95": [
+        0.3365144082612131,
+        0.36192597396506915
+      ]
+    }
+  },
+  "fit_seconds": 0.020630213999538682,
+  "total_seconds": 48.32876839799974,
+  "alphas": {
+    "baseline": 0.1,
+    "centered": 0.1
+  },
+  "emma_final_consumed": true
+}

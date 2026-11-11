@@ -1,0 +1,53 @@
+[
+  {
+    "name": "less",
+    "url": "https://proceedings.mlr.press/v235/xia24c/xia24c.pdf",
+    "status": "HTTP Error 404: Not Found"
+  },
+  {
+    "name": "trak",
+    "url": "https://proceedings.mlr.press/v202/park23c/park23c.pdf",
+    "path": "research/papers/trak.pdf",
+    "sha256": "9a3aa5c2b83511ddac253b2368daf808590e9c8714089a51be5cf4bfe069b96e",
+    "status": "retrieved",
+    "utc": "2026-11-11T11:11:50.424982+00:00"
+  },
+  {
+    "name": "influence",
+    "url": "https://proceedings.mlr.press/v70/koh17a/koh17a.pdf",
+    "path": "research/papers/influence.pdf",
+    "sha256": "715fb9f935b0af32c7ae1f0d834fd5158edb279a575a4ae91196d1830f281f65",
+    "status": "retrieved",
+    "utc": "2026-11-11T11:11:50.358609+00:00"
+  },
+  {
+    "name": "tracin",
+    "url": "https://arxiv.org/pdf/2002.08484",
+    "path": "research/papers/tracin.pdf",
+    "sha256": "fca22d32f8f9337c623e5f6b6922bf51938e4625a9e52c34ce2732fdda225de2",
+    "status": "retrieved",
+    "utc": "2026-11-11T11:11:49.453588+00:00"
+  },
+  {
+    "name": "model_card",
+    "url": "https://huggingface.co/xtools-at/DeepSeek-V4-Pro-Qwen3.5-9B-UNCENSORED-heretic/raw/main/README.md",
+    "path": "research/papers/model_card.txt",
+    "sha256": "fc7f2953d77f2d34fa3f9881fbb4c498035b23f53c71b0cf56f2cf2cd05d86dd",
+    "status": "retrieved",
+    "utc": "2026-11-11T11:11:48.468515+00:00"
+  },
+  {
+    "name": "model_config",
+    "url": "https://huggingface.co/xtools-at/DeepSeek-V4-Pro-Qwen3.5-9B-UNCENSORED-heretic/raw/main/config.json",
+    "path": "research/papers/model_config.txt",
+    "sha256": "fc274084744e0fe6f9306e1c99859194593beb2ae6e8d732b48551c63d285289",
+    "status": "retrieved",
+    "utc": "2026-11-11T11:11:48.501048+00:00"
+  },
+  {
+    "name": "less_arxiv",
+    "url": "https://arxiv.org/pdf/2402.04333",
+    "status": "retrieved",
+    "sha256": "ef06fcf400ee4660cd6eed3ba8d74cfea0debfbc88f25aaafcb14f3bf3101aa0"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "seeds": 12,
+  "arms": 4,
+  "shared_candidate_lists": true,
+  "equal_initial_loss": true,
+  "updates_per_arm": 32,
+  "transitions_per_arm": 2048,
+  "all_selected_ids_in_candidate_lists": true,
+  "heldout_partition": "80%-100% now consumed; do not reuse as untouched confirmation"
+}

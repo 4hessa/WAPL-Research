@@ -1,0 +1,16 @@
+{
+  "multi_centered minus multi_baseline": {
+    "difference": -0.0198529411764706,
+    "ci95": [
+      -0.03431372549019604,
+      -0.005392156862745144
+    ]
+  },
+  "multi_baseline minus early_baseline": {
+    "difference": 0.9279411764705884,
+    "ci95": [
+      0.8132352941176473,
+      1.0544117647058824
+    ]
+  }
+}

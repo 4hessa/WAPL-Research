@@ -1,0 +1,13 @@
+{
+  "status": "frozen locally before execution; diagnostic, not external preregistration",
+  "transformation": "add a constant independently to each softmax row; same velocity; no weight decay",
+  "shift_scale": 1.0,
+  "seed": 7777,
+  "horizons": [1,4,16],
+  "corrected_features": "subtract row mean before all three weight features",
+  "new_train_seeds": [2200,2211],
+  "new_dev_seeds": [2300,2305],
+  "new_test_seeds": [3000,3015],
+  "primary": "centered minus baseline Spearman at h=4, paired bootstrap by seed",
+  "limitation": "same corpus partitions as prior round; new seeds are not new independent text"
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "repository": "huggingface/transformers",
+    "url": "https://raw.githubusercontent.com/huggingface/transformers/main/README.md",
+    "sha256": "b9f1f01787738eab63e57aea1081b560e90b2880e1555395b3a683198dd474c6",
+    "status": "retrieved"
+  },
+  {
+    "repository": "TransformerLensOrg/TransformerLens",
+    "url": "https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/README.md",
+    "sha256": "3cbf244645c060d67db1ae8a1fbdf1524422a43081ba35522e43188811a211cd",
+    "status": "retrieved"
+  },
+  {
+    "repository": "MadryLab/trak",
+    "url": "https://raw.githubusercontent.com/MadryLab/trak/main/README.md",
+    "sha256": "b4066a3222ce37e545f073dcd73ba71c0fe35ca464b64d607860aab148cfc878",
+    "status": "retrieved"
+  },
+  {
+    "repository": "princeton-nlp/LESS",
+    "url": "https://raw.githubusercontent.com/princeton-nlp/LESS/main/README.md",
+    "sha256": "ea369243837745937230cee78d621b8462bcdcbbe935f0f93ca81478c24bc28f",
+    "status": "retrieved"
+  },
+  {
+    "repository": "EleutherAI/lm-evaluation-harness",
+    "url": "https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/README.md",
+    "sha256": "57c5cf1db6edb20393ca70851de820898bd8d10424a5a7574f9f566a6f8d70bd",
+    "status": "retrieved"
+  },
+  {
+    "repository": "TRAIS-Lab/dattri-llm",
+    "url": "https://raw.githubusercontent.com/TRAIS-Lab/dattri-llm/main/README.md",
+    "sha256": "fc691a39c8ea1c86516edb0a8998884b1d08efb90359d504d3d936bd0d368af5",
+    "status": "retrieved"
+  },
+  {
+    "repository": "aai-institute/pyDVL",
+    "url": "https://raw.githubusercontent.com/aai-institute/pyDVL/master/README.md",
+    "sha256": "d01f0a3e468a5ce7f646bb209bea89f52e8f381c36fb32abf6400c554e082dc7",
+    "status": "retrieved"
+  },
+  {
+    "repository": "pomonam/kronfluence",
+    "url": "https://raw.githubusercontent.com/pomonam/kronfluence/main/README.md",
+    "sha256": "79963bbb5aff9fcc8470c516c6dc4f2a26c73d152dd00d3071b00a15ad380417",
+    "status": "retrieved"
+  },
+  {
+    "repository": "TRAIS-Lab/dattri",
+    "url": "https://raw.githubusercontent.com/TRAIS-Lab/dattri/main/README.md",
+    "sha256": "7c9c56500d438275fb1fc7560bd6479cedc7fb9e1ed50d51ef6bf2d9031bc5fd",
+    "status": "retrieved"
+  },
+  {
+    "repository": "allenai/OLMo-core",
+    "url": "https://raw.githubusercontent.com/allenai/OLMo-core/main/README.md",
+    "sha256": "caa8f395bfaeb213fe94ca04084cc9e6536fc319ee35415677969263579d3006",
+    "status": "retrieved"
+  },
+  {
+    "url": "https://huggingface.co/xtools-at/DeepSeek-V4-Pro-Qwen3.5-9B-UNCENSORED-heretic",
+    "status": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  }
+]

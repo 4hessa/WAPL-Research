@@ -1,0 +1,48 @@
+[
+  {
+    "name": "koh2017",
+    "url": "https://proceedings.mlr.press/v70/koh17a.html",
+    "status": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "name": "less2024",
+    "url": "https://proceedings.mlr.press/v235/xia24c.html",
+    "status": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "name": "trak2023",
+    "url": "https://proceedings.mlr.press/v202/park23c.html",
+    "status": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "name": "tracin2020",
+    "url": "https://arxiv.org/abs/2002.08484",
+    "status": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "name": "less_gradients",
+    "url": "https://raw.githubusercontent.com/princeton-nlp/LESS/main/less/data_selection/collect_grad_reps.py",
+    "status": "retrieved",
+    "sha256": "9a7511321b6d13e5634574ce897692a7c30a4b62a8a333fef488a63279bf82d6",
+    "retrieved_utc": "2026-11-11T06:59:00.549896+00:00"
+  },
+  {
+    "name": "less_matching",
+    "url": "https://raw.githubusercontent.com/princeton-nlp/LESS/main/less/data_selection/matching.py",
+    "status": "retrieved",
+    "sha256": "5c2d95a2dca49cd644ed5684481f1d41e6eb775920820ca50245949d4521b466",
+    "retrieved_utc": "2026-11-11T06:59:00.512970+00:00"
+  },
+  {
+    "name": "kronfluence_docs",
+    "url": "https://raw.githubusercontent.com/pomonam/kronfluence/main/DOCUMENTATION.md",
+    "status": "retrieved",
+    "sha256": "0a4db04f6dc142288f118bdb5f1e90f9e395daafefe725fc81ad63ea91e44ba7",
+    "retrieved_utc": "2026-11-11T06:59:00.523315+00:00"
+  },
+  {
+    "name": "model_card",
+    "url": "https://huggingface.co/xtools-at/DeepSeek-V4-Pro-Qwen3.5-9B-UNCENSORED-heretic/raw/main/README.md",
+    "status": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  }
+]
