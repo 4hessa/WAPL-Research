@@ -1,0 +1,11 @@
+{
+  "rows": 192,
+  "seeds": 12,
+  "checkpoints": [
+    12,
+    48
+  ],
+  "decomposition_identity_verified": true,
+  "target_not_input_to_signals": true,
+  "persuasion_final_partition_now_consumed": true
+}

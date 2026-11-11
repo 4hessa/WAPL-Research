@@ -1,6 +1,6 @@
 # Reports — التقارير البحثية
 
-جميع تقارير Word بالعربية، مع مصادر Markdown قابلة للمراجعة.
+تقارير Word عربية ومصادر Markdown، مرتبة حسب مراحل البحث.
 
 | المرحلة | التقرير | Word | Markdown |
 |---|---|---|---|
@@ -22,6 +22,8 @@
 | 16 | المرحلة السادسة عشرة: نتائج المقارنة الزمنية بعد تحسين التنفيذ | [تحميل Word](16_optimized_time_results_ar.docx) | [قراءة النص](16_optimized_time_results_ar.md) |
 | 17 | المرحلة السابعة عشرة: بروتوكول أول تجربة Transformer | [تحميل Word](17_transformer_protocol_ar.docx) | [قراءة النص](17_transformer_protocol_ar.md) |
 | 18 | المرحلة الثامنة عشرة: نتائج أول تجربة Transformer في النسخة الجديدة | [تحميل Word](18_transformer_results_ar.docx) | [قراءة النص](18_transformer_results_ar.md) |
+| 19 | المرحلة التاسعة عشرة: بروتوكول تشخيص خطأ تقدير المنفعة في Transformer | [تحميل Word](19_calibration_protocol_ar.docx) | [قراءة النص](19_calibration_protocol_ar.md) |
+| 20 | المرحلة العشرون: تشخيص خطأ مقدار المنفعة في Transformer | [تحميل Word](20_calibration_results_ar.docx) | [قراءة النص](20_calibration_results_ar.md) |
 
-افتح ملف Word ثم اختر **Download raw file** لتنزيله.
-التقارير تحفظ حالة البحث عند كتابتها؛ النتائج السلبية والحدود جزء من الدليل العلمي.
+افتح ملف Word ثم اختر **Download raw file**.
+التقارير تحفظ حالة البحث عند صدورها؛ قد تتغير حالة مجموعات التقييم المحجوزة في المراحل اللاحقة.

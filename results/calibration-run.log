@@ -1,0 +1,40 @@
+{
+  "comparisons": {
+    "1": {
+      "direct_minus_alignment_mae": -5.4973953713973365e-05,
+      "ci95": [
+        -8.521159033989533e-05,
+        -2.2810873148652414e-05
+      ]
+    },
+    "4": {
+      "direct_minus_alignment_mae": -6.557145388796926e-05,
+      "ci95": [
+        -8.816561918744507e-05,
+        -4.378011750911052e-05
+      ]
+    }
+  },
+  "mean_absolute_components": [
+    0.00010525545803830028,
+    0.0005129575729370117,
+    0.0012223745385805767
+  ],
+  "component_order": [
+    "local_approximation",
+    "probe_target_difference",
+    "horizon_drift"
+  ],
+  "rows": 192,
+  "negative_target1": 0,
+  "negative_target4": 0,
+  "extra_probe_forward_seconds": 0.3308152329773293,
+  "seconds": 9.538731436001399,
+  "metric_order": [
+    "mae",
+    "spearman",
+    "top2_regret"
+  ],
+  "persuasion_final_consumed": true,
+  "torch": "2.5.1+cpu"
+}

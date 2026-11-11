@@ -54,7 +54,7 @@ OPENBLAS_NUM_THREADS=1 python -m experiments.optimized_time
 
 Commands overwrite their corresponding result files; preserve original outputs before rerunning. Wall-clock experiments intentionally have timing-dependent update counts. Stored hashes identify the inputs/code used for the recorded results; regenerating intermediate artifacts can change downstream provenance.
 
-The evaluation partitions used in completed studies are exposed, including the final Emma partition. The new Persuasion pilot leaves its final 80–100% partition unused. Further method development must use an untouched evaluation set for confirmatory claims.
+The evaluation partitions used in completed studies are exposed, including the final Emma partition. The final Persuasion 80–100% partition was first evaluated in the calibration study (report 20) and is now exposed. Further method development must use an untouched evaluation set for confirmatory claims.
 
 ## Source material
 
@@ -62,4 +62,8 @@ External papers, repository snapshots, model-card copies, and corpus text downlo
 
 ## Tiny Transformer pilot
 
-Install `requirements-transformer.txt` for the pinned CPU PyTorch build. Run `OPENBLAS_NUM_THREADS=1 python -m experiments.transformer_pilot`. This is a newly initialized, small character-level model, not a pretrained LLM or reproduction of the historical Transformer experiment. Its Persuasion final 80–100% partition remains unused; its label-evaluation partition has been inspected.
+Install `requirements-transformer.txt` for the pinned CPU PyTorch build. Run `OPENBLAS_NUM_THREADS=1 python -m experiments.transformer_pilot`. This is a newly initialized, small character-level model, not a pretrained LLM or reproduction of the historical Transformer experiment. The original pilot left the Persuasion final 80–100% partition unused; report 20 subsequently evaluated it. Both evaluation partitions are now exposed.
+
+## Transformer calibration diagnostic
+
+Run `OPENBLAS_NUM_THREADS=1 python -m experiments.transformer_calibration` to compare first-order update alignment with the measured one-step probe loss change at horizons 1 and 4. See reports 19–20 for the frozen local protocol, limits, and results.
