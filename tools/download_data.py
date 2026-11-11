@@ -13,7 +13,8 @@ def main():
     cache = {}
     for metadata, filename in [('source.json', 'tinyshakespeare.txt'),
                                ('moby_source.json', 'moby_dick.txt'),
-                               ('emma_source.json', 'emma.txt')]:
+                               ('emma_source.json', 'emma.txt'),
+                               ('persuasion_source.json', 'persuasion.txt')]:
         info = json.loads((ROOT / 'data' / metadata).read_text())
         expected = info.get('text_sha256', info.get('sha256'))
         destination = ROOT / 'data' / filename

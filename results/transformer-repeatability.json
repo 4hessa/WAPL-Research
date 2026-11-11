@@ -1,0 +1,4 @@
+{
+  "all_reported_metrics_exact_match": true,
+  "scope": "same CPU environment, two runs; predictions file not independently compared"
+}

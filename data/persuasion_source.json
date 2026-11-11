@@ -1,0 +1,6 @@
+{
+  "url": "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/gutenberg.zip",
+  "member": "gutenberg/austen-persuasion.txt",
+  "sha256": "cec097657cbfeb62aafe178973f514fa07ab66a5e28ea025ebd5d51ca870e40f",
+  "license_status": "Local diagnostic; edition rights not independently audited"
+}

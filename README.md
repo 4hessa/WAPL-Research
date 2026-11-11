@@ -4,13 +4,13 @@ Research into **Weight-Aware Predictive Learning Value (WAPLV)**: whether weight
 
 ## Reports — التقارير
 
-**[جميع تقارير Word العربية الستة عشر وفهرس مراحل البحث](reports/README.md)**
+**[جميع تقارير Word العربية وفهرس مراحل البحث](reports/README.md)**
 
 Each report has a `.docx` download and a readable Markdown source in [`reports/`](reports/). Open a Word file on GitHub and choose **Download raw file**.
 
 ## Current evidence
 
-The implemented studies are small CPU diagnostics: logistic regression and character-bigram models. They do **not** establish a benefit from the tested weight features, compute savings, or generalization to Transformers. Shared-softmax reuse accelerated the bigram alignment baseline while preserving its tested decisions and states. See [the latest results](reports/16_optimized_time_results_ar.md) and [the scientific review](research/review-ar.md).
+The implemented studies are small CPU diagnostics: logistic regression, character-bigram models, and a tiny causal Transformer. They do **not** establish a benefit from the tested weight features, compute savings, or generalization to Transformers. Shared-softmax reuse accelerated the bigram alignment baseline while preserving its tested decisions and states. See [the latest results](reports/16_optimized_time_results_ar.md) and [the scientific review](research/review-ar.md).
 
 Historical Transformer results mentioned in the supplied project document were not reproduced: their original code and artifacts were not present. The executable experiments here are new diagnostics, not reconstructions of that historical run.
 
@@ -31,7 +31,7 @@ Python 3.12 was used. Install the pinned dependencies in a virtual environment:
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install -r requirements-pilot.txt -r requirements-reports.txt
+python -m pip install -r requirements-pilot.txt -r requirements-reports.txt -r requirements-transformer.txt
 python tools/download_data.py
 OPENBLAS_NUM_THREADS=1 python -m unittest discover -s tests -v
 ```
@@ -54,8 +54,12 @@ OPENBLAS_NUM_THREADS=1 python -m experiments.optimized_time
 
 Commands overwrite their corresponding result files; preserve original outputs before rerunning. Wall-clock experiments intentionally have timing-dependent update counts. Stored hashes identify the inputs/code used for the recorded results; regenerating intermediate artifacts can change downstream provenance.
 
-All evaluation partitions used in the final studies are now exposed, including the final Emma partition. Further method development must use a new untouched evaluation set for confirmatory claims.
+The evaluation partitions used in completed studies are exposed, including the final Emma partition. The new Persuasion pilot leaves its final 80–100% partition unused. Further method development must use an untouched evaluation set for confirmatory claims.
 
 ## Source material
 
 External papers, repository snapshots, model-card copies, and corpus text downloads are kept out of Git. Their URLs and retrieval hashes remain in `research/**/access.json` and `data/*source.json`. The reports distinguish inspected sources, publisher claims, and experiments actually run. Reading a library or model card does not establish successful installation or model evaluation.
+
+## Tiny Transformer pilot
+
+Install `requirements-transformer.txt` for the pinned CPU PyTorch build. Run `OPENBLAS_NUM_THREADS=1 python -m experiments.transformer_pilot`. This is a newly initialized, small character-level model, not a pretrained LLM or reproduction of the historical Transformer experiment. Its Persuasion final 80–100% partition remains unused; its label-evaluation partition has been inspected.
