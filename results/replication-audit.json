@@ -1,0 +1,8 @@
+{
+  "rows": 192,
+  "probe_panels_disjoint": true,
+  "one_step_gains_equal_across_schedules": true,
+  "alternative_schedules_per_candidate": 2,
+  "target_not_input_to_alternative_rollout": true,
+  "alice_target_now_consumed": true
+}

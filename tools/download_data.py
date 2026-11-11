@@ -15,7 +15,8 @@ def main():
                                ('moby_source.json', 'moby_dick.txt'),
                                ('emma_source.json', 'emma.txt'),
                                ('persuasion_source.json', 'persuasion.txt'),
-                               ('thursday_source.json', 'thursday.txt')]:
+                               ('thursday_source.json', 'thursday.txt'),
+                               ('alice_source.json', 'alice.txt')]:
         info = json.loads((ROOT / 'data' / metadata).read_text())
         expected = info.get('text_sha256', info.get('sha256'))
         destination = ROOT / 'data' / filename

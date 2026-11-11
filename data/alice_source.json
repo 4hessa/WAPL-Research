@@ -1,0 +1,6 @@
+{
+  "url": "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/gutenberg.zip",
+  "member": "gutenberg/carroll-alice.txt",
+  "sha256": "5ce9042c0d8536b072b61d4c7c4e6d70c72d9dbb5f3d816261326d9280749266",
+  "license_status": "Local research diagnostic; edition rights not independently audited"
+}
