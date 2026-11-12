@@ -1,0 +1,113 @@
+{
+  "release": "r2.15",
+  "extraction": "CoNLL-U # text comments only; exact string dedup in train/dev/test order; no Unicode normalization",
+  "test_model_evaluation": false,
+  "languages": {
+    "ar": {
+      "repository": "https://github.com/UniversalDependencies/UD_Arabic-PADT",
+      "declared_license": "CC BY-NC-SA 3.0",
+      "license_scope": "Publisher declaration; rights in source text are not independently cleared",
+      "files": {
+        "readme": {
+          "url": "https://raw.githubusercontent.com/UniversalDependencies/UD_Arabic-PADT/r2.15/README.md",
+          "sha256": "6347de5412fa3a4bca554302563ded5c68291a56a663f0c5e11331be10027e21",
+          "bytes": 7013
+        },
+        "train": {
+          "url": "https://raw.githubusercontent.com/UniversalDependencies/UD_Arabic-PADT/r2.15/ar_padt-ud-train.conllu",
+          "sha256": "f17d622ec46e34d0839551dbe1ec879eaa48d168f3c06e566674c34462d0fe61",
+          "bytes": 40662080
+        },
+        "dev": {
+          "url": "https://raw.githubusercontent.com/UniversalDependencies/UD_Arabic-PADT/r2.15/ar_padt-ud-dev.conllu",
+          "sha256": "a34af4929e8fc483d0ac6b35e0f842472fe0395a69c981cf543fe4d1d0842a4d",
+          "bytes": 5393046
+        },
+        "test": {
+          "url": "https://raw.githubusercontent.com/UniversalDependencies/UD_Arabic-PADT/r2.15/ar_padt-ud-test.conllu",
+          "sha256": "aeb58c1597411fa746c946d6d16b30b7a6bce442a5b73f4f27c11d26589ceaf4",
+          "bytes": 5158559
+        }
+      },
+      "splits": {
+        "train": {
+          "source_sentences": 6075,
+          "kept_sentences": 5959,
+          "removed_exact_duplicates_or_empty": 116,
+          "utf8_bytes": 1880811,
+          "sha256": "2fe6a1b3c6c1a50dff892296156882941049da22f92e15f9a444da3b13d6d162",
+          "path": "data/ud_ar_train.txt"
+        },
+        "dev": {
+          "source_sentences": 909,
+          "kept_sentences": 903,
+          "removed_exact_duplicates_or_empty": 6,
+          "utf8_bytes": 245139,
+          "sha256": "f1b9e6e014412fb9a78f5a48c142b2c0b6d5554fe284520280086a01a766571b",
+          "path": "data/ud_ar_dev.txt"
+        },
+        "test": {
+          "source_sentences": 680,
+          "kept_sentences": 664,
+          "removed_exact_duplicates_or_empty": 16,
+          "utf8_bytes": 238452,
+          "sha256": "cd70d1d9fa08fa5bcb48c4ac3f7d6d4d1e50a146e3b337a80c015700743dcdd7",
+          "path": "data/ud_ar_test.txt"
+        }
+      }
+    },
+    "en": {
+      "repository": "https://github.com/UniversalDependencies/UD_English-EWT",
+      "declared_license": "CC BY-SA 4.0",
+      "license_scope": "Publisher declaration; rights in source text are not independently cleared",
+      "files": {
+        "readme": {
+          "url": "https://raw.githubusercontent.com/UniversalDependencies/UD_English-EWT/r2.15/README.md",
+          "sha256": "fc0c5d1344f56442af1501c8c2c850c002924ab6fe20f7de6f8667c1ebc46a79",
+          "bytes": 16722
+        },
+        "train": {
+          "url": "https://raw.githubusercontent.com/UniversalDependencies/UD_English-EWT/r2.15/en_ewt-ud-train.conllu",
+          "sha256": "a049fc40822e21593ff89ccd0a4b081443f09fae71b61f813c624aa598f6c566",
+          "bytes": 14190227
+        },
+        "dev": {
+          "url": "https://raw.githubusercontent.com/UniversalDependencies/UD_English-EWT/r2.15/en_ewt-ud-dev.conllu",
+          "sha256": "14a82ce2c4c4648c3e7c4efc76872c85c5f4c39643fcb7f9c91a45a58157a270",
+          "bytes": 1804172
+        },
+        "test": {
+          "url": "https://raw.githubusercontent.com/UniversalDependencies/UD_English-EWT/r2.15/en_ewt-ud-test.conllu",
+          "sha256": "0612e45914359e4b36d187ef2bfeaf66fc8933210925be985c5fbf6a9e311036",
+          "bytes": 1803651
+        }
+      },
+      "splits": {
+        "train": {
+          "source_sentences": 12544,
+          "kept_sentences": 11735,
+          "removed_exact_duplicates_or_empty": 809,
+          "utf8_bytes": 980675,
+          "sha256": "fb2155978102bd793938effcc40a35b2d948f8ea606e6c5c334df5409f967eef",
+          "path": "data/ud_en_train.txt"
+        },
+        "dev": {
+          "source_sentences": 2001,
+          "kept_sentences": 1878,
+          "removed_exact_duplicates_or_empty": 123,
+          "utf8_bytes": 123626,
+          "sha256": "5ed0defb7bcbf5aa8090fbaa2a9494b2094f423fb27aa5e0be5708325091aff4",
+          "path": "data/ud_en_dev.txt"
+        },
+        "test": {
+          "source_sentences": 2077,
+          "kept_sentences": 1912,
+          "removed_exact_duplicates_or_empty": 165,
+          "utf8_bytes": 122042,
+          "sha256": "ca2a5896d37d2b1ae15af026ee17f2fff3ac47bf0995204e6c1fa9d2702fc55d",
+          "path": "data/ud_en_test.txt"
+        }
+      }
+    }
+  }
+}

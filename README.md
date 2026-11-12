@@ -113,3 +113,15 @@ Run `OPENBLAS_NUM_THREADS=1 python -m experiments.loss_proxy_policy` for reports
 ## Independent loss-proxy replication with timing repeats
 
 Run `OPENBLAS_NUM_THREADS=1 python -m experiments.loss_replication` for reports 40–41; audit with `OPENBLAS_NUM_THREADS=1 python -m tools.audit_loss_replication`. The Blake protocol was pushed before target evaluation. Twelve seeds, three arms and two timing repeats produced 72 runs. Repeats are averaged within seed before bootstrap. Sparse highest-loss selection did not establish superiority to random (loss difference +0.000841, 95% CI [−0.004416, +0.006204]) or to a secondary control that computes losses but chooses randomly. Repeated timings changed update counts; this is not evidence of equivalence. Blake targets are now exposed. Historical deadline-helper hashes refer to earlier Git versions; the new sham branch does not change existing arm paths.
+
+## Arabic and English evaluation readiness
+
+Report [43](reports/43_multilingual_readiness_ar.docx) prepares UD Arabic-PADT and English-EWT release r2.15 with official split membership and exact-text deduplication in train/dev/test order. Raw corpora stay outside Git. Declared licenses are CC BY-NC-SA 3.0 for Arabic-PADT and CC BY-SA 4.0 for English-EWT; source-text rights have not been independently cleared. URLs, publisher README hashes, data hashes, and counts are in `data/multilingual_sources.json`. The corpora differ in domain, so comparisons do not isolate language effects.
+
+```bash
+python -m tools.prepare_multilingual
+OPENBLAS_NUM_THREADS=1 python -m experiments.multilingual_readiness
+python -m tools.audit_multilingual_readiness
+```
+
+The new 35,776-parameter Transformer uses a 256-byte UTF-8 vocabulary and 64-byte input context. Four training-only smoke runs completed; dev/test were processed for integrity and duplicate checks but have not been scored by a model in this stage. This establishes technical readiness, not policy efficacy, language generalization or pretrained-LLM performance. Byte losses should not be compared across languages as a quality ranking. A prospective evaluation protocol is still required before opening the held-out test outcomes.

@@ -8,3 +8,6 @@ research/sources/*.md
 research/phase2/*.txt
 research/papers/*.pdf
 research/papers/*.txt
+
+# Third-party Universal Dependencies source snapshots (hashes are tracked).
+data/ud_raw/

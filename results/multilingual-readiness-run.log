@@ -1,0 +1,62 @@
+{
+  "status": "training_only_readiness_not_efficacy",
+  "dev_or_test_model_evaluation": false,
+  "rows": [
+    {
+      "language": "ar",
+      "seed": 22000,
+      "parameters": 35776,
+      "train_chunks": 28935,
+      "discarded_tail_bytes": 36,
+      "training_monitor_before": 5.6169939041137695,
+      "training_monitor_after": 3.486427068710327,
+      "all_losses_finite": true,
+      "steps": 32,
+      "seconds": 0.1473771119999583
+    },
+    {
+      "language": "ar",
+      "seed": 22001,
+      "parameters": 35776,
+      "train_chunks": 28935,
+      "discarded_tail_bytes": 36,
+      "training_monitor_before": 5.776697158813477,
+      "training_monitor_after": 3.6664578914642334,
+      "all_losses_finite": true,
+      "steps": 32,
+      "seconds": 0.15502604900029837
+    },
+    {
+      "language": "en",
+      "seed": 22000,
+      "parameters": 35776,
+      "train_chunks": 15087,
+      "discarded_tail_bytes": 20,
+      "training_monitor_before": 5.78643798828125,
+      "training_monitor_after": 4.092961311340332,
+      "all_losses_finite": true,
+      "steps": 32,
+      "seconds": 0.17268538099961006
+    },
+    {
+      "language": "en",
+      "seed": 22001,
+      "parameters": 35776,
+      "train_chunks": 15087,
+      "discarded_tail_bytes": 20,
+      "training_monitor_before": 5.637330532073975,
+      "training_monitor_after": 4.085907936096191,
+      "all_losses_finite": true,
+      "steps": 32,
+      "seconds": 0.14936764400044922
+    }
+  ],
+  "torch": "2.5.1+cpu",
+  "sha256": {
+    "experiments/multilingual_readiness.py": "b2b1e2622381aa66a5158e6d4f68a9d2dd3fd0286d6a30c57e98b854948caa25",
+    "tools/prepare_multilingual.py": "ee64b97c4a7100664b1b9448366325d90ca3d1f91b17404dd32d5a4074c7889d",
+    "data/multilingual_sources.json": "101697c45cc1d16688ac91121570bc1decedc671b7b35d93d19626a2bde31b3d",
+    "data/ud_ar_train.txt": "2fe6a1b3c6c1a50dff892296156882941049da22f92e15f9a444da3b13d6d162",
+    "data/ud_en_train.txt": "fb2155978102bd793938effcc40a35b2d948f8ea606e6c5c334df5409f967eef"
+  }
+}

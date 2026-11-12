@@ -1,0 +1,29 @@
+{
+  "checks": {
+    "ar_train_hash": true,
+    "ar_train_count": true,
+    "ar_train_unique": true,
+    "ar_dev_hash": true,
+    "ar_dev_count": true,
+    "ar_dev_unique": true,
+    "ar_test_hash": true,
+    "ar_test_count": true,
+    "ar_test_unique": true,
+    "en_train_hash": true,
+    "en_train_count": true,
+    "en_train_unique": true,
+    "en_dev_hash": true,
+    "en_dev_count": true,
+    "en_dev_unique": true,
+    "en_test_hash": true,
+    "en_test_count": true,
+    "en_test_unique": true,
+    "training_only": true,
+    "source_hashes": true,
+    "four_smoke_runs": true,
+    "finite_losses": true
+  },
+  "tests_passed": 36,
+  "dev_test_operation": "integrity and exact-string overlap checks only; no model scoring",
+  "visual_word_review": false
+}
