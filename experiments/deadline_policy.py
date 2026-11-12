@@ -20,7 +20,11 @@ def timed_policy(model,opt,pool,probe,arm,ranker,ids,random_choices,budget=1.,cl
         trial,to=clone(model,opt);candidates=pool[indices]
         guided=arm!='random' and step%guidance_interval==0
         guided_attempted+=int(guided)
-        choice=int(random_choices[step]) if not guided else int(np.argmax(score_candidates(trial,to,candidates,probe,arm,ranker)))
+        if not guided:choice=int(random_choices[step])
+        elif arm=='loss_sham':
+            score_candidates(trial,to,candidates,probe,'loss',ranker)
+            choice=int(random_choices[step])
+        else:choice=int(np.argmax(score_candidates(trial,to,candidates,probe,arm,ranker)))
         update(trial,to,candidates[choice:choice+1]);completed=clock()-start
         if completed>budget:break
         model,opt=trial,to;last=completed;accepted.append(choice);guided_accepted+=int(guided)

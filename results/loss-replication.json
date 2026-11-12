@@ -1,0 +1,117 @@
+{
+  "outputs": {
+    "random": {
+      "final_loss": 3.2943512896696725,
+      "updates": 196.58333333333334,
+      "guided_accepted": 0.0,
+      "actual_seconds": 1.0050926547916486,
+      "overrun_seconds": 0.0050926547916484806,
+      "per_seed_mean_loss": [
+        3.320130228996277,
+        3.3250973224639893,
+        3.2889580726623535,
+        3.2835397720336914,
+        3.3009320497512817,
+        3.3012590408325195,
+        3.281627893447876,
+        3.2827436923980713,
+        3.29792058467865,
+        3.2702502012252808,
+        3.301064968109131,
+        3.2786916494369507
+      ],
+      "mean_absolute_repeat_difference": [
+        0.014712591965993246,
+        19.333333333333332
+      ]
+    },
+    "sparse_loss": {
+      "final_loss": 3.2951927284399667,
+      "updates": 197.79166666666666,
+      "guided_accepted": 12.791666666666666,
+      "actual_seconds": 1.0054458456248767,
+      "overrun_seconds": 0.005445845624876711,
+      "per_seed_mean_loss": [
+        3.3160836696624756,
+        3.3122525215148926,
+        3.30153489112854,
+        3.3028444051742554,
+        3.3046202659606934,
+        3.304808497428894,
+        3.2776784896850586,
+        3.291134476661682,
+        3.3047008514404297,
+        3.263327956199646,
+        3.29585862159729,
+        3.2674680948257446
+      ],
+      "mean_absolute_repeat_difference": [
+        0.009959797064463297,
+        13.583333333333334
+      ]
+    },
+    "sham_loss": {
+      "final_loss": 3.295640637477239,
+      "updates": 195.66666666666666,
+      "guided_accepted": 12.625,
+      "actual_seconds": 1.0031126259583516,
+      "overrun_seconds": 0.0031126259583516003,
+      "per_seed_mean_loss": [
+        3.3135457038879395,
+        3.3243333101272583,
+        3.2988619804382324,
+        3.2839750051498413,
+        3.2973159551620483,
+        3.306367039680481,
+        3.2874621152877808,
+        3.2885771989822388,
+        3.289216995239258,
+        3.276885151863098,
+        3.2942769527435303,
+        3.286870241165161
+      ],
+      "mean_absolute_repeat_difference": [
+        0.013339261213938395,
+        19.5
+      ]
+    }
+  },
+  "comparisons": {
+    "sparse_loss minus random": {
+      "difference": 0.0008414387702941895,
+      "ci95": [
+        -0.004416277507940928,
+        0.006204038858413695
+      ],
+      "role": "primary"
+    },
+    "sparse_loss minus sham_loss": {
+      "difference": -0.00044790903727213543,
+      "ci95": [
+        -0.006894853214422862,
+        0.0058208393553892766
+      ],
+      "role": "secondary"
+    }
+  },
+  "budget_seconds": 1.0,
+  "repeats_per_seed": 2,
+  "split_unique_chunks": [
+    346,
+    115,
+    173,
+    115,
+    173,
+    231
+  ],
+  "blake_target_consumed": true,
+  "sha256": {
+    "experiments/loss_replication.py": "9b5aa707785c3308d09d67f61cb26c3fbea14d0282b10793888b9cba710bc84a",
+    "experiments/deadline_policy.py": "81d1667b1c5f0a9fb0a354453827e235a6a63085466249266ca2aa204d665634",
+    "experiments/sequential_policy.py": "cf67e090dd5fa5894e66e702f224f6fadf03c0180d0f140341f85af8df0ba423",
+    "experiments/utility_student.py": "ee949bc91eede6350203f436000952093dcdacd05ad3826252d042c78c9bb9af",
+    "experiments/transformer_pilot.py": "0d27de2146b8cd3159712cc45aad279ab8faf54b8bac56a547abfa5fc4d3fdaf",
+    "reports/40_loss_replication_protocol_ar.md": "784816a3b29f96b04fa4fba7c7540bff934be7fefadafb5047f467e5b9a0b0cb",
+    "data/blake.txt": "840897a66e23a47dd1fd56b864f421b2be0af074dc081244f7995bf26939eee9"
+  }
+}

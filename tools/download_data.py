@@ -21,7 +21,8 @@ def main():
                                ('bryant_source.json', 'bryant.txt'),
                                ('edgeworth_source.json', 'edgeworth.txt'),
                                ('milton_source.json', 'milton.txt'),
-                               ('whitman_source.json', 'whitman.txt')]:
+                               ('whitman_source.json', 'whitman.txt'),
+                               ('blake_source.json', 'blake.txt')]:
         info = json.loads((ROOT / 'data' / metadata).read_text())
         expected = info.get('text_sha256', info.get('sha256'))
         destination = ROOT / 'data' / filename
