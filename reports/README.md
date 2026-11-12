@@ -37,6 +37,8 @@
 | 31 | المرحلة الحادية والثلاثون: اختبار مقدّر الفروق أمام المعايرة البسيطة | [تحميل Word](31_simple_control_results_ar.docx) | [قراءة النص](31_simple_control_results_ar.md) |
 | 32 | المرحلة الثانية والثلاثون: بروتوكول سياسة اختيار متسلسلة | [تحميل Word](32_sequential_protocol_ar.docx) | [قراءة النص](32_sequential_protocol_ar.md) |
 | 33 | المرحلة الثالثة والثلاثون: نتائج سياسة اختيار متسلسلة على Milton | [تحميل Word](33_sequential_results_ar.docx) | [قراءة النص](33_sequential_results_ar.md) |
+| 34 | المرحلة الرابعة والثلاثون: بروتوكول المقارنة الزمنية لسياسات Transformer | [تحميل Word](34_deadline_protocol_ar.docx) | [قراءة النص](34_deadline_protocol_ar.md) |
+| 35 | المرحلة الخامسة والثلاثون: نتائج الاختيار تحت مهلة زمنية متساوية | [تحميل Word](35_deadline_results_ar.docx) | [قراءة النص](35_deadline_results_ar.md) |
 
 افتح ملف Word ثم اختر **Download raw file**.
 التقارير تصف حالة البحث عند صدورها، مع فصل النتائج الرئيسية والثانوية والحدود وحالة بيانات التقييم.

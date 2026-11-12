@@ -1,0 +1,6 @@
+{
+  "url": "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/gutenberg.zip",
+  "member": "gutenberg/whitman-leaves.txt",
+  "sha256": "93ebaf1dccc8f1514b4b1c2f52e64e81829113fc58cff63fb51ada0c72f99c3e",
+  "license_status": "Local diagnostic; edition rights not independently audited"
+}
