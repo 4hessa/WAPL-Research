@@ -1,0 +1,113 @@
+{
+  "outputs": {
+    "random": {
+      "mean_final_loss": 3.9819716811180115,
+      "mean_seconds": 0.06348168050010372,
+      "per_seed_final_loss": [
+        4.035804271697998,
+        3.854522466659546,
+        3.9385476112365723,
+        3.8516287803649902,
+        3.9433486461639404,
+        4.051577091217041,
+        3.919863700866699,
+        4.260480880737305
+      ]
+    },
+    "alignment": {
+      "mean_final_loss": 3.945600986480713,
+      "mean_seconds": 1.6762580943749867,
+      "per_seed_final_loss": [
+        3.994471311569214,
+        3.8194875717163086,
+        3.9038548469543457,
+        3.825734853744507,
+        3.9009358882904053,
+        4.032044410705566,
+        3.880784749984741,
+        4.207494258880615
+      ]
+    },
+    "pairwise": {
+      "mean_final_loss": 3.945646196603775,
+      "mean_seconds": 1.6916219228749014,
+      "per_seed_final_loss": [
+        3.9963526725769043,
+        3.818410634994507,
+        3.90427827835083,
+        3.8249523639678955,
+        3.9039359092712402,
+        4.030242919921875,
+        3.8796966075897217,
+        4.207300186157227
+      ]
+    }
+  },
+  "primary": {
+    "loss_difference": 4.521012306213379e-05,
+    "ci95": [
+      -0.0009312033653259277,
+      0.001193225383758545
+    ]
+  },
+  "selection": {
+    "pairwise": {
+      "alpha": 0.1,
+      "dev_regrets": [
+        [
+          0.00023660063743591309,
+          0.1
+        ],
+        [
+          0.00023660063743591309,
+          1.0
+        ],
+        [
+          0.00027745962142944336,
+          10.0
+        ],
+        [
+          0.00026692450046539307,
+          100.0
+        ]
+      ]
+    },
+    "point_regret": {
+      "alpha": 0.1,
+      "dev_regrets": [
+        [
+          0.0004872232675552368,
+          0.1
+        ],
+        [
+          0.0004872232675552368,
+          1.0
+        ],
+        [
+          0.0007586479187011719,
+          10.0
+        ],
+        [
+          0.000851944088935852,
+          100.0
+        ]
+      ]
+    },
+    "previous_alphas": {
+      "calibrated": null,
+      "baseline": 1.0,
+      "weight": 1.0
+    }
+  },
+  "calibration_slope": 0.001148366627179379,
+  "milton_target_consumed": true,
+  "sha256": {
+    "experiments/sequential_policy.py": "f45114fcec42a36a5f7b05a596ed385ce7a8b0a36a603338ff1c1e0c7aa2bc67",
+    "experiments/pairwise_student.py": "1ac552db748576cb29fe2f1833e7b51d01e568e5b0e00e5456e3c55c5ee5d996",
+    "experiments/utility_student.py": "ee949bc91eede6350203f436000952093dcdacd05ad3826252d042c78c9bb9af",
+    "experiments/transformer_pilot.py": "0d27de2146b8cd3159712cc45aad279ab8faf54b8bac56a547abfa5fc4d3fdaf",
+    "reports/32_sequential_protocol_ar.md": "98a4f5644dc0066a776872bc536e813578ed7c78d5751abb1d1004940e7eb179",
+    "results/student-records.json": "53276780026e1a4153d181b31d8d65db8e55860f4869be78f37b42c7c3f3b2ea",
+    "data/milton.txt": "49028a77c557de1459e96c026edbe72997be2d9015925f7baefb793cd6fe706f"
+  }
+}

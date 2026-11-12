@@ -19,7 +19,8 @@ def main():
                                ('alice_source.json', 'alice.txt'),
                                ('brown_source.json', 'brown.txt'),
                                ('bryant_source.json', 'bryant.txt'),
-                               ('edgeworth_source.json', 'edgeworth.txt')]:
+                               ('edgeworth_source.json', 'edgeworth.txt'),
+                               ('milton_source.json', 'milton.txt')]:
         info = json.loads((ROOT / 'data' / metadata).read_text())
         expected = info.get('text_sha256', info.get('sha256'))
         destination = ROOT / 'data' / filename

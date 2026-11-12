@@ -1,0 +1,6 @@
+{
+  "url": "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/gutenberg.zip",
+  "member": "gutenberg/milton-paradise.txt",
+  "sha256": "49028a77c557de1459e96c026edbe72997be2d9015925f7baefb793cd6fe706f",
+  "license_status": "Local diagnostic; edition rights not independently audited"
+}
