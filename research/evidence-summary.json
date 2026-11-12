@@ -1,0 +1,198 @@
+{
+  "scope": "Selected contrasts through report 41; not a meta-analysis or pooled success rate.",
+  "limitations": [
+    "Different outcomes and controls cannot be pooled.",
+    "Several studies reuse text, probe panels, model family, or training labels.",
+    "Confidence intervals are conditional on fixed text partitions.",
+    "New-source status refers to this project, not an external preregistration."
+  ],
+  "entries": [
+    {
+      "report": 18,
+      "source": "results/transformer-pilot.json",
+      "source_sha256": "fa88cff01dc5e9b2b1e2335fe948460cfa91950a8b822d9c458f4d41137f20c5",
+      "json_key": "comparison",
+      "metric": "Spearman",
+      "contrast": "weight minus baseline",
+      "corpus": "Persuasion",
+      "design": "diagnostic",
+      "higher_is_better": true,
+      "difference": -0.025297619047619,
+      "ci95": [
+        -0.08779761904761901,
+        0.031250000000000056
+      ],
+      "interval_includes_zero": true
+    },
+    {
+      "report": 24,
+      "source": "results/horizon-replication.json",
+      "source_sha256": "e171b70e5bcf70d83c4d1a785bf5fad298a062a053578f56024e92cc9b60bbae",
+      "json_key": "comparisons/A",
+      "metric": "utility MAE",
+      "contrast": "horizon-matched simulation minus one-step probe",
+      "corpus": "Alice",
+      "design": "new-source diagnostic",
+      "higher_is_better": false,
+      "difference": -0.004709039504329364,
+      "ci95": [
+        -0.005332067872708042,
+        -0.004073708488916358
+      ],
+      "interval_includes_zero": false
+    },
+    {
+      "report": 26,
+      "source": "results/utility-student.json",
+      "source_sha256": "c26f4b5c344c45b309994658dab45992c7dc567a9366436457aeec3a0d268c4b",
+      "json_key": "comparisons/baseline minus calibrated",
+      "metric": "utility MAE",
+      "contrast": "five-feature student minus calibration",
+      "corpus": "Brown",
+      "design": "new-source diagnostic",
+      "higher_is_better": false,
+      "difference": -0.001967077335324568,
+      "ci95": [
+        -0.002479184843324619,
+        -0.0014037313753007432
+      ],
+      "interval_includes_zero": false
+    },
+    {
+      "report": 26,
+      "source": "results/utility-student.json",
+      "source_sha256": "c26f4b5c344c45b309994658dab45992c7dc567a9366436457aeec3a0d268c4b",
+      "json_key": "comparisons/weight minus baseline",
+      "metric": "utility MAE",
+      "contrast": "weight features minus baseline",
+      "corpus": "Brown",
+      "design": "secondary",
+      "higher_is_better": false,
+      "difference": 2.604564774447805e-05,
+      "ci95": [
+        -4.542268962070681e-05,
+        0.00012158687539438
+      ],
+      "interval_includes_zero": true
+    },
+    {
+      "report": 29,
+      "source": "results/pairwise-student.json",
+      "source_sha256": "f4b1fc538b3a88731ff5bb484660209103829a29dcb9ef3508af520b41ea805b",
+      "json_key": "primary",
+      "metric": "top-two regret",
+      "contrast": "pairwise minus pointwise regret-tuned",
+      "corpus": "Bryant",
+      "design": "prospective new-source primary",
+      "higher_is_better": false,
+      "difference": -0.0008634279171625773,
+      "ci95": [
+        -0.0014603126794099806,
+        -0.0002880122512578965
+      ],
+      "interval_includes_zero": false
+    },
+    {
+      "report": 31,
+      "source": "results/simple-control.json",
+      "source_sha256": "4b4650f1b7901235cc71d6fb11cf1822b30cd25f646c5c1a2beb5af43be5e8aa",
+      "json_key": "primary",
+      "metric": "top-two regret",
+      "contrast": "pairwise minus calibrated alignment",
+      "corpus": "Edgeworth",
+      "design": "prospective new-source primary",
+      "higher_is_better": false,
+      "difference": -9.793788194656372e-06,
+      "ci95": [
+        -0.00013204021379351616,
+        0.0001239645294845104
+      ],
+      "interval_includes_zero": true
+    },
+    {
+      "report": 33,
+      "source": "results/sequential-policy.json",
+      "source_sha256": "0c51f259bcf222c46d69d09c43b958f476d77f67251e8e6f05a6fadde5a1ca31",
+      "json_key": "primary",
+      "metric": "final cross-entropy",
+      "contrast": "pairwise minus alignment",
+      "corpus": "Milton",
+      "design": "equal-update primary",
+      "higher_is_better": false,
+      "difference": 4.521012306213379e-05,
+      "ci95": [
+        -0.0009312033653259277,
+        0.001193225383758545
+      ],
+      "interval_includes_zero": true
+    },
+    {
+      "report": 35,
+      "source": "results/deadline-policy.json",
+      "source_sha256": "298a3a7e63e8789dc395da9a3e6e223157b82bb709dd822073975a2150ce21e7",
+      "json_key": "primary",
+      "metric": "final cross-entropy",
+      "contrast": "pairwise minus random",
+      "corpus": "Whitman",
+      "design": "equal-deadline primary",
+      "higher_is_better": false,
+      "difference": 1.3327310880025227,
+      "ci95": [
+        1.2808107102910677,
+        1.3895033051570256
+      ],
+      "interval_includes_zero": false
+    },
+    {
+      "report": 37,
+      "source": "results/sparse-policy.json",
+      "source_sha256": "043d46d80e0dc80921e0f1b9f709467ef19de624c2cb8ed8441a164e16d0db8e",
+      "json_key": "comparisons/sparse_pairwise minus random",
+      "metric": "final cross-entropy",
+      "contrast": "sparse pairwise minus random",
+      "corpus": "Whitman",
+      "design": "exposed-source exploratory",
+      "higher_is_better": false,
+      "difference": 0.15021228790283203,
+      "ci95": [
+        0.13496755411227546,
+        0.16614090402921042
+      ],
+      "interval_includes_zero": false
+    },
+    {
+      "report": 39,
+      "source": "results/loss-proxy-policy.json",
+      "source_sha256": "a50a69cd5a7bb78e2d81cde3a34bcee6a90acb88f0da0cac066bbc7661f80569",
+      "json_key": "comparisons/sparse_loss minus random",
+      "metric": "final cross-entropy",
+      "contrast": "sparse highest-loss minus random",
+      "corpus": "Whitman",
+      "design": "exposed-source exploratory",
+      "higher_is_better": false,
+      "difference": -0.004576543966929118,
+      "ci95": [
+        -0.014291760325431823,
+        0.003807586928208668
+      ],
+      "interval_includes_zero": true
+    },
+    {
+      "report": 41,
+      "source": "results/loss-replication.json",
+      "source_sha256": "9433efa584f82ccdf8b0521e8e024f62254ab863923904df6a4736189dca1d40",
+      "json_key": "comparisons/sparse_loss minus random",
+      "metric": "final cross-entropy",
+      "contrast": "sparse highest-loss minus random",
+      "corpus": "Blake",
+      "design": "prospective new-source primary; repeats averaged within seed",
+      "higher_is_better": false,
+      "difference": 0.0008414387702941895,
+      "ci95": [
+        -0.004416277507940928,
+        0.006204038858413695
+      ],
+      "interval_includes_zero": true
+    }
+  ]
+}

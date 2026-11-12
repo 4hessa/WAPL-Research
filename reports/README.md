@@ -45,6 +45,7 @@
 | 39 | المرحلة التاسعة والثلاثون: نتائج ضابط الخسارة منخفض الكلفة | [تحميل Word](39_loss_proxy_results_ar.docx) | [قراءة النص](39_loss_proxy_results_ar.md) |
 | 40 | المرحلة الأربعون: بروتوكول تحقق مستقل لضابط الخسارة مع تكرار زمني | [تحميل Word](40_loss_replication_protocol_ar.docx) | [قراءة النص](40_loss_replication_protocol_ar.md) |
 | 41 | المرحلة الحادية والأربعون: تحقق مستقل لضابط الخسارة على Blake | [تحميل Word](41_loss_replication_results_ar.docx) | [قراءة النص](41_loss_replication_results_ar.md) |
+| 42 | المرحلة الثانية والأربعون: التقييم العلمي الموحد وقرار تطوير النسخة التالية | [تحميل Word](42_scientific_synthesis_ar.docx) | [قراءة النص](42_scientific_synthesis_ar.md) |
 
 افتح ملف Word ثم اختر **Download raw file**.
 التقارير تصف حالة البحث عند صدورها، مع فصل النتائج الرئيسية والثانوية والحدود وحالة بيانات التقييم.

@@ -1,0 +1,10 @@
+{
+  "contrasts": 11,
+  "source_hashes_match": true,
+  "intervals_match_sources": true,
+  "deterministic_regeneration": true,
+  "report_pairs_indexed": 42,
+  "all_word_zip_integrity": true,
+  "new_training_runs": 0,
+  "visual_word_review": false
+}

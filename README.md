@@ -10,7 +10,9 @@ Each report has a `.docx` download and a readable Markdown source in [`reports/`
 
 ## Current evidence
 
-The implemented studies are small CPU diagnostics: logistic regression, character-bigram models, and a tiny causal Transformer. They do **not** establish a benefit from the tested weight features, compute savings, or generalization to Transformers. Shared-softmax reuse accelerated the bigram alignment baseline while preserving its tested decisions and states. See [the latest results](reports/16_optimized_time_results_ar.md) and [the scientific review](research/review-ar.md).
+The implemented studies are small CPU diagnostics: logistic regression, character-bigram models, and a 9,184-parameter causal Transformer. They have **not established an independent benefit from the tested weight features or compute savings over simple controls**. Horizon-matched simulations improved utility-value accuracy, and pairwise learning improved selection against a pointwise learner on Bryant; neither establishes general selection superiority or practical efficiency. The independent Blake timing study did not establish a benefit from sparse highest-loss selection over random.
+
+See the **[current Arabic scientific synthesis, report 42](reports/42_scientific_synthesis_ar.docx)** and its [readable source](reports/42_scientific_synthesis_ar.md). The [evidence map](research/evidence-summary.md) links 11 distinct contrasts to result files; it does not pool incompatible outcomes or treat exploratory comparisons as independent confirmations. No claim is established for Arabic, pretrained large language models, or end-to-end lifecycle savings.
 
 Historical Transformer results mentioned in the supplied project document were not reproduced: their original code and artifacts were not present. The executable experiments here are new diagnostics, not reconstructions of that historical run.
 
