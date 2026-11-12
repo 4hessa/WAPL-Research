@@ -75,3 +75,7 @@ Run `OPENBLAS_NUM_THREADS=1 python -m experiments.transformer_horizon`. Reports 
 ## Independent horizon-16 replication
 
 Run `OPENBLAS_NUM_THREADS=1 python -m experiments.horizon_replication` for the Alice study in reports 23–24. It averages two independent continuation simulations and fixes probe panel A as primary, panel B as sensitivity analysis. The primary MAE comparison improved, but the simulation is expensive and does not establish useful weight features or compute savings. Alice target data are now exposed.
+
+## Horizon-16 utility student
+
+Run `OPENBLAS_NUM_THREADS=1 python -m experiments.utility_student` for reports 25–26. A five-feature Ridge student trained on Alice probe-simulation labels improves Brown target MAE over affine-calibrated update alignment, but does not improve ranking or top-two selection regret. Adding three weight features has no clear MAE benefit. Timings include feature extraction and teacher-label generation; no end-to-end compute savings are established. Brown target data are now exposed. See `results/student-audit.json` for the repeatability check.

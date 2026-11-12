@@ -28,6 +28,8 @@
 | 22 | المرحلة الثانية والعشرون: نتائج مطابقة أفق المنفعة في Transformer | [تحميل Word](22_horizon_results_ar.docx) | [قراءة النص](22_horizon_results_ar.md) |
 | 23 | المرحلة الثالثة والعشرون: بروتوكول تحقق مستقل من نتيجة الأفق 16 | [تحميل Word](23_replication_protocol_ar.docx) | [قراءة النص](23_replication_protocol_ar.md) |
 | 24 | المرحلة الرابعة والعشرون: تحقق مستقل من مطابقة أفق المنفعة | [تحميل Word](24_replication_results_ar.docx) | [قراءة النص](24_replication_results_ar.md) |
+| 25 | المرحلة الخامسة والعشرون: بروتوكول مقدّر يتعلم منفعة الأفق 16 | [تحميل Word](25_student_protocol_ar.docx) | [قراءة النص](25_student_protocol_ar.md) |
+| 26 | المرحلة السادسة والعشرون: نتائج تعلّم مقدّر منفعة الأفق 16 | [تحميل Word](26_student_results_ar.docx) | [قراءة النص](26_student_results_ar.md) |
 
 افتح ملف Word ثم اختر **Download raw file**.
 التقارير تصف حالة البحث عند صدورها، مع فصل النتائج الرئيسية والثانوية والحدود وحالة بيانات التقييم.

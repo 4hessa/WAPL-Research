@@ -1,0 +1,6 @@
+{
+  "url": "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/gutenberg.zip",
+  "member": "gutenberg/chesterton-brown.txt",
+  "sha256": "67027976205b4b30e367c704807f56c8ffac3e8ea6037d993e57ab1fe28447ec",
+  "license_status": "Local diagnostic; edition rights not independently audited"
+}

@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "outputs": true,
+    "comparisons": true,
+    "alphas": true,
+    "rows": true,
+    "metric_order": true,
+    "brown_target_consumed": true,
+    "torch": true,
+    "sha256": true,
+    "student-records.json": true,
+    "student-predictions.json": true,
+    "source_hashes": true,
+    "counts": true,
+    "targets_test_only": true
+  },
+  "row_counts": {
+    "train": 128,
+    "dev": 64,
+    "test": 128
+  },
+  "tests_passed": 24,
+  "repeat_seconds": 43.81115656500003,
+  "repeat_timing": {
+    "features": 2.1533527859998003,
+    "teacher": 27.570090810999886,
+    "target": 11.170468564000203,
+    "fit": 0.008643585000072562,
+    "prediction_and_metrics": 0.025515531999985797
+  },
+  "original_seconds": 46.63855003600111,
+  "original_outputs_restored": true
+}
