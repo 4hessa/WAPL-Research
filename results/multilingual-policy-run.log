@@ -1,0 +1,54 @@
+ar seed 23000 completed
+ar seed 23001 completed
+ar seed 23002 completed
+ar seed 23003 completed
+ar seed 23004 completed
+ar seed 23005 completed
+ar seed 23006 completed
+ar seed 23007 completed
+en seed 23000 completed
+en seed 23001 completed
+en seed 23002 completed
+en seed 23003 completed
+en seed 23004 completed
+en seed 23005 completed
+en seed 23006 completed
+en seed 23007 completed
+{
+  "ar": {
+    "updates": {
+      "difference": -0.0013469905148675854,
+      "ci95": [
+        -0.0019273786241901347,
+        -0.0007606155816933199
+      ],
+      "role": "secondary_diagnostic"
+    },
+    "time": {
+      "difference": 0.0019531485948593996,
+      "ci95": [
+        -0.0015276462132174096,
+        0.005374505539041813
+      ],
+      "role": "primary"
+    }
+  },
+  "en": {
+    "updates": {
+      "difference": 0.0009745799390064591,
+      "ci95": [
+        -0.0007079227075783567,
+        0.0027564851508601884
+      ],
+      "role": "secondary_diagnostic"
+    },
+    "time": {
+      "difference": -0.0008660529084706381,
+      "ci95": [
+        -0.005735980024284437,
+        0.0042034678069847176
+      ],
+      "role": "secondary_diagnostic"
+    }
+  }
+}

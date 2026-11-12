@@ -124,4 +124,10 @@ OPENBLAS_NUM_THREADS=1 python -m experiments.multilingual_readiness
 python -m tools.audit_multilingual_readiness
 ```
 
-The new 35,776-parameter Transformer uses a 256-byte UTF-8 vocabulary and 64-byte input context. Four training-only smoke runs completed; dev/test were processed for integrity and duplicate checks but have not been scored by a model in this stage. This establishes technical readiness, not policy efficacy, language generalization or pretrained-LLM performance. Byte losses should not be compared across languages as a quality ranking. A prospective evaluation protocol is still required before opening the held-out test outcomes.
+The new 35,776-parameter Transformer uses a 256-byte UTF-8 vocabulary and 64-byte input context. Four training-only smoke runs completed; dev/test were processed for integrity and duplicate checks but have not been scored by a model in this stage. This establishes technical readiness, not policy efficacy, language generalization or pretrained-LLM performance. Byte losses should not be compared across languages as a quality ranking. This was the historical status at stage 43. Protocol 44 subsequently froze the evaluation, and report 45 consumed both test outcomes; see `data/evaluation_status.json` for current exposure. The preparation manifest remains a historical snapshot.
+
+## Arabic-primary multilingual policy evaluation
+
+Run `OPENBLAS_NUM_THREADS=1 python -m experiments.multilingual_policy` for reports 44–45; audit with `python -m tools.audit_multilingual_policy`. The protocol was pushed before test scoring. Ninety-six runs compare random selection with highest loss every 16 steps, using 256 fixed updates or three-second windows with two timing repeats per seed. All 3,668 Arabic and 1,877 English complete test chunks are scored.
+
+The Arabic timed primary comparison did **not** establish superiority: sparse-loss minus random cross-entropy +0.001953, paired 95% bootstrap interval [−0.001528, +0.005375]. A small Arabic fixed-update improvement is secondary and does not establish time efficiency. English results are also inconclusive. Byte losses are compared within language only. Both test splits are now exposed; dev was not used. This remains a small-model CPU study, not evidence of weight-feature benefits or pretrained-LLM performance.

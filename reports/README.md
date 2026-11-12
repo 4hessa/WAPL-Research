@@ -47,6 +47,8 @@
 | 41 | المرحلة الحادية والأربعون: تحقق مستقل لضابط الخسارة على Blake | [تحميل Word](41_loss_replication_results_ar.docx) | [قراءة النص](41_loss_replication_results_ar.md) |
 | 42 | المرحلة الثانية والأربعون: التقييم العلمي الموحد وقرار تطوير النسخة التالية | [تحميل Word](42_scientific_synthesis_ar.docx) | [قراءة النص](42_scientific_synthesis_ar.md) |
 | 43 | المرحلة الثالثة والأربعون: تجهيز تقييم عربي وإنجليزي ونموذج UTF-8 | [تحميل Word](43_multilingual_readiness_ar.docx) | [قراءة النص](43_multilingual_readiness_ar.md) |
+| 44 | المرحلة الرابعة والأربعون: بروتوكول الاختيار بالعربية والإنجليزية | [تحميل Word](44_multilingual_protocol_ar.docx) | [قراءة النص](44_multilingual_protocol_ar.md) |
+| 45 | المرحلة الخامسة والأربعون: نتائج الاختيار بالعربية والإنجليزية | [تحميل Word](45_multilingual_results_ar.docx) | [قراءة النص](45_multilingual_results_ar.md) |
 
 افتح ملف Word ثم اختر **Download raw file**.
 التقارير تصف حالة البحث عند صدورها، مع فصل النتائج الرئيسية والثانوية والحدود وحالة بيانات التقييم.

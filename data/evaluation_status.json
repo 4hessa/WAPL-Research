@@ -1,0 +1,16 @@
+{
+  "stage": 45,
+  "datasets": {
+    "ar": {
+      "train": "used for training",
+      "dev": "prepared only; no model evaluation in stages 43\u201345",
+      "test": "evaluated in stage 45; exposed for future development"
+    },
+    "en": {
+      "train": "used for training",
+      "dev": "prepared only; no model evaluation in stages 43\u201345",
+      "test": "evaluated in stage 45; exposed for future development"
+    }
+  },
+  "preparation_manifest_status": "Historical snapshot from stage 43; see this ledger for current exposure"
+}
