@@ -9,19 +9,23 @@ from experiments.utility_student import prepare
 from experiments.transformer_pilot import TinyTransformer,optimizer,clone,update,loss
 
 
-def timed_policy(model,opt,pool,probe,arm,ranker,ids,random_choices,budget=1.,clock=time.perf_counter):
+def timed_policy(model,opt,pool,probe,arm,ranker,ids,random_choices,budget=1.,clock=time.perf_counter,guidance_interval=1):
+    if guidance_interval < 1:raise ValueError('guidance_interval must be positive')
+    guided_attempted=0;guided_accepted=0
     # Initial independent deployment copy is outside the measured window.
     model,opt=clone(model,opt);accepted=[];attempted=0;last=0.;start=clock()
     for step,indices in enumerate(ids):
         if clock()-start>=budget:break
         attempted+=1
         trial,to=clone(model,opt);candidates=pool[indices]
-        choice=int(random_choices[step]) if arm=='random' else int(np.argmax(score_candidates(trial,to,candidates,probe,arm,ranker)))
+        guided=arm!='random' and step%guidance_interval==0
+        guided_attempted+=int(guided)
+        choice=int(random_choices[step]) if not guided else int(np.argmax(score_candidates(trial,to,candidates,probe,arm,ranker)))
         update(trial,to,candidates[choice:choice+1]);completed=clock()-start
         if completed>budget:break
-        model,opt=trial,to;last=completed;accepted.append(choice)
+        model,opt=trial,to;last=completed;accepted.append(choice);guided_accepted+=int(guided)
     actual=clock()-start
-    return model,{'updates':len(accepted),'attempted':attempted,'choices':accepted,'last_accepted_seconds':last,'actual_seconds':actual,'overrun_seconds':max(0.,actual-budget),'schedule_exhausted':len(accepted)==len(ids)}
+    return model,{'guided_attempted':guided_attempted,'guided_accepted':guided_accepted,'guidance_interval':guidance_interval,'updates':len(accepted),'attempted':attempted,'choices':accepted,'last_accepted_seconds':last,'actual_seconds':actual,'overrun_seconds':max(0.,actual-budget),'schedule_exhausted':len(accepted)==len(ids)}
 
 
 def main():

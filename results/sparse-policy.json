@@ -1,0 +1,170 @@
+{
+  "status": "exploratory_exposed_Whitman",
+  "outputs": {
+    "random": {
+      "final_loss": 2.9278979102770486,
+      "updates": 202.66666666666666,
+      "guided_accepted": 0.0,
+      "guided_attempted": 0.0,
+      "actual_seconds": 1.0024641367499498,
+      "overrun_seconds": 0.00246413674994983,
+      "per_seed_final_loss": [
+        2.9410617351531982,
+        2.9512858390808105,
+        2.929227828979492,
+        2.9182324409484863,
+        2.909090280532837,
+        2.9061179161071777,
+        2.9260706901550293,
+        2.9236698150634766,
+        2.9095563888549805,
+        2.9116687774658203,
+        2.9338364601135254,
+        2.974956750869751
+      ]
+    },
+    "dense_pairwise": {
+      "final_loss": 4.29948623975118,
+      "updates": 17.166666666666668,
+      "guided_accepted": 17.166666666666668,
+      "guided_attempted": 18.166666666666668,
+      "actual_seconds": 1.0315648265835382,
+      "overrun_seconds": 0.031564826583538284,
+      "per_seed_final_loss": [
+        4.210852146148682,
+        4.233810901641846,
+        4.579885482788086,
+        4.353064060211182,
+        4.290116310119629,
+        4.391778469085693,
+        4.3552327156066895,
+        4.136149883270264,
+        4.43956995010376,
+        4.113119125366211,
+        4.361459255218506,
+        4.128796577453613
+      ]
+    },
+    "sparse_pairwise": {
+      "final_loss": 3.0781101981798806,
+      "updates": 116.91666666666667,
+      "guided_accepted": 7.5,
+      "guided_attempted": 8.083333333333334,
+      "actual_seconds": 1.0199137646664742,
+      "overrun_seconds": 0.019913764666474282,
+      "per_seed_final_loss": [
+        3.0809264183044434,
+        3.1020755767822266,
+        3.093170642852783,
+        3.114497661590576,
+        3.0809249877929688,
+        3.0359294414520264,
+        3.0508553981781006,
+        3.0467336177825928,
+        3.040705919265747,
+        3.075528860092163,
+        3.1305088996887207,
+        3.0854649543762207
+      ]
+    },
+    "sparse_alignment": {
+      "final_loss": 3.066978335380554,
+      "updates": 121.41666666666667,
+      "guided_accepted": 7.666666666666667,
+      "guided_attempted": 8.416666666666666,
+      "actual_seconds": 1.0216979056664666,
+      "overrun_seconds": 0.021697905666466493,
+      "per_seed_final_loss": [
+        3.036794424057007,
+        3.0398569107055664,
+        3.111403465270996,
+        3.1133744716644287,
+        3.0233616828918457,
+        3.1018640995025635,
+        3.107865571975708,
+        3.0250282287597656,
+        3.118663787841797,
+        3.01279616355896,
+        3.068096876144409,
+        3.0446343421936035
+      ]
+    }
+  },
+  "comparisons": {
+    "sparse_pairwise minus random": {
+      "difference": 0.15021228790283203,
+      "exploratory_ci95": [
+        0.13496755411227546,
+        0.16614090402921042
+      ]
+    },
+    "sparse_pairwise minus dense_pairwise": {
+      "difference": -1.2213760415712993,
+      "exploratory_ci95": [
+        -1.3020229270060857,
+        -1.145578966041406
+      ]
+    }
+  },
+  "budget_seconds": 1.0,
+  "selection": {
+    "pairwise": {
+      "alpha": 0.1,
+      "dev_regrets": [
+        [
+          0.00023660063743591309,
+          0.1
+        ],
+        [
+          0.00023660063743591309,
+          1.0
+        ],
+        [
+          0.00027745962142944336,
+          10.0
+        ],
+        [
+          0.00026692450046539307,
+          100.0
+        ]
+      ]
+    },
+    "point_regret": {
+      "alpha": 0.1,
+      "dev_regrets": [
+        [
+          0.0004872232675552368,
+          0.1
+        ],
+        [
+          0.0004872232675552368,
+          1.0
+        ],
+        [
+          0.0007586479187011719,
+          10.0
+        ],
+        [
+          0.000851944088935852,
+          100.0
+        ]
+      ]
+    },
+    "previous_alphas": {
+      "calibrated": null,
+      "baseline": 1.0,
+      "weight": 1.0
+    }
+  },
+  "sha256": {
+    "experiments/sparse_policy.py": "62f7b5d2b307e94f959e0e2570e7f457252a1a40db896bd37136632001d23654",
+    "experiments/deadline_policy.py": "cd60b07e00dca33b26e0e7015d2ea84f8f2b5fd97519da87bdec2f19c24a3491",
+    "experiments/sequential_policy.py": "f45114fcec42a36a5f7b05a596ed385ce7a8b0a36a603338ff1c1e0c7aa2bc67",
+    "experiments/pairwise_student.py": "1ac552db748576cb29fe2f1833e7b51d01e568e5b0e00e5456e3c55c5ee5d996",
+    "experiments/utility_student.py": "ee949bc91eede6350203f436000952093dcdacd05ad3826252d042c78c9bb9af",
+    "experiments/transformer_pilot.py": "0d27de2146b8cd3159712cc45aad279ab8faf54b8bac56a547abfa5fc4d3fdaf",
+    "reports/36_sparse_protocol_ar.md": "191a3a65452f56c25f519eaf01fae8f8cb49bbeadfaf5dd8c2ab66e8c06adae5",
+    "results/student-records.json": "53276780026e1a4153d181b31d8d65db8e55860f4869be78f37b42c7c3f3b2ea",
+    "data/whitman.txt": "93ebaf1dccc8f1514b4b1c2f52e64e81829113fc58cff63fb51ada0c72f99c3e"
+  }
+}
