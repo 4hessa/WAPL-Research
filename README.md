@@ -83,3 +83,7 @@ Run `OPENBLAS_NUM_THREADS=1 python -m experiments.utility_student` for reports 2
 ## Exploratory ranking diagnostic
 
 Run `OPENBLAS_NUM_THREADS=1 python -m experiments.ranking_diagnostic` for report 27. On the already exposed Brown target, about 93.6% of the student’s MSE reduction versus calibrated alignment is attributable to reduced state-level mean error. Within-state squared error also improves, but selection superiority is not established. Post-hoc seed-bootstrap intervals for regret and pair accuracy include zero. This diagnostic fits no new model and provides no independent confirmation.
+
+## Pairwise utility transfer
+
+Run `OPENBLAS_NUM_THREADS=1 python -m experiments.pairwise_student` for reports 28–29. Protocol 28 was committed and pushed before the new Bryant evaluation. Pairwise Ridge lowers top-two regret by about 53.7% versus pointwise Ridge with the same regret-based tuning criterion (primary paired seed-bootstrap interval excludes zero). Its descriptive advantage over simple calibrated alignment is small and is not established as a confirmatory result. This is a fixed-state utility evaluation, not an end-to-end training policy or compute-efficiency result. Bryant target data are now exposed. `results/pairwise-audit.json` records refitting and metric checks; full Transformer generation was not repeated.

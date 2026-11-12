@@ -1,0 +1,6 @@
+{
+  "url": "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/gutenberg.zip",
+  "member": "gutenberg/bryant-stories.txt",
+  "sha256": "c87f2c50a00055010f02edb6bb643aabe2473465da7f62db43cb4cda1a1c768d",
+  "license_status": "Local diagnostic; edition rights not independently audited"
+}

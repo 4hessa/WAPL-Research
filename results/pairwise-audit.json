@@ -1,0 +1,20 @@
+{
+  "checks": {
+    "selection_json_normalized": true,
+    "192_rows": true,
+    "24_groups_of_8": true,
+    "hashes": true,
+    "pairwise_prediction": true,
+    "point_regret_prediction": true,
+    "point_mae_prediction": true,
+    "calibrated_prediction": true,
+    "pairwise_regrets": true,
+    "point_regret_regrets": true,
+    "point_mae_regrets": true,
+    "calibrated_regrets": true,
+    "teacher_regrets": true
+  },
+  "tests_passed": 27,
+  "full_transformer_rerun": false,
+  "note": "Selection tuples normalized to JSON lists before equality comparison."
+}
