@@ -1,0 +1,170 @@
+{
+  "status": "exploratory_exposed_Whitman",
+  "outputs": {
+    "random": {
+      "final_loss": 2.9283178647359214,
+      "updates": 202.0,
+      "guided_accepted": 0.0,
+      "guided_attempted": 0.0,
+      "actual_seconds": 1.001927682416787,
+      "overrun_seconds": 0.001927682416787017,
+      "per_seed_final_loss": [
+        2.906752109527588,
+        2.923037528991699,
+        2.916943073272705,
+        2.916614055633545,
+        2.9774320125579834,
+        2.9246253967285156,
+        2.9500722885131836,
+        2.8946402072906494,
+        2.9287402629852295,
+        2.9381256103515625,
+        2.916206121444702,
+        2.9466257095336914
+      ]
+    },
+    "dense_loss": {
+      "final_loss": 3.032099982102712,
+      "updates": 182.0,
+      "guided_accepted": 182.0,
+      "guided_attempted": 182.91666666666666,
+      "actual_seconds": 1.002545794250106,
+      "overrun_seconds": 0.002545794250105852,
+      "per_seed_final_loss": [
+        3.0051162242889404,
+        3.0318565368652344,
+        3.0608739852905273,
+        3.0224149227142334,
+        3.0366930961608887,
+        3.047555685043335,
+        3.0225703716278076,
+        3.026216745376587,
+        3.010460615158081,
+        3.0493152141571045,
+        3.037276268005371,
+        3.0348501205444336
+      ]
+    },
+    "sparse_loss": {
+      "final_loss": 2.923741320768992,
+      "updates": 211.41666666666666,
+      "guided_accepted": 13.75,
+      "guided_attempted": 13.833333333333334,
+      "actual_seconds": 1.0030189191667584,
+      "overrun_seconds": 0.003018919166758375,
+      "per_seed_final_loss": [
+        2.8751957416534424,
+        2.9314262866973877,
+        2.9242405891418457,
+        2.900297164916992,
+        2.9370322227478027,
+        2.9293301105499268,
+        2.957916021347046,
+        2.904444456100464,
+        2.925842046737671,
+        2.9452736377716064,
+        2.9187676906585693,
+        2.9351298809051514
+      ]
+    },
+    "sparse_pairwise": {
+      "final_loss": 3.109642744064331,
+      "updates": 111.25,
+      "guided_accepted": 7.083333333333333,
+      "guided_attempted": 7.583333333333333,
+      "actual_seconds": 1.0195430650001072,
+      "overrun_seconds": 0.019543065000107163,
+      "per_seed_final_loss": [
+        3.04776930809021,
+        3.1703643798828125,
+        3.050893783569336,
+        3.0280656814575195,
+        3.195178270339966,
+        3.202495574951172,
+        3.0978119373321533,
+        3.0272107124328613,
+        3.0513503551483154,
+        3.168887138366699,
+        3.1407508850097656,
+        3.134934902191162
+      ]
+    }
+  },
+  "comparisons": {
+    "sparse_loss minus random": {
+      "difference": -0.004576543966929118,
+      "exploratory_ci95": [
+        -0.014291760325431823,
+        0.003807586928208668
+      ]
+    },
+    "sparse_loss minus sparse_pairwise": {
+      "difference": -0.18590142329533896,
+      "exploratory_ci95": [
+        -0.21639262437820433,
+        -0.15535767724116645
+      ]
+    }
+  },
+  "budget_seconds": 1.0,
+  "selection": {
+    "pairwise": {
+      "alpha": 0.1,
+      "dev_regrets": [
+        [
+          0.00023660063743591309,
+          0.1
+        ],
+        [
+          0.00023660063743591309,
+          1.0
+        ],
+        [
+          0.00027745962142944336,
+          10.0
+        ],
+        [
+          0.00026692450046539307,
+          100.0
+        ]
+      ]
+    },
+    "point_regret": {
+      "alpha": 0.1,
+      "dev_regrets": [
+        [
+          0.0004872232675552368,
+          0.1
+        ],
+        [
+          0.0004872232675552368,
+          1.0
+        ],
+        [
+          0.0007586479187011719,
+          10.0
+        ],
+        [
+          0.000851944088935852,
+          100.0
+        ]
+      ]
+    },
+    "previous_alphas": {
+      "calibrated": null,
+      "baseline": 1.0,
+      "weight": 1.0
+    }
+  },
+  "sha256": {
+    "experiments/loss_proxy_policy.py": "cc2e7a8f5614cf80f1efa136092e52a2a36ba5852b06cc973d903cd06b5e798a",
+    "experiments/deadline_policy.py": "cd60b07e00dca33b26e0e7015d2ea84f8f2b5fd97519da87bdec2f19c24a3491",
+    "experiments/sequential_policy.py": "cf67e090dd5fa5894e66e702f224f6fadf03c0180d0f140341f85af8df0ba423",
+    "experiments/pairwise_student.py": "1ac552db748576cb29fe2f1833e7b51d01e568e5b0e00e5456e3c55c5ee5d996",
+    "experiments/utility_student.py": "ee949bc91eede6350203f436000952093dcdacd05ad3826252d042c78c9bb9af",
+    "experiments/transformer_pilot.py": "0d27de2146b8cd3159712cc45aad279ab8faf54b8bac56a547abfa5fc4d3fdaf",
+    "reports/38_loss_proxy_protocol_ar.md": "be918cd52b9bd600b7a8b341302ee752fd1eca5da1cc343d054ab0bb2e508bb0",
+    "results/student-records.json": "53276780026e1a4153d181b31d8d65db8e55860f4869be78f37b42c7c3f3b2ea",
+    "data/whitman.txt": "93ebaf1dccc8f1514b4b1c2f52e64e81829113fc58cff63fb51ada0c72f99c3e"
+  }
+}

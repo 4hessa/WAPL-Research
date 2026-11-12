@@ -9,6 +9,11 @@ from experiments.transformer_pilot import TinyTransformer,optimizer,clone,update
 
 
 def score_candidates(model,opt,candidates,probe,arm,ranker=None):
+    if arm=='loss':
+        with torch.no_grad():
+            logits=model(candidates[:,:-1])
+            losses=torch.nn.functional.cross_entropy(logits.reshape(-1,128),candidates[:,1:].reshape(-1),reduction='none')
+            return losses.reshape(len(candidates),-1).mean(dim=1).cpu().numpy()
     # Compute probe gradient on a clone, preserving all original state and gradients.
     pm,po=clone(model,opt);po.zero_grad();loss(pm,probe).backward();pg=vec(pm,True);w=vec(model)
     features=[]
