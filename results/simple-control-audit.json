@@ -1,0 +1,73 @@
+{
+  "checks": {
+    "selection": true,
+    "256_rows": true,
+    "32_groups_of_8": true,
+    "source_hashes": true,
+    "pairwise_predictions": true,
+    "point_regret_predictions": true,
+    "point_mae_predictions": true,
+    "calibrated_predictions": true,
+    "pairwise_metrics": true,
+    "point_regret_metrics": true,
+    "point_mae_metrics": true,
+    "calibrated_metrics": true,
+    "teacher_metrics": true,
+    "primary": true,
+    "teacher_predictions": true
+  },
+  "by_checkpoint": {
+    "pairwise": {
+      "12": [
+        0.0010153204202651978,
+        0.45833333333333337
+      ],
+      "48": [
+        0.0007681101560592651,
+        0.18452380952380948
+      ]
+    },
+    "point_regret": {
+      "12": [
+        0.001271069049835205,
+        0.30803571428571436
+      ],
+      "48": [
+        0.0006466060876846313,
+        0.23214285714285715
+      ]
+    },
+    "point_mae": {
+      "12": [
+        0.001271069049835205,
+        0.30505952380952384
+      ],
+      "48": [
+        0.0006277263164520264,
+        0.24404761904761907
+      ]
+    },
+    "calibrated": {
+      "12": [
+        0.00098322331905365,
+        0.4657738095238095
+      ],
+      "48": [
+        0.0008197948336601257,
+        0.18005952380952386
+      ]
+    },
+    "teacher": {
+      "12": [
+        0.00020185112953186035,
+        0.6875000000000001
+      ],
+      "48": [
+        0.0009668171405792236,
+        0.11755952380952388
+      ]
+    }
+  },
+  "tests_passed": 27,
+  "full_transformer_rerun": false
+}

@@ -40,9 +40,9 @@ def fit_rankers(rows):
     return models,selection
 
 
-def generate():
-    pools=prepare('data/bryant.txt');pool=torch.cat(pools[:3]);probe=pools[3][:32];target=pools[5][:32];rows=[]
-    for seed in range(15000,15012):
+def generate(path='data/bryant.txt', seeds=range(15000,15012)):
+    pools=prepare(path);pool=torch.cat(pools[:3]);probe=pools[3][:32];target=pools[5][:32];rows=[]
+    for seed in seeds:
         torch.manual_seed(seed);rng=np.random.default_rng(seed);m=TinyTransformer();o=optimizer(m);done=0
         def draw(n):return pool[rng.integers(len(pool),size=n)]
         for cp in [12,48]:
