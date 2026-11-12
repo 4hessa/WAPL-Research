@@ -79,3 +79,7 @@ Run `OPENBLAS_NUM_THREADS=1 python -m experiments.horizon_replication` for the A
 ## Horizon-16 utility student
 
 Run `OPENBLAS_NUM_THREADS=1 python -m experiments.utility_student` for reports 25–26. A five-feature Ridge student trained on Alice probe-simulation labels improves Brown target MAE over affine-calibrated update alignment, but does not improve ranking or top-two selection regret. Adding three weight features has no clear MAE benefit. Timings include feature extraction and teacher-label generation; no end-to-end compute savings are established. Brown target data are now exposed. See `results/student-audit.json` for the repeatability check.
+
+## Exploratory ranking diagnostic
+
+Run `OPENBLAS_NUM_THREADS=1 python -m experiments.ranking_diagnostic` for report 27. On the already exposed Brown target, about 93.6% of the student’s MSE reduction versus calibrated alignment is attributable to reduced state-level mean error. Within-state squared error also improves, but selection superiority is not established. Post-hoc seed-bootstrap intervals for regret and pair accuracy include zero. This diagnostic fits no new model and provides no independent confirmation.
