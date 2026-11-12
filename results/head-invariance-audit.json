@@ -1,0 +1,17 @@
+{
+  "checks": {
+    "full_rerun_byte_identical": true,
+    "source_hashes": true,
+    "16_rows": true,
+    "probability_error": true,
+    "loss_error": true,
+    "gradient_error": true,
+    "utility_error": true,
+    "raw_recomputed": true,
+    "corrected_recomputed": true,
+    "corrected_below_threshold": true
+  },
+  "tests_passed": 42,
+  "training_only": true,
+  "full_rerun": true
+}

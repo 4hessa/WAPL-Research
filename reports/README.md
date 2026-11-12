@@ -49,6 +49,8 @@
 | 43 | المرحلة الثالثة والأربعون: تجهيز تقييم عربي وإنجليزي ونموذج UTF-8 | [تحميل Word](43_multilingual_readiness_ar.docx) | [قراءة النص](43_multilingual_readiness_ar.md) |
 | 44 | المرحلة الرابعة والأربعون: بروتوكول الاختيار بالعربية والإنجليزية | [تحميل Word](44_multilingual_protocol_ar.docx) | [قراءة النص](44_multilingual_protocol_ar.md) |
 | 45 | المرحلة الخامسة والأربعون: نتائج الاختيار بالعربية والإنجليزية | [تحميل Word](45_multilingual_results_ar.docx) | [قراءة النص](45_multilingual_results_ar.md) |
+| 46 | المرحلة السادسة والأربعون: بروتوكول ثبات خصائص الأوزان في رأس Transformer | [تحميل Word](46_head_invariance_protocol_ar.docx) | [قراءة النص](46_head_invariance_protocol_ar.md) |
+| 47 | المرحلة السابعة والأربعون: تشخيص تمثيل الأوزان في رأس Transformer | [تحميل Word](47_head_invariance_results_ar.docx) | [قراءة النص](47_head_invariance_results_ar.md) |
 
 افتح ملف Word ثم اختر **Download raw file**.
 التقارير تصف حالة البحث عند صدورها، مع فصل النتائج الرئيسية والثانوية والحدود وحالة بيانات التقييم.
