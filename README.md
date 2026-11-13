@@ -151,3 +151,7 @@ Run `OPENBLAS_NUM_THREADS=1 python -m experiments.grouped_tuning` for report 51.
 ## Grouped tuning by selection regret
 
 Run `OPENBLAS_NUM_THREADS=1 python -m experiments.regret_tuning` for report 52. This post-hoc comparison changes alpha selection from MAE to top-two regret within the same seed-grouped folds; Ridge still fits squared error. It did not improve corrected-feature selection: Arabic corrected features remained worse than baseline, while English selected the same corrected model under both criteria. Direct update alignment had lower regret in both languages in these exposed records. The analysis repeated byte-identically and MAE-arm predictions matched report 51. This does not test a directly optimized ranking loss or establish policy efficiency.
+
+## Direct pairwise logistic ranking
+
+Run `OPENBLAS_NUM_THREADS=1 python -m experiments.pairwise_logistic` for report 53. Pairwise logistic fitting changes the learning objective itself, unlike alpha selection alone. On exposed records, corrected-feature ranking improved Arabic regret relative to the prior corrected Ridge model, but did not beat the ranker using baseline features alone. In English, adding corrected weights increased regret relative to that baseline ranker. Scores are ranking margins, not calibrated utilities; no score MAE is claimed. This exploratory, deterministic rerun does not establish independent weight-feature value or policy efficiency.
