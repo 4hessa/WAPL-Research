@@ -143,3 +143,7 @@ Run `OPENBLAS_NUM_THREADS=1 python -m experiments.corrected_features` for report
 ## Noise-control and regularization sensitivity
 
 Run `OPENBLAS_NUM_THREADS=1 python -m experiments.noise_sensitivity` for report 50. This post-hoc audit reuses stage-49 labels with 64 noise-feature draws per language, comparing tuned alpha with alpha fixed at the baseline value. Arabic noise-control performance is sensitive to regularization choice; no fixed-alpha noise draw beat corrected features. English corrected-feature MAE remained below all 64 noise draws in both modes, without establishing independent generalization or selection improvement. Noise-draw percentiles are not confidence intervals over independent datasets. The retrospective alpha sweep is diagnostic and must not replace the original held-out comparison.
+
+## Grouped tuning sensitivity
+
+Run `OPENBLAS_NUM_THREADS=1 python -m experiments.grouped_tuning` for report 51. Leave-one-model-seed-out tuning uses fit rows only, with fold-specific scaling and the same 64-row final fit set as the original holdout rule. On exposed Arabic labels, the baseline improved while corrected weight features did not, producing worse corrected-feature MAE relative to baseline. English corrected-feature MAE improved, while ranking and selection regret worsened. This post-hoc analysis tests sensitivity to tuning, not independent generalization; fold separation does not remove shared-corpus or shared-monitor dependence. Historical holdout metrics matched exactly and the complete analysis repeated byte-identically.
