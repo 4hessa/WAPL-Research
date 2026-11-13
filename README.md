@@ -155,3 +155,9 @@ Run `OPENBLAS_NUM_THREADS=1 python -m experiments.regret_tuning` for report 52. 
 ## Direct pairwise logistic ranking
 
 Run `OPENBLAS_NUM_THREADS=1 python -m experiments.pairwise_logistic` for report 53. Pairwise logistic fitting changes the learning objective itself, unlike alpha selection alone. On exposed records, corrected-feature ranking improved Arabic regret relative to the prior corrected Ridge model, but did not beat the ranker using baseline features alone. In English, adding corrected weights increased regret relative to that baseline ranker. Scores are ranking margins, not calibrated utilities; no score MAE is claimed. This exploratory, deterministic rerun does not establish independent weight-feature value or policy efficiency.
+
+## Prospective PUD transfer readiness
+
+Report [54](reports/54_pud_readiness_ar.docx) prepares UD Arabic/English PUD r2.15 without model scoring. Its 1,000 aligned sentence pairs form ten fixed parallel folds; exact-text checks found no matches against the prior prepared PADT/EWT splits, but do not exclude near duplicates or shared documents. The languages are translations, not independent samples. Both sources declare CC BY-SA 3.0, and the publisher recommends ten-fold cross-validation if used for training. Raw text remains excluded from Git.
+
+Restore with `python -m tools.prepare_pud`; freeze the existing rankers with `OPENBLAS_NUM_THREADS=1 python -m tools.freeze_pud_rankers`. The prospective design is in `research/pud-transfer-protocol.json`, the six frozen rankers in `research/pud-frozen-rankers.json`, and preparation checks in `results/pud-readiness-audit.json`. PUD outcomes have **not** been evaluated at this stage. This preparation is not a new efficacy result or an official UD parsing benchmark.

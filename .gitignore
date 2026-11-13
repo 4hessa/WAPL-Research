@@ -11,3 +11,6 @@ research/papers/*.txt
 
 # Third-party Universal Dependencies source snapshots (hashes are tracked).
 data/ud_raw/
+
+# Parallel UD preparation: texts stay local, metadata and folds are tracked.
+data/pud_raw/

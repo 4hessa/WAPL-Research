@@ -1,0 +1,61 @@
+{
+  "checks": {
+    "ten_equal_folds": true,
+    "disjoint_complete_folds": true,
+    "no_exact_overlap": true,
+    "ar_text_hash": true,
+    "ar_fold_0_partition": true,
+    "ar_fold_1_partition": true,
+    "ar_fold_2_partition": true,
+    "ar_fold_3_partition": true,
+    "ar_fold_4_partition": true,
+    "ar_fold_5_partition": true,
+    "ar_fold_6_partition": true,
+    "ar_fold_7_partition": true,
+    "ar_fold_8_partition": true,
+    "ar_fold_9_partition": true,
+    "ar_probe_minimum": true,
+    "en_text_hash": true,
+    "en_fold_0_partition": true,
+    "en_fold_1_partition": true,
+    "en_fold_2_partition": true,
+    "en_fold_3_partition": true,
+    "en_fold_4_partition": true,
+    "en_fold_5_partition": true,
+    "en_fold_6_partition": true,
+    "en_fold_7_partition": true,
+    "en_fold_8_partition": true,
+    "en_fold_9_partition": true,
+    "en_probe_minimum": true,
+    "historical_ranker_predictions": true,
+    "ranker_source_hashes": true
+  },
+  "fold_complete_byte_chunks": {
+    "ar": [
+      270,
+      268,
+      256,
+      266,
+      266,
+      258,
+      248,
+      265,
+      260,
+      263
+    ],
+    "en": [
+      174,
+      179,
+      168,
+      175,
+      169,
+      170,
+      158,
+      176,
+      168,
+      171
+    ]
+  },
+  "tests_passed": 51,
+  "new_source_model_evaluation": false
+}

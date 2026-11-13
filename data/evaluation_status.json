@@ -12,5 +12,14 @@
       "test": "evaluated in stage 45; exposed; not read by stage 49"
     }
   },
-  "preparation_manifest_status": "Historical snapshot from stage 43; see this ledger for current exposure"
+  "preparation_manifest_status": "Historical snapshot from stage 43; see this ledger for current exposure",
+  "additional_sources": {
+    "PUD_ar_en": {
+      "stage": 54,
+      "status": "downloaded and integrity/overlap/fold checks only; no model scoring",
+      "parallel_translations": true,
+      "folds": 10,
+      "protocol": "research/pud-transfer-protocol.json"
+    }
+  }
 }
