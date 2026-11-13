@@ -1,0 +1,13 @@
+{
+  "checks": {
+    "rerun_byte_identical": true,
+    "source_hashes": true,
+    "ar_tuned": true,
+    "ar_fixed": true,
+    "en_tuned": true,
+    "en_fixed": true
+  },
+  "tests_passed": 44,
+  "new_transformer_runs": 0,
+  "noise_seeds_are_not_independent_data_samples": true
+}
