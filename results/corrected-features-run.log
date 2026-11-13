@@ -1,0 +1,54 @@
+ar fit labels complete
+ar tune labels complete
+ar validate labels complete
+en fit labels complete
+en tune labels complete
+en validate labels complete
+{
+  "ar": {
+    "corrected minus baseline": {
+      "mae_difference": -9.077366720926157e-05,
+      "exploratory_ci95": [
+        -0.00034320962293127576,
+        0.0001852099398321003
+      ]
+    },
+    "corrected minus raw": {
+      "mae_difference": -7.184065156967922e-05,
+      "exploratory_ci95": [
+        -0.00017290431835049715,
+        3.784716970915811e-05
+      ]
+    },
+    "corrected minus noise": {
+      "mae_difference": 0.0009449791016136722,
+      "exploratory_ci95": [
+        0.0005643378595651233,
+        0.001352050839032678
+      ]
+    }
+  },
+  "en": {
+    "corrected minus baseline": {
+      "mae_difference": -0.0002164039188257362,
+      "exploratory_ci95": [
+        -0.00034138303625314584,
+        -8.495480794959448e-05
+      ]
+    },
+    "corrected minus raw": {
+      "mae_difference": -5.0820394853784846e-05,
+      "exploratory_ci95": [
+        -0.0001113298258494972,
+        1.8520985887090067e-05
+      ]
+    },
+    "corrected minus noise": {
+      "mae_difference": -0.00018743706693330535,
+      "exploratory_ci95": [
+        -0.0003004314021979076,
+        -6.939241487421456e-05
+      ]
+    }
+  }
+}

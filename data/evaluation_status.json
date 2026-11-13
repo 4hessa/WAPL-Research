@@ -1,15 +1,15 @@
 {
-  "stage": 45,
+  "stage": 49,
   "datasets": {
     "ar": {
       "train": "used for training",
-      "dev": "prepared only; no model evaluation in stages 43\u201345",
-      "test": "evaluated in stage 45; exposed for future development"
+      "dev": "128 chunks evaluated as utility-validation monitor in exploratory stage 49; exposed",
+      "test": "evaluated in stage 45; exposed; not read by stage 49"
     },
     "en": {
       "train": "used for training",
-      "dev": "prepared only; no model evaluation in stages 43\u201345",
-      "test": "evaluated in stage 45; exposed for future development"
+      "dev": "128 chunks evaluated as utility-validation monitor in exploratory stage 49; exposed",
+      "test": "evaluated in stage 45; exposed; not read by stage 49"
     }
   },
   "preparation_manifest_status": "Historical snapshot from stage 43; see this ledger for current exposure"

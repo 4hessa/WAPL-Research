@@ -51,6 +51,8 @@
 | 45 | المرحلة الخامسة والأربعون: نتائج الاختيار بالعربية والإنجليزية | [تحميل Word](45_multilingual_results_ar.docx) | [قراءة النص](45_multilingual_results_ar.md) |
 | 46 | المرحلة السادسة والأربعون: بروتوكول ثبات خصائص الأوزان في رأس Transformer | [تحميل Word](46_head_invariance_protocol_ar.docx) | [قراءة النص](46_head_invariance_protocol_ar.md) |
 | 47 | المرحلة السابعة والأربعون: تشخيص تمثيل الأوزان في رأس Transformer | [تحميل Word](47_head_invariance_results_ar.docx) | [قراءة النص](47_head_invariance_results_ar.md) |
+| 48 | المرحلة الثامنة والأربعون: بروتوكول تنبؤ المنفعة بخصائص أوزان مصححة | [تحميل Word](48_corrected_features_protocol_ar.docx) | [قراءة النص](48_corrected_features_protocol_ar.md) |
+| 49 | المرحلة التاسعة والأربعون: نتائج تنبؤ المنفعة بخصائص أوزان مصححة | [تحميل Word](49_corrected_features_results_ar.docx) | [قراءة النص](49_corrected_features_results_ar.md) |
 
 افتح ملف Word ثم اختر **Download raw file**.
 التقارير تصف حالة البحث عند صدورها، مع فصل النتائج الرئيسية والثانوية والحدود وحالة بيانات التقييم.
