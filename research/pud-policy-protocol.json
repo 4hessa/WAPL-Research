@@ -1,0 +1,149 @@
+{
+  "stage": 57,
+  "date": "2026-11-18",
+  "status": "design_fixed_before_new_policy_runs_on_previously_exposed_PUD",
+  "purpose": "exploratory end-to-end policy comparison, not independent confirmation",
+  "languages": [
+    "ar",
+    "en"
+  ],
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "partition": "stage-55 partition: target i, probe (i+1)%10, candidates remaining eight; original source-index text order",
+  "probe": "first 64 complete chunks; refreshed gradient at every alignment decision; never updated on",
+  "target": "all complete chunks; evaluation only before and after each run; never supplied to selection",
+  "model": {
+    "name": "ByteTransformer",
+    "parameters": 35776,
+    "dtype": "float32",
+    "device": "cpu",
+    "threads": 1,
+    "deterministic_algorithms": true
+  },
+  "optimizer": {
+    "name": "AdamW",
+    "lr": 0.001,
+    "weight_decay": 0.01
+  },
+  "seeds": [
+    28000,
+    28001,
+    28002,
+    28003,
+    28004,
+    28005,
+    28006,
+    28007
+  ],
+  "warmup_updates": 32,
+  "warmup_batch_chunks": 4,
+  "schedule": {
+    "length": 20000,
+    "candidates_per_step": 4,
+    "candidate_chunks": 1,
+    "generator": "numpy default_rng(model_seed); warmup draws then candidate matrix then uniform choices; same table for all arms and repeats within fold/seed",
+    "sampling": "with replacement",
+    "hash": "candidate indices and random choices bytes"
+  },
+  "arms": [
+    "random",
+    "alignment"
+  ],
+  "alignment_score": "-dot(canonical_head(candidate_AdamW_delta), current_probe_gradient)",
+  "alignment_execution": "At each step compute probe gradient on a disposable clone. Independently clone current model and optimizer for each of four candidate updates; score actual deltas; retain the winning updated model and optimizer without a second update. All candidates start at the same current state.",
+  "random_execution": "Clone current model and optimizer and apply one update on the prescheduled uniformly chosen candidate.",
+  "tie_rule": "first candidate index attaining maximum score",
+  "nonfinite_rule": "abort and report incomplete; no fallback or silent exclusion",
+  "budgets": {
+    "seconds": 3.0,
+    "time_repeats": 2,
+    "fixed_updates": 128,
+    "fixed_repeats": 1
+  },
+  "clock": "time.perf_counter; start after initial state clone; include candidate indexing, per-step clones, gradients, trial updates, scoring and winner selection",
+  "deadline_rule": "Check before each step and after full decision. Accept winner only if decision completes within budget. Otherwise return previous accepted model and optimizer. Record wall-clock overrun, attempted steps and accepted updates.",
+  "excluded_from_policy_clock": [
+    "source loading",
+    "32 common warmup updates",
+    "schedule generation",
+    "initial state clone",
+    "initial and final target evaluation"
+  ],
+  "run_order": "languages ar then en; folds 0..9; seeds ascending; modes updates then time if (fold+seed)%2==0 else reversed; repeats ascending; arms random then alignment if (fold+seed+repeat)%2==0 else reversed",
+  "runs": {
+    "time": 640,
+    "fixed_updates": 320,
+    "total": 960,
+    "nominal_timed_seconds": 1920
+  },
+  "metric": "target cross-entropy per byte transition in natural-log units; evaluate batches of at most 64 chunks",
+  "primary": "Arabic timed final loss: alignment minus random",
+  "secondary": [
+    "English timed same contrast",
+    "Arabic fixed-update same contrast",
+    "English fixed-update same contrast"
+  ],
+  "aggregation": "average timing repeats within fold/seed/arm; average ten folds within seed/arm; compute eight paired seed differences; fixed mode has one repeat",
+  "bootstrap": {
+    "seed": 5701,
+    "resamples": 10000,
+    "confidence": 0.95,
+    "unit": "paired model seed after fold and repeat averaging"
+  },
+  "decision": "primary upper confidence bound <0 suggests lower loss under this local policy timer; lower bound >0 suggests worse loss; interval containing zero is inconclusive, not equivalence",
+  "report": [
+    "all final losses",
+    "per-seed contrasts",
+    "accepted update counts",
+    "actual seconds and overrun",
+    "schedule hashes",
+    "source/protocol/code hashes",
+    "software versions",
+    "hardware and thread configuration",
+    "total experiment wall time"
+  ],
+  "failure_rules": [
+    "No adaptive budget extension, retuning, selective fold removal or outcome-based reruns",
+    "Abort on schedule exhaustion or missing cases; do not summarize a partial grid as complete",
+    "Document operational interruptions; any resumed/repeated run must be identified and all attempts retained"
+  ],
+  "required_tests_before_execution": [
+    "hand-computed alignment sign and stable tie-breaking",
+    "candidate trials do not mutate current or other candidate states",
+    "winner includes matching optimizer state without duplicate update",
+    "fake clock rejects late decisions and accepts on-time decisions",
+    "target data inaccessible to policy selector",
+    "aggregation over fold and repeat respects seed pairing",
+    "finite values, complete grid, matching schedules and source hashes"
+  ],
+  "limitations": [
+    "PUD already exposed; new seeds do not make the corpus independent",
+    "Parallel languages are not independent replications",
+    "Training folds overlap",
+    "Eight seeds yield conditional uncertainty; no power calculation",
+    "Short CPU budgets are hardware-dependent and timing is not byte-reproducible",
+    "Random arm uses rollback cloning and is not the fastest possible random trainer",
+    "No global compute savings or large-model claim",
+    "Alignment uses extra probe supervision; this is a policy comparison, not an isolated weight-feature ablation"
+  ],
+  "input_sha256": {
+    "data/pud_sources.json": "e0278bbf9684b9b26d888ecc1511b0d419015093585a66e0056af83d4bdf926e",
+    "data/evaluation_status.json": "9b77001e0a8b5f117cbedd66d0dd71db833d40f4d2ecf26e5bc79ce7b463dd94",
+    "experiments/pud_transfer.py": "bb8dee726daa265ac89aaf62a8485a16af2f1cb1b6c9027d16f383520d50e115",
+    "experiments/multilingual_readiness.py": "b2b1e2622381aa66a5158e6d4f68a9d2dd3fd0286d6a30c57e98b854948caa25",
+    "experiments/multilingual_policy.py": "a6cab872043bb777cea3230653880e3ce270f2654797c18070a13b525f68b296",
+    "experiments/head_invariance.py": "bdd6168502f60fd0f87e8c90726fe859b6f4ddbfdeae78c71cfa8daeb73f0c40",
+    "data/pud_raw/ar_sentences.jsonl": "fc547100b7adf1fc4149b09403688f4022b919248a35b8a9c93b7b92241a258c",
+    "data/pud_raw/en_sentences.jsonl": "ecc42322fda11bf36e64012d72c7c327364747d19cea6d79c00314fa29ca21bf"
+  }
+}
