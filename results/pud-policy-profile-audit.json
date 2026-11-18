@@ -1,0 +1,65 @@
+{
+  "stage": 59,
+  "status": "passed",
+  "states": 8,
+  "measured_pairs": 48,
+  "winning_positions_matching_stage58": 48,
+  "schedules_verified": 8,
+  "stage58_fixed_alignment_first_choices": [
+    {
+      "language": "ar",
+      "fold": 0,
+      "seed": 28000,
+      "winner": 3
+    },
+    {
+      "language": "ar",
+      "fold": 0,
+      "seed": 28001,
+      "winner": 1
+    },
+    {
+      "language": "ar",
+      "fold": 5,
+      "seed": 28000,
+      "winner": 3
+    },
+    {
+      "language": "ar",
+      "fold": 5,
+      "seed": 28001,
+      "winner": 2
+    },
+    {
+      "language": "en",
+      "fold": 0,
+      "seed": 28000,
+      "winner": 2
+    },
+    {
+      "language": "en",
+      "fold": 0,
+      "seed": 28001,
+      "winner": 1
+    },
+    {
+      "language": "en",
+      "fold": 5,
+      "seed": 28000,
+      "winner": 3
+    },
+    {
+      "language": "en",
+      "fold": 5,
+      "seed": 28001,
+      "winner": 0
+    }
+  ],
+  "balanced_order_per_state": true,
+  "all_component_sums_match_ns": true,
+  "aggregate_statistics_recomputed": true,
+  "provenance_verified": true,
+  "state_parity_basis": "recorded per-pair check of winners, model parameters and optimizer state",
+  "result_sha256": "878dffa713c16fa8087c5d00f9880a8da64a4206ec1e174a0ad696b95714e1b9",
+  "audit_script_sha256": "369af8ee332a28590b8615166f99bb40abec8ba9dbe13481bdacda50fe15ef64"
+}
