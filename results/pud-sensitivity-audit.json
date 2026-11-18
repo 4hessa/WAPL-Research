@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "byte_identical_rerun": true,
+  "source_hashes_verified": true,
+  "grids_and_omission_means_verified": true,
+  "choice_overlap_verified": true,
+  "new_transformer_runs": 0,
+  "new_hypothesis_tests": 0,
+  "result_sha256": "b4856c776ceb4a18da93c7e658c87ae6ba14b8800dd500d221ad71d68ee4941d"
+}
