@@ -1,0 +1,21 @@
+{
+  "stage": 60,
+  "date": "2026-11-18",
+  "design": "Exploratory pilot on the eight previously examined stage-59 PUD states",
+  "languages": ["ar", "en"],
+  "folds": [0, 5],
+  "seeds": [28000, 28001],
+  "arms": ["reuse4", "fresh", "random"],
+  "budget_seconds": 3.0,
+  "timing_repeats": 3,
+  "refresh_interval": 4,
+  "drift_steps": 16,
+  "data": "Use the stage-58 fold partition, 64-chunk probe, complete target chunks, and paired 20000-by-4 schedule. Rebuild the stage-58 32-update warmup and verify schedule hashes. Use the same warmed model and optimizer for all runs of a state.",
+  "policies": "fresh and random use the stage-58 selector. reuse4 recomputes the 64-chunk probe gradient at step 0 and every fourth accepted step. At each step all four candidate AdamW deltas and scores are computed using the current model and optimizer. Cache scope is a single rollout. First index wins score ties.",
+  "timing": "Use the stage-58 timer, including gradient refreshes, trial updates, and selection. Accept only completed in-budget steps. Record actual and overrun seconds, attempts, and accepted updates. Setup, target evaluation, and the separate choice diagnostic are outside the policy timer.",
+  "order": "Enumerate language, fold, seed in the listed order. In each of three repeats rotate the listed arms left by (zero-based state index + repeat) modulo three. Measure all three arms afresh.",
+  "endpoints": "Per language describe final target loss in nats per byte transition, update count, and paired reuse4 minus fresh and reuse4 minus random contrasts. Average three repeats in a state then equally average four states per language. Smaller loss is better. Report each state's means or contrasts. No significance test or confidence interval with only two model seeds.",
+  "choice_diagnostic": "Advance one separate 16-step reuse4 trajectory per state. At each pre-update state evaluate both the cached and freshly recomputed gradient policies on the same four candidates. Record age (step modulo 4), chosen indices and agreement; advance only the reuse4 branch. At all age-zero steps require exact winner, model and optimizer equality. Tabulate counts by age. Eight trajectories give 32 observations per age.",
+  "execution": "Single-thread CPU, deterministic Torch algorithms. Abort on nonfinite metrics, missing coverage, or unverifiable schedules. Preserve recorded attempts and identify any interruption. No parameter sweep, early stopping, or selective reruns based on outcomes.",
+  "scope": "72 timed runs and 128 separate decision comparisons. Timing repetitions share warmup, schedules, and targets. Folds overlap in training and languages are parallel translations. Inferences are descriptive and specific to this pilot."
+}
