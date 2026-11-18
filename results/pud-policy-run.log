@@ -1,0 +1,238 @@
+ar fold=0 seed=28000: 6/960 runs; elapsed=26.7s
+ar fold=0 seed=28001: 12/960 runs; elapsed=50.9s
+ar fold=0 seed=28002: 18/960 runs; elapsed=75.1s
+ar fold=0 seed=28003: 24/960 runs; elapsed=99.4s
+ar fold=0 seed=28004: 30/960 runs; elapsed=123.9s
+ar fold=0 seed=28005: 36/960 runs; elapsed=148.3s
+ar fold=0 seed=28006: 42/960 runs; elapsed=172.6s
+ar fold=0 seed=28007: 48/960 runs; elapsed=197.1s
+ar fold=1 seed=28000: 54/960 runs; elapsed=221.7s
+ar fold=1 seed=28001: 60/960 runs; elapsed=246.5s
+ar fold=1 seed=28002: 66/960 runs; elapsed=271.6s
+ar fold=1 seed=28003: 72/960 runs; elapsed=296.3s
+ar fold=1 seed=28004: 78/960 runs; elapsed=321.5s
+ar fold=1 seed=28005: 84/960 runs; elapsed=346.3s
+ar fold=1 seed=28006: 90/960 runs; elapsed=370.9s
+ar fold=1 seed=28007: 96/960 runs; elapsed=395.6s
+ar fold=2 seed=28000: 102/960 runs; elapsed=420.0s
+ar fold=2 seed=28001: 108/960 runs; elapsed=444.9s
+ar fold=2 seed=28002: 114/960 runs; elapsed=469.9s
+ar fold=2 seed=28003: 120/960 runs; elapsed=494.8s
+ar fold=2 seed=28004: 126/960 runs; elapsed=519.5s
+ar fold=2 seed=28005: 132/960 runs; elapsed=543.9s
+ar fold=2 seed=28006: 138/960 runs; elapsed=568.6s
+ar fold=2 seed=28007: 144/960 runs; elapsed=593.9s
+ar fold=3 seed=28000: 150/960 runs; elapsed=619.1s
+ar fold=3 seed=28001: 156/960 runs; elapsed=644.6s
+ar fold=3 seed=28002: 162/960 runs; elapsed=669.7s
+ar fold=3 seed=28003: 168/960 runs; elapsed=694.5s
+ar fold=3 seed=28004: 174/960 runs; elapsed=718.8s
+ar fold=3 seed=28005: 180/960 runs; elapsed=743.2s
+ar fold=3 seed=28006: 186/960 runs; elapsed=768.0s
+ar fold=3 seed=28007: 192/960 runs; elapsed=792.8s
+ar fold=4 seed=28000: 198/960 runs; elapsed=817.7s
+ar fold=4 seed=28001: 204/960 runs; elapsed=843.4s
+ar fold=4 seed=28002: 210/960 runs; elapsed=868.4s
+ar fold=4 seed=28003: 216/960 runs; elapsed=893.7s
+ar fold=4 seed=28004: 222/960 runs; elapsed=918.4s
+ar fold=4 seed=28005: 228/960 runs; elapsed=943.6s
+ar fold=4 seed=28006: 234/960 runs; elapsed=968.6s
+ar fold=4 seed=28007: 240/960 runs; elapsed=993.8s
+ar fold=5 seed=28000: 246/960 runs; elapsed=1018.5s
+ar fold=5 seed=28001: 252/960 runs; elapsed=1043.3s
+ar fold=5 seed=28002: 258/960 runs; elapsed=1068.2s
+ar fold=5 seed=28003: 264/960 runs; elapsed=1093.6s
+ar fold=5 seed=28004: 270/960 runs; elapsed=1119.6s
+ar fold=5 seed=28005: 276/960 runs; elapsed=1145.1s
+ar fold=5 seed=28006: 282/960 runs; elapsed=1170.2s
+ar fold=5 seed=28007: 288/960 runs; elapsed=1194.8s
+ar fold=6 seed=28000: 294/960 runs; elapsed=1219.8s
+ar fold=6 seed=28001: 300/960 runs; elapsed=1244.9s
+ar fold=6 seed=28002: 306/960 runs; elapsed=1269.9s
+ar fold=6 seed=28003: 312/960 runs; elapsed=1296.3s
+ar fold=6 seed=28004: 318/960 runs; elapsed=1321.8s
+ar fold=6 seed=28005: 324/960 runs; elapsed=1347.1s
+ar fold=6 seed=28006: 330/960 runs; elapsed=1372.5s
+ar fold=6 seed=28007: 336/960 runs; elapsed=1398.8s
+ar fold=7 seed=28000: 342/960 runs; elapsed=1424.6s
+ar fold=7 seed=28001: 348/960 runs; elapsed=1450.5s
+ar fold=7 seed=28002: 354/960 runs; elapsed=1475.4s
+ar fold=7 seed=28003: 360/960 runs; elapsed=1500.0s
+ar fold=7 seed=28004: 366/960 runs; elapsed=1524.7s
+ar fold=7 seed=28005: 372/960 runs; elapsed=1549.5s
+ar fold=7 seed=28006: 378/960 runs; elapsed=1574.2s
+ar fold=7 seed=28007: 384/960 runs; elapsed=1599.3s
+ar fold=8 seed=28000: 390/960 runs; elapsed=1623.5s
+ar fold=8 seed=28001: 396/960 runs; elapsed=1648.5s
+ar fold=8 seed=28002: 402/960 runs; elapsed=1673.4s
+ar fold=8 seed=28003: 408/960 runs; elapsed=1699.3s
+ar fold=8 seed=28004: 414/960 runs; elapsed=1724.4s
+ar fold=8 seed=28005: 420/960 runs; elapsed=1750.1s
+ar fold=8 seed=28006: 426/960 runs; elapsed=1774.8s
+ar fold=8 seed=28007: 432/960 runs; elapsed=1799.7s
+ar fold=9 seed=28000: 438/960 runs; elapsed=1825.0s
+ar fold=9 seed=28001: 444/960 runs; elapsed=1849.8s
+ar fold=9 seed=28002: 450/960 runs; elapsed=1874.8s
+ar fold=9 seed=28003: 456/960 runs; elapsed=1899.7s
+ar fold=9 seed=28004: 462/960 runs; elapsed=1924.3s
+ar fold=9 seed=28005: 468/960 runs; elapsed=1948.8s
+ar fold=9 seed=28006: 474/960 runs; elapsed=1973.7s
+ar fold=9 seed=28007: 480/960 runs; elapsed=1998.5s
+en fold=0 seed=28000: 486/960 runs; elapsed=2023.2s
+en fold=0 seed=28001: 492/960 runs; elapsed=2048.3s
+en fold=0 seed=28002: 498/960 runs; elapsed=2072.6s
+en fold=0 seed=28003: 504/960 runs; elapsed=2097.0s
+en fold=0 seed=28004: 510/960 runs; elapsed=2121.9s
+en fold=0 seed=28005: 516/960 runs; elapsed=2147.1s
+en fold=0 seed=28006: 522/960 runs; elapsed=2172.2s
+en fold=0 seed=28007: 528/960 runs; elapsed=2197.4s
+en fold=1 seed=28000: 534/960 runs; elapsed=2222.8s
+en fold=1 seed=28001: 540/960 runs; elapsed=2247.7s
+en fold=1 seed=28002: 546/960 runs; elapsed=2272.5s
+en fold=1 seed=28003: 552/960 runs; elapsed=2297.5s
+en fold=1 seed=28004: 558/960 runs; elapsed=2321.9s
+en fold=1 seed=28005: 564/960 runs; elapsed=2346.9s
+en fold=1 seed=28006: 570/960 runs; elapsed=2371.5s
+en fold=1 seed=28007: 576/960 runs; elapsed=2396.0s
+en fold=2 seed=28000: 582/960 runs; elapsed=2421.0s
+en fold=2 seed=28001: 588/960 runs; elapsed=2445.0s
+en fold=2 seed=28002: 594/960 runs; elapsed=2469.2s
+en fold=2 seed=28003: 600/960 runs; elapsed=2493.9s
+en fold=2 seed=28004: 606/960 runs; elapsed=2518.6s
+en fold=2 seed=28005: 612/960 runs; elapsed=2543.7s
+en fold=2 seed=28006: 618/960 runs; elapsed=2568.0s
+en fold=2 seed=28007: 624/960 runs; elapsed=2593.3s
+en fold=3 seed=28000: 630/960 runs; elapsed=2618.2s
+en fold=3 seed=28001: 636/960 runs; elapsed=2642.4s
+en fold=3 seed=28002: 642/960 runs; elapsed=2667.0s
+en fold=3 seed=28003: 648/960 runs; elapsed=2691.3s
+en fold=3 seed=28004: 654/960 runs; elapsed=2716.1s
+en fold=3 seed=28005: 660/960 runs; elapsed=2742.0s
+en fold=3 seed=28006: 666/960 runs; elapsed=2767.3s
+en fold=3 seed=28007: 672/960 runs; elapsed=2792.7s
+en fold=4 seed=28000: 678/960 runs; elapsed=2817.2s
+en fold=4 seed=28001: 684/960 runs; elapsed=2841.7s
+en fold=4 seed=28002: 690/960 runs; elapsed=2866.3s
+en fold=4 seed=28003: 696/960 runs; elapsed=2890.9s
+en fold=4 seed=28004: 702/960 runs; elapsed=2915.1s
+en fold=4 seed=28005: 708/960 runs; elapsed=2939.1s
+en fold=4 seed=28006: 714/960 runs; elapsed=2963.1s
+en fold=4 seed=28007: 720/960 runs; elapsed=2987.6s
+en fold=5 seed=28000: 726/960 runs; elapsed=3011.8s
+en fold=5 seed=28001: 732/960 runs; elapsed=3036.4s
+en fold=5 seed=28002: 738/960 runs; elapsed=3061.0s
+en fold=5 seed=28003: 744/960 runs; elapsed=3086.0s
+en fold=5 seed=28004: 750/960 runs; elapsed=3110.5s
+en fold=5 seed=28005: 756/960 runs; elapsed=3135.4s
+en fold=5 seed=28006: 762/960 runs; elapsed=3160.5s
+en fold=5 seed=28007: 768/960 runs; elapsed=3185.2s
+en fold=6 seed=28000: 774/960 runs; elapsed=3209.7s
+en fold=6 seed=28001: 780/960 runs; elapsed=3234.8s
+en fold=6 seed=28002: 786/960 runs; elapsed=3259.6s
+en fold=6 seed=28003: 792/960 runs; elapsed=3284.1s
+en fold=6 seed=28004: 798/960 runs; elapsed=3308.8s
+en fold=6 seed=28005: 804/960 runs; elapsed=3333.9s
+en fold=6 seed=28006: 810/960 runs; elapsed=3358.2s
+en fold=6 seed=28007: 816/960 runs; elapsed=3383.0s
+en fold=7 seed=28000: 822/960 runs; elapsed=3407.4s
+en fold=7 seed=28001: 828/960 runs; elapsed=3432.1s
+en fold=7 seed=28002: 834/960 runs; elapsed=3456.6s
+en fold=7 seed=28003: 840/960 runs; elapsed=3480.9s
+en fold=7 seed=28004: 846/960 runs; elapsed=3505.8s
+en fold=7 seed=28005: 852/960 runs; elapsed=3530.0s
+en fold=7 seed=28006: 858/960 runs; elapsed=3554.7s
+en fold=7 seed=28007: 864/960 runs; elapsed=3579.1s
+en fold=8 seed=28000: 870/960 runs; elapsed=3603.8s
+en fold=8 seed=28001: 876/960 runs; elapsed=3629.5s
+en fold=8 seed=28002: 882/960 runs; elapsed=3654.7s
+en fold=8 seed=28003: 888/960 runs; elapsed=3679.8s
+en fold=8 seed=28004: 894/960 runs; elapsed=3704.8s
+en fold=8 seed=28005: 900/960 runs; elapsed=3729.6s
+en fold=8 seed=28006: 906/960 runs; elapsed=3754.7s
+en fold=8 seed=28007: 912/960 runs; elapsed=3779.6s
+en fold=9 seed=28000: 918/960 runs; elapsed=3804.4s
+en fold=9 seed=28001: 924/960 runs; elapsed=3829.4s
+en fold=9 seed=28002: 930/960 runs; elapsed=3854.0s
+en fold=9 seed=28003: 936/960 runs; elapsed=3878.5s
+en fold=9 seed=28004: 942/960 runs; elapsed=3903.4s
+en fold=9 seed=28005: 948/960 runs; elapsed=3927.8s
+en fold=9 seed=28006: 954/960 runs; elapsed=3952.5s
+en fold=9 seed=28007: 960/960 runs; elapsed=3976.8s
+{
+  "ar": {
+    "time": {
+      "difference": 0.9134190467031753,
+      "per_seed_difference": [
+        0.8597462378902434,
+        0.8317489301610856,
+        1.0427296535952304,
+        0.934518409023156,
+        0.9407294540980555,
+        0.9533736552593484,
+        0.9046936753745816,
+        0.8398123582237011
+      ],
+      "ci95": [
+        0.870606776135305,
+        0.9617527955083518
+      ],
+      "role": "primary"
+    },
+    "updates": {
+      "difference": -0.00426992019468575,
+      "per_seed_difference": [
+        -0.005229250240407213,
+        -0.0019367636161777835,
+        -0.007760145405414365,
+        -0.0027664481520095485,
+        -0.0032277740320547643,
+        -0.0035308785728265235,
+        -0.003851336603525768,
+        -0.005856764935070036
+      ],
+      "ci95": [
+        -0.005590015440355728,
+        -0.003129018325336655
+      ],
+      "role": "secondary_diagnostic"
+    }
+  },
+  "en": {
+    "time": {
+      "difference": 0.5952997822191892,
+      "per_seed_difference": [
+        0.615240286494239,
+        0.5814541722303588,
+        0.5673686465448582,
+        0.5928032912765979,
+        0.6029765376332876,
+        0.5836313367598338,
+        0.6013506802803348,
+        0.6175733065340041
+      ],
+      "ci95": [
+        0.5838014252091592,
+        0.6061889508282906
+      ],
+      "role": "secondary_diagnostic"
+    },
+    "updates": {
+      "difference": -0.011646271116648454,
+      "per_seed_difference": [
+        -0.01077823247947407,
+        -0.014087440173728982,
+        -0.012254121085716108,
+        -0.008694307003768387,
+        -0.01427958441429622,
+        -0.00624955329769783,
+        -0.013589760085470637,
+        -0.013237170393035402
+      ],
+      "ci95": [
+        -0.013324166652468328,
+        -0.009661008341633415
+      ],
+      "role": "secondary_diagnostic"
+    }
+  }
+}

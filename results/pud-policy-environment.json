@@ -1,0 +1,25 @@
+{
+  "status": "complete",
+  "sha256": {
+    "data/pud_sources.json": "e0278bbf9684b9b26d888ecc1511b0d419015093585a66e0056af83d4bdf926e",
+    "data/evaluation_status.json": "9b77001e0a8b5f117cbedd66d0dd71db833d40f4d2ecf26e5bc79ce7b463dd94",
+    "experiments/pud_transfer.py": "bb8dee726daa265ac89aaf62a8485a16af2f1cb1b6c9027d16f383520d50e115",
+    "experiments/multilingual_readiness.py": "b2b1e2622381aa66a5158e6d4f68a9d2dd3fd0286d6a30c57e98b854948caa25",
+    "experiments/multilingual_policy.py": "a6cab872043bb777cea3230653880e3ce270f2654797c18070a13b525f68b296",
+    "experiments/head_invariance.py": "bdd6168502f60fd0f87e8c90726fe859b6f4ddbfdeae78c71cfa8daeb73f0c40",
+    "data/pud_raw/ar_sentences.jsonl": "fc547100b7adf1fc4149b09403688f4022b919248a35b8a9c93b7b92241a258c",
+    "data/pud_raw/en_sentences.jsonl": "ecc42322fda11bf36e64012d72c7c327364747d19cea6d79c00314fa29ca21bf",
+    "research/pud-policy-protocol.json": "31168ca2bf21d00da901a4038197a042fcf44f221808adfa56fb477a7648e3e2",
+    "experiments/pud_policy.py": "e2af6d11cb3a21da0c6cb6398656605ff4ef512999847d90251ea92b0e9c972c",
+    "tests/test_pud_policy.py": "1975003dd5b40e29a961baa4325b664bb5e86819d63ae4c6a9c294372bcc5b53"
+  },
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "torch": "2.5.1+cpu",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "cpu": "model name\t: AMD EPYC 9V74 80-Core Processor",
+  "torch_threads": 1,
+  "started_utc": "2026-11-18T08:57:51Z",
+  "protocol_commit": "bf946036783ceffaeff5b4ae1664a1e341211eea",
+  "interruptions": []
+}

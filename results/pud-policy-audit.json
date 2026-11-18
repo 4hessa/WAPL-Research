@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "records": 960,
+  "tests": 62,
+  "source_and_record_hashes_verified": true,
+  "frozen_protocol_verified": true,
+  "coverage_from_sentences_verified": true,
+  "grid_order_and_schedules_verified": true,
+  "random_choice_sequences_verified": true,
+  "paired_metrics_and_bootstrap_verified": true,
+  "timing_training_rerun": false,
+  "result_sha256": "f336175d0ee9b20e94594ecaac0469e59a80ae2679d2e2c09a22785f12e0b045"
+}
