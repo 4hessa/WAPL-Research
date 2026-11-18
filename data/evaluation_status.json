@@ -15,8 +15,8 @@
   "preparation_manifest_status": "Historical snapshot from stage 43; see this ledger for current exposure",
   "additional_sources": {
     "PUD_ar_en": {
-      "stage": 54,
-      "status": "downloaded and integrity/overlap/fold checks only; no model scoring",
+      "stage": 55,
+      "status": "all ten PUD folds used in model utility evaluation; exposed for subsequent development",
       "parallel_translations": true,
       "folds": 10,
       "protocol": "research/pud-transfer-protocol.json"

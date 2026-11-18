@@ -1,0 +1,58 @@
+ar fold 0 complete
+ar fold 1 complete
+ar fold 2 complete
+ar fold 3 complete
+ar fold 4 complete
+ar fold 5 complete
+ar fold 6 complete
+ar fold 7 complete
+ar fold 8 complete
+ar fold 9 complete
+en fold 0 complete
+en fold 1 complete
+en fold 2 complete
+en fold 3 complete
+en fold 4 complete
+en fold 5 complete
+en fold 6 complete
+en fold 7 complete
+en fold 8 complete
+en fold 9 complete
+{
+  "ar": {
+    "corrected minus baseline": {
+      "regret_difference": 0.00012643337249755858,
+      "ci95": [
+        5.808025598526e-05,
+        0.00019354224205017087
+      ],
+      "role": "primary"
+    },
+    "corrected minus alignment": {
+      "regret_difference": 0.00022108256816864014,
+      "ci95": [
+        0.00010282918810844421,
+        0.00035366941243410106
+      ],
+      "role": "secondary"
+    }
+  },
+  "en": {
+    "corrected minus baseline": {
+      "regret_difference": 2.692490816116333e-05,
+      "ci95": [
+        -4.510954022407461e-07,
+        6.257921457290649e-05
+      ],
+      "role": "secondary"
+    },
+    "corrected minus alignment": {
+      "regret_difference": 0.0001732856035232544,
+      "ci95": [
+        0.00012247536331415178,
+        0.00023045986890792843
+      ],
+      "role": "secondary"
+    }
+  }
+}
