@@ -1,0 +1,69 @@
+{
+  "stage": 63,
+  "status": "passed",
+  "protocol_commit": "0fbc71e52aa9558d3d15d543e8a0dbc5beb8fafb",
+  "states": 16,
+  "decision_pairs": 256,
+  "branch_evaluations": 512,
+  "exact_refresh_controls": 64,
+  "agreeing_decision_pairs_with_identical_states_and_losses": 236,
+  "all_prepared_split_digests_verified": true,
+  "no_exact_sentence_overlap_across_splits": true,
+  "sampled_complete_chunk_content_overlap": {
+    "ar": {
+      "train_duplicate_occurrences": 3,
+      "selected_probe_duplicate_occurrences": 0,
+      "selected_target_duplicate_occurrences": 0,
+      "train_probe_shared_unique_chunks": 0,
+      "train_target_shared_unique_chunks": 0,
+      "probe_target_shared_unique_chunks": 0,
+      "sampled_probe_indices_with_identical_complete_chunk_in_train": 0,
+      "sampled_target_indices_with_identical_complete_chunk_in_train": 0,
+      "sampled_target_indices_with_identical_complete_chunk_in_probe": 0
+    },
+    "en": {
+      "train_duplicate_occurrences": 3,
+      "selected_probe_duplicate_occurrences": 0,
+      "selected_target_duplicate_occurrences": 0,
+      "train_probe_shared_unique_chunks": 0,
+      "train_target_shared_unique_chunks": 0,
+      "probe_target_shared_unique_chunks": 0,
+      "sampled_probe_indices_with_identical_complete_chunk_in_train": 0,
+      "sampled_target_indices_with_identical_complete_chunk_in_train": 0,
+      "sampled_target_indices_with_identical_complete_chunk_in_probe": 0
+    }
+  },
+  "recomputed_sorted_probe_and_target_indices": true,
+  "reconstructed_training_candidate_indices": true,
+  "schedule_digests_verified": true,
+  "cached_parent_state_continuity_verified": true,
+  "branch_signed_differences_verified": true,
+  "summaries_and_empty_conditionals_recomputed": true,
+  "results_by_language": {
+    "ar": {
+      "stale": 96,
+      "changed": 12,
+      "stale_exact_ties": 84,
+      "equal_seed_mean_delta": 3.068707883358002e-05,
+      "changed_counts_by_sign": {
+        "worse": 11,
+        "better": 1,
+        "tied": 0
+      }
+    },
+    "en": {
+      "stale": 96,
+      "changed": 8,
+      "stale_exact_ties": 88,
+      "equal_seed_mean_delta": 4.046286145846049e-06,
+      "changed_counts_by_sign": {
+        "worse": 6,
+        "better": 2,
+        "tied": 0
+      }
+    }
+  },
+  "audit_training_runs": 0,
+  "result_sha256": "0f5a4678e27749a1be4e5cb60001b2819d5ab03b92f5c2a8d2943318c2e0495a",
+  "audit_script_sha256": "3ec992ab086af56e6cb4cb9b59dec13d52513df368ada35907a7d9ee5674ad1e"
+}

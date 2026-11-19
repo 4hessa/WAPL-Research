@@ -1,0 +1,16 @@
+ar seed 29000: 16 paired steps
+ar seed 29001: 32 paired steps
+ar seed 29002: 48 paired steps
+ar seed 29003: 64 paired steps
+ar seed 29004: 80 paired steps
+ar seed 29005: 96 paired steps
+ar seed 29006: 112 paired steps
+ar seed 29007: 128 paired steps
+en seed 29000: 144 paired steps
+en seed 29001: 160 paired steps
+en seed 29002: 176 paired steps
+en seed 29003: 192 paired steps
+en seed 29004: 208 paired steps
+en seed 29005: 224 paired steps
+en seed 29006: 240 paired steps
+en seed 29007: 256 paired steps
