@@ -1,0 +1,87 @@
+{
+  "stage": 61,
+  "status": "passed",
+  "design_commit": "2c28ea5ee11fee85248c8e74ec0869309f96af58",
+  "audited_trajectories": 24,
+  "completed_updates_per_trajectory": 64,
+  "states": 8,
+  "target_loss_observations": 96,
+  "checkpoints": [
+    0,
+    16,
+    32,
+    64
+  ],
+  "training_runs_in_audit": 0,
+  "within_stage_initial_loss_model_optimizer_exactly_paired": true,
+  "historical_initial_loss_tolerance": "one float32 ULP at historical initial loss",
+  "stage58_fixed_alignment_and_random_first64_choices_verified_per_state": true,
+  "stage60_reuse4_diagnostic_first16_choices_verified_per_state": true,
+  "stage60_all_available_timed_prefixes_verified": true,
+  "schedules_reconstructed": true,
+  "expected_refresh_counts_verified": true,
+  "input_hashes_verified": true,
+  "per_state_final_contrasts_and_paired_language_checkpoint_means_verified": true,
+  "language_paired_loss_differences": {
+    "ar": {
+      "reuse4_minus_fresh": {
+        "0": 0.0,
+        "16": 0.0006133370929293225,
+        "32": 0.002235023940461711,
+        "64": 0.00455798025689802
+      },
+      "reuse4_minus_random": {
+        "0": 0.0,
+        "16": -0.006033301558810988,
+        "32": -0.0074669168182327494,
+        "64": -0.002946278434904692
+      },
+      "fresh_minus_random": {
+        "0": 0.0,
+        "16": -0.006646638651740311,
+        "32": -0.00970194075869446,
+        "64": -0.007504258691802712
+      }
+    },
+    "en": {
+      "reuse4_minus_fresh": {
+        "0": 0.0,
+        "16": 0.0006605070051589612,
+        "32": 0.0020293105930150324,
+        "64": 0.003048308980553527
+      },
+      "reuse4_minus_random": {
+        "0": 0.0,
+        "16": -0.008443522541969672,
+        "32": -0.008681990416812613,
+        "64": -0.008489286383718375
+      },
+      "fresh_minus_random": {
+        "0": 0.0,
+        "16": -0.009104029547128634,
+        "32": -0.010711301009827645,
+        "64": -0.011537595364271902
+      }
+    }
+  },
+  "historical_comparison": {
+    "cpu_by_stage": {
+      "58": "AMD EPYC 9V74 80-Core Processor",
+      "60": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "61": "INTEL(R) XEON(R) PLATINUM 8573C"
+    },
+    "stage60_overlapping_choice_positions_across_repeats": {
+      "reuse4": 1536,
+      "fresh": 1021,
+      "random": 1536
+    },
+    "max_abs_historical_initial_loss_difference": {
+      "stage58": 1.7951516539937984e-07,
+      "stage60": 0.0
+    },
+    "stage60_matched_checkpoint_final_loss_comparisons": 0,
+    "stage60_max_abs_matched_checkpoint_final_loss_difference": null
+  },
+  "result_sha256": "369d8a78091e73c3c344adf1921b526f9131b716037897e62e27a50d6151af6b",
+  "audit_script_sha256": "ea3f0aa0f16127a254752174bb22d1945129012750d83f15eb7716a9c8b8fd88"
+}

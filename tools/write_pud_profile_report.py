@@ -1,9 +1,13 @@
-"""Render an Arabic Markdown report with three-column tables as an editable Word document."""
+"""Render an Arabic Markdown report with comparison tables as an editable Word document."""
 import argparse
+import re
 from pathlib import Path
 
 from docx import Document
 from docx.enum.table import WD_TABLE_DIRECTION
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.shared import Cm, Pt, RGBColor
 
 from tools.write_pud_policy_report import rtl_text
@@ -18,7 +22,10 @@ def write_table(document, lines):
     table.table_direction = WD_TABLE_DIRECTION.RTL
     table.style = "Light Shading Accent 1"
     table.autofit = False
-    widths = [Cm(9), Cm(4), Cm(4)]
+    # Reserve extra room for policy and state labels in the first column.
+    first_width = 9 if len(header) == 3 else 6.5
+    remaining_width = (17 - first_width) / (len(header) - 1)
+    widths = [Cm(first_width), *[Cm(remaining_width) for _ in header[1:]]]
     for column, width in zip(table.columns, widths, strict=True):
         column.width = width
     for row_index, row in enumerate([header, *values]):
@@ -46,6 +53,17 @@ def main():
     for block in content:
         if block.startswith("|"):
             write_table(doc, block.splitlines())
+            continue
+        link = re.fullmatch(r"\[([^\]]+)\]\((https?://[^)]+)\)", block)
+        if link:
+            paragraph = doc.add_paragraph()
+            run = rtl_text(paragraph, link[1], size=11)
+            run.font.color.rgb = RGBColor.from_string("174B68")
+            run.underline = True
+            hyperlink = OxmlElement("w:hyperlink")
+            hyperlink.set(qn("r:id"), paragraph.part.relate_to(link[2], RT.HYPERLINK, is_external=True))
+            hyperlink.append(run._r)
+            paragraph._p.append(hyperlink)
             continue
         level = len(block) - len(block.lstrip("#"))
         paragraph = doc.add_heading(level=level) if level else doc.add_paragraph()

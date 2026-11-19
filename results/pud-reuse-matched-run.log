@@ -1,0 +1,8 @@
+ar fold 0 seed 28000: 3 complete trajectories
+ar fold 0 seed 28001: 6 complete trajectories
+ar fold 5 seed 28000: 9 complete trajectories
+ar fold 5 seed 28001: 12 complete trajectories
+en fold 0 seed 28000: 15 complete trajectories
+en fold 0 seed 28001: 18 complete trajectories
+en fold 5 seed 28000: 21 complete trajectories
+en fold 5 seed 28001: 24 complete trajectories
