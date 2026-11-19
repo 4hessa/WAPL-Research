@@ -1,0 +1,8 @@
+ar fold 0 seed 28000: 9 timed runs
+ar fold 0 seed 28001: 18 timed runs
+ar fold 5 seed 28000: 27 timed runs
+ar fold 5 seed 28001: 36 timed runs
+en fold 0 seed 28000: 45 timed runs
+en fold 0 seed 28001: 54 timed runs
+en fold 5 seed 28000: 63 timed runs
+en fold 5 seed 28001: 72 timed runs

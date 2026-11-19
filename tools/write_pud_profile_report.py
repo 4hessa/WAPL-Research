@@ -1,4 +1,5 @@
-"""Render the stage-59 Arabic Markdown report as an editable Word document."""
+"""Render an Arabic Markdown report with three-column tables as an editable Word document."""
+import argparse
 from pathlib import Path
 
 from docx import Document
@@ -30,6 +31,10 @@ def write_table(document, lines):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("source", type=Path, nargs="?", default=STEM.with_suffix(".md"))
+    parser.add_argument("--page-break-heading", default="طريقة القياس وحدوده")
+    args = parser.parse_args()
     doc = Document()
     section = doc.sections[0]
     section.page_width, section.page_height = Cm(21), Cm(29.7)
@@ -37,7 +42,7 @@ def main():
     section.top_margin = section.bottom_margin = Cm(1.6)
     style = doc.styles["Normal"].paragraph_format
     style.space_after, style.line_spacing = Pt(8), 1.2
-    content = STEM.with_suffix(".md").read_text().strip().split("\n\n")
+    content = args.source.read_text().strip().split("\n\n")
     for block in content:
         if block.startswith("|"):
             write_table(doc, block.splitlines())
@@ -45,13 +50,13 @@ def main():
         level = len(block) - len(block.lstrip("#"))
         paragraph = doc.add_heading(level=level) if level else doc.add_paragraph()
         text = block.lstrip("# ")
-        if text == "طريقة القياس وحدوده":
+        if text == args.page_break_heading:
             paragraph.paragraph_format.page_break_before = True
         run = rtl_text(paragraph, text, size={1: 22, 2: 16}.get(level, 12), bold=bool(level))
         if level:
             run.font.color.rgb = RGBColor.from_string("174B68")
     doc.core_properties.title = content[0].lstrip("# ")
-    doc.save(STEM.with_suffix(".docx"))
+    doc.save(args.source.with_suffix(".docx"))
 
 
 if __name__ == "__main__":

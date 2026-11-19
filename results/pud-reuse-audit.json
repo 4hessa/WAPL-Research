@@ -1,0 +1,49 @@
+{
+  "stage": 60,
+  "status": "passed",
+  "published_protocol_commit": "e9a03225160e06c66ba8c8746465d688a307ce9d",
+  "measured_runs": 72,
+  "states": 8,
+  "decision_comparisons": 128,
+  "drift_by_age": [
+    {
+      "age": 0,
+      "decisions": 32,
+      "agreement": 32
+    },
+    {
+      "age": 1,
+      "decisions": 32,
+      "agreement": 30
+    },
+    {
+      "age": 2,
+      "decisions": 32,
+      "agreement": 29
+    },
+    {
+      "age": 3,
+      "decisions": 32,
+      "agreement": 26
+    }
+  ],
+  "within_stage_initial_losses_exactly_paired": true,
+  "historical_initial_loss_tolerance": "one float32 ULP at historical initial loss",
+  "max_historical_initial_loss_absolute_difference": 1.7951516539937984e-07,
+  "schedule_hashes_matched_stage58": true,
+  "coverage_matched_stages58_59": true,
+  "all_three_orders_balanced_at_each_state": true,
+  "accepted_and_attempted_refresh_counts_verified": true,
+  "paired_contrasts_and_arm_means_verified": true,
+  "deadlines_and_overruns_verified": true,
+  "random_sequences_match_schedules": true,
+  "fresh_prefixes_match_stage58": true,
+  "reuse4_prefixes_match_drift_trajectory": true,
+  "within_arm_choice_prefixes_verified": true,
+  "age_zero_checks": "32 matching winners; model and optimizer parity recorded online",
+  "source_hashes_verified": true,
+  "record_hashes_verified": true,
+  "audit_training_runs": 0,
+  "result_sha256": "70edda0f361bb9a3df9402db1d997a9046629e4f309136f9fbc2d7e579e1ebd4",
+  "audit_script_sha256": "c2d9cb8529b31ecc67e8b65492020e1a56726a34a0d60c0c8574eecfbee8c1d8"
+}

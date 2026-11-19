@@ -1,0 +1,582 @@
+{
+  "stage": 60,
+  "protocol": {
+    "stage": 60,
+    "date": "2026-11-18",
+    "design": "Exploratory pilot on the eight previously examined stage-59 PUD states",
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "folds": [
+      0,
+      5
+    ],
+    "seeds": [
+      28000,
+      28001
+    ],
+    "arms": [
+      "reuse4",
+      "fresh",
+      "random"
+    ],
+    "budget_seconds": 3.0,
+    "timing_repeats": 3,
+    "refresh_interval": 4,
+    "drift_steps": 16,
+    "data": "Use the stage-58 fold partition, 64-chunk probe, complete target chunks, and paired 20000-by-4 schedule. Rebuild the stage-58 32-update warmup and verify schedule hashes. Use the same warmed model and optimizer for all runs of a state.",
+    "policies": "fresh and random use the stage-58 selector. reuse4 recomputes the 64-chunk probe gradient at step 0 and every fourth accepted step. At each step all four candidate AdamW deltas and scores are computed using the current model and optimizer. Cache scope is a single rollout. First index wins score ties.",
+    "timing": "Use the stage-58 timer, including gradient refreshes, trial updates, and selection. Accept only completed in-budget steps. Record actual and overrun seconds, attempts, and accepted updates. Setup, target evaluation, and the separate choice diagnostic are outside the policy timer.",
+    "order": "Enumerate language, fold, seed in the listed order. In each of three repeats rotate the listed arms left by (zero-based state index + repeat) modulo three. Measure all three arms afresh.",
+    "endpoints": "Per language describe final target loss in nats per byte transition, update count, and paired reuse4 minus fresh and reuse4 minus random contrasts. Average three repeats in a state then equally average four states per language. Smaller loss is better. Report each state's means or contrasts. No significance test or confidence interval with only two model seeds.",
+    "choice_diagnostic": "Advance one separate 16-step reuse4 trajectory per state. At each pre-update state evaluate both the cached and freshly recomputed gradient policies on the same four candidates. Record age (step modulo 4), chosen indices and agreement; advance only the reuse4 branch. At all age-zero steps require exact winner, model and optimizer equality. Tabulate counts by age. Eight trajectories give 32 observations per age.",
+    "execution": "Single-thread CPU, deterministic Torch algorithms. Abort on nonfinite metrics, missing coverage, or unverifiable schedules. Preserve recorded attempts and identify any interruption. No parameter sweep, early stopping, or selective reruns based on outcomes.",
+    "scope": "72 timed runs and 128 separate decision comparisons. Timing repetitions share warmup, schedules, and targets. Folds overlap in training and languages are parallel translations. Inferences are descriptive and specific to this pilot."
+  },
+  "provenance": {
+    "sha256": {
+      "data/pud_sources.json": "e0278bbf9684b9b26d888ecc1511b0d419015093585a66e0056af83d4bdf926e",
+      "data/evaluation_status.json": "9b77001e0a8b5f117cbedd66d0dd71db833d40f4d2ecf26e5bc79ce7b463dd94",
+      "experiments/pud_transfer.py": "bb8dee726daa265ac89aaf62a8485a16af2f1cb1b6c9027d16f383520d50e115",
+      "experiments/multilingual_readiness.py": "b2b1e2622381aa66a5158e6d4f68a9d2dd3fd0286d6a30c57e98b854948caa25",
+      "experiments/multilingual_policy.py": "a6cab872043bb777cea3230653880e3ce270f2654797c18070a13b525f68b296",
+      "experiments/head_invariance.py": "bdd6168502f60fd0f87e8c90726fe859b6f4ddbfdeae78c71cfa8daeb73f0c40",
+      "data/pud_raw/ar_sentences.jsonl": "fc547100b7adf1fc4149b09403688f4022b919248a35b8a9c93b7b92241a258c",
+      "data/pud_raw/en_sentences.jsonl": "ecc42322fda11bf36e64012d72c7c327364747d19cea6d79c00314fa29ca21bf",
+      "research/pud-policy-protocol.json": "31168ca2bf21d00da901a4038197a042fcf44f221808adfa56fb477a7648e3e2",
+      "experiments/pud_policy.py": "e2af6d11cb3a21da0c6cb6398656605ff4ef512999847d90251ea92b0e9c972c",
+      "tests/test_pud_policy.py": "1975003dd5b40e29a961baa4325b664bb5e86819d63ae4c6a9c294372bcc5b53",
+      "results/pud-policy-environment.json": "5fce4936f98cdad732160e0a23cbd944fa457859f31ceed99fdff5e9db9f32ec",
+      "results/pud-policy-records.jsonl": "c74db3b07493267c8201eec081689c453b725b3c5622b65afcd8633446285e77",
+      "experiments/pud_policy_profile.py": "1d1271ee4b9b078ec4140cede34f7efcbdca8b5bbe848f0fb99cbf2311ef7f31",
+      "tests/test_pud_policy_profile.py": "5def5cf466ac4320137333b7c3f0f0108dbbbcf74b68d4f9e051e30f4efc78c2",
+      "results/pud-policy-profile.json": "878dffa713c16fa8087c5d00f9880a8da64a4206ec1e174a0ad696b95714e1b9",
+      "research/pud-reuse-protocol.json": "a967caf9ba18ea51ba54a2933238796bc94031e17bc20c41db359ac4197ee495",
+      "experiments/pud_reuse.py": "edea81a05a30addc5c90696d86632464f233f2962a8f0322d102b90393b9f9c9",
+      "tests/test_pud_reuse.py": "d498f78af2ea1b7e9caa72c4fcc39fd5a22585ce46bb4f2abdece2ded212d076"
+    },
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "torch": "2.5.1+cpu",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "torch_threads": 1,
+    "interop_threads": 5,
+    "openblas_num_threads": "1",
+    "deterministic": true
+  },
+  "output_sha256": {
+    "pud-reuse-records.jsonl": "5bb8f30c271bd6a781c2397a3dac2bf9f6e81819b419ec44b2f1f95a293c10ea",
+    "pud-reuse-decisions.jsonl": "a521276071d09d6aeb74876ceb670e3e32b9cdb8bee4b3d313578e743a862779"
+  },
+  "coverage": [
+    {
+      "language": "ar",
+      "fold": 0,
+      "seed": 28000,
+      "pool_chunks": 2085,
+      "probe_chunks": 64,
+      "target_chunks": 270,
+      "schedule_sha256": "f65f442e73afc24b94b2b5884603d075981a2ee7a8f450f593fb094bb0f471ad"
+    },
+    {
+      "language": "ar",
+      "fold": 0,
+      "seed": 28001,
+      "pool_chunks": 2085,
+      "probe_chunks": 64,
+      "target_chunks": 270,
+      "schedule_sha256": "2234ef7b582dfb21a4bb52e4f0dc00412705a44055854b3aec0888308e05b47e"
+    },
+    {
+      "language": "ar",
+      "fold": 5,
+      "seed": 28000,
+      "pool_chunks": 2117,
+      "probe_chunks": 64,
+      "target_chunks": 258,
+      "schedule_sha256": "071efceb1e90e8abd9c7317772c7e2c7567a2ec77db4f901849c5fe60583b04b"
+    },
+    {
+      "language": "ar",
+      "fold": 5,
+      "seed": 28001,
+      "pool_chunks": 2117,
+      "probe_chunks": 64,
+      "target_chunks": 258,
+      "schedule_sha256": "bd8379d430492c7e35a5d5ea32464d497cdeda5691857ae63525348a204d5d12"
+    },
+    {
+      "language": "en",
+      "fold": 0,
+      "seed": 28000,
+      "pool_chunks": 1360,
+      "probe_chunks": 64,
+      "target_chunks": 174,
+      "schedule_sha256": "d2a49b30295b16cd113f0428b6220be0dc32ab8a7b9b7182bda548bf4a89b7d3"
+    },
+    {
+      "language": "en",
+      "fold": 0,
+      "seed": 28001,
+      "pool_chunks": 1360,
+      "probe_chunks": 64,
+      "target_chunks": 174,
+      "schedule_sha256": "d2f3e80084dbe6dc008f36f095e870e9975926e762b1fd67d7b9ac4da8b86c17"
+    },
+    {
+      "language": "en",
+      "fold": 5,
+      "seed": 28000,
+      "pool_chunks": 1384,
+      "probe_chunks": 64,
+      "target_chunks": 170,
+      "schedule_sha256": "6f258a8cfe76af6e81f0b5d89aa905f923ad905226c70bc0ff8935b1a712c4e6"
+    },
+    {
+      "language": "en",
+      "fold": 5,
+      "seed": 28001,
+      "pool_chunks": 1384,
+      "probe_chunks": 64,
+      "target_chunks": 170,
+      "schedule_sha256": "61d37e66afe2e52a4bdde8e9eb8b7f74ebca3f54646c6c94498e9506a130b0db"
+    }
+  ],
+  "summary": {
+    "states": [
+      {
+        "language": "ar",
+        "fold": 0,
+        "seed": 28000,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.1783413233580413,
+            "updates": 71.66666666666667,
+            "actual_seconds": 3.018001862999976,
+            "overrun_seconds": 0.01800186299997601,
+            "accepted_refreshes": 18.333333333333332,
+            "attempted_refreshes": 18.666666666666668
+          },
+          "fresh": {
+            "final_loss": 2.478108337779104,
+            "updates": 39.666666666666664,
+            "actual_seconds": 3.0424282453333262,
+            "overrun_seconds": 0.04242824533332623,
+            "accepted_refreshes": 39.666666666666664,
+            "attempted_refreshes": 40.666666666666664
+          },
+          "random": {
+            "final_loss": 1.731065924373674,
+            "updates": 384,
+            "actual_seconds": 3.004172586333349,
+            "overrun_seconds": 0.004172586333349197,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.2997670144210627,
+            "updates": 32.00000000000001
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.4472753989843674,
+            "updates": -312.3333333333333
+          }
+        }
+      },
+      {
+        "language": "ar",
+        "fold": 0,
+        "seed": 28001,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.0777180506859296,
+            "updates": 76.66666666666667,
+            "actual_seconds": 3.0260698763333003,
+            "overrun_seconds": 0.02606987633330012,
+            "accepted_refreshes": 19.333333333333332,
+            "attempted_refreshes": 19.666666666666668
+          },
+          "fresh": {
+            "final_loss": 2.3877235812905395,
+            "updates": 43,
+            "actual_seconds": 3.0611089933333155,
+            "overrun_seconds": 0.06110899333331569,
+            "accepted_refreshes": 43,
+            "attempted_refreshes": 44
+          },
+          "random": {
+            "final_loss": 1.729951321637189,
+            "updates": 423.3333333333333,
+            "actual_seconds": 3.002729906333343,
+            "overrun_seconds": 0.002729906333343024,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.3100055306046099,
+            "updates": 33.66666666666667
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.34776672904874073,
+            "updates": -346.66666666666663
+          }
+        }
+      },
+      {
+        "language": "ar",
+        "fold": 5,
+        "seed": 28000,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.124716409417086,
+            "updates": 74.33333333333333,
+            "actual_seconds": 3.019617986999966,
+            "overrun_seconds": 0.019617986999965826,
+            "accepted_refreshes": 19.333333333333332,
+            "attempted_refreshes": 19.333333333333332
+          },
+          "fresh": {
+            "final_loss": 2.4192757723559395,
+            "updates": 41,
+            "actual_seconds": 3.018941526333341,
+            "overrun_seconds": 0.018941526333340637,
+            "accepted_refreshes": 41,
+            "attempted_refreshes": 42
+          },
+          "random": {
+            "final_loss": 1.7051347038234543,
+            "updates": 403,
+            "actual_seconds": 3.0019711893333274,
+            "overrun_seconds": 0.0019711893333275534,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.29455936293885365,
+            "updates": 33.33333333333333
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.4195817055936315,
+            "updates": -328.6666666666667
+          }
+        }
+      },
+      {
+        "language": "ar",
+        "fold": 5,
+        "seed": 28001,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.082963031699799,
+            "updates": 71,
+            "actual_seconds": 3.0230041056666814,
+            "overrun_seconds": 0.02300410566668158,
+            "accepted_refreshes": 18,
+            "attempted_refreshes": 18.333333333333332
+          },
+          "fresh": {
+            "final_loss": 2.4069013503170753,
+            "updates": 40,
+            "actual_seconds": 3.0328607733333306,
+            "overrun_seconds": 0.03286077333333045,
+            "accepted_refreshes": 40,
+            "attempted_refreshes": 41
+          },
+          "random": {
+            "final_loss": 1.7056523955761616,
+            "updates": 398.6666666666667,
+            "actual_seconds": 3.0041195330000128,
+            "overrun_seconds": 0.004119533000012628,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.3239383186172762,
+            "updates": 31
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.3773106361236376,
+            "updates": -327.6666666666667
+          }
+        }
+      },
+      {
+        "language": "en",
+        "fold": 0,
+        "seed": 28000,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.098622670118836,
+            "updates": 79.33333333333333,
+            "actual_seconds": 3.008349029666647,
+            "overrun_seconds": 0.008349029666646857,
+            "accepted_refreshes": 20,
+            "attempted_refreshes": 20.666666666666668
+          },
+          "fresh": {
+            "final_loss": 3.2340066944502324,
+            "updates": 44,
+            "actual_seconds": 3.0339957656667025,
+            "overrun_seconds": 0.03399576566670248,
+            "accepted_refreshes": 44,
+            "attempted_refreshes": 45
+          },
+          "random": {
+            "final_loss": 2.7253119324358943,
+            "updates": 431.3333333333333,
+            "actual_seconds": 3.024157511666696,
+            "overrun_seconds": 0.024157511666696035,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.13538402433139618,
+            "updates": 35.33333333333333
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.3733107376829419,
+            "updates": -352.0
+          }
+        }
+      },
+      {
+        "language": "en",
+        "fold": 0,
+        "seed": 28001,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.1719218277839865,
+            "updates": 75,
+            "actual_seconds": 3.0318371030000058,
+            "overrun_seconds": 0.031837103000005605,
+            "accepted_refreshes": 19,
+            "attempted_refreshes": 19.666666666666668
+          },
+          "fresh": {
+            "final_loss": 3.2468282217266915,
+            "updates": 42.333333333333336,
+            "actual_seconds": 3.0303702196666413,
+            "overrun_seconds": 0.03037021966664118,
+            "accepted_refreshes": 42.333333333333336,
+            "attempted_refreshes": 43.333333333333336
+          },
+          "random": {
+            "final_loss": 2.7389429090580264,
+            "updates": 425,
+            "actual_seconds": 3.004741163999976,
+            "overrun_seconds": 0.004741163999976076,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.07490639394270504,
+            "updates": 32.666666666666664
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.43297891872596006,
+            "updates": -350
+          }
+        }
+      },
+      {
+        "language": "en",
+        "fold": 5,
+        "seed": 28000,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.0831795496099135,
+            "updates": 71.66666666666667,
+            "actual_seconds": 3.049422027666689,
+            "overrun_seconds": 0.04942202766668894,
+            "accepted_refreshes": 18.333333333333332,
+            "attempted_refreshes": 18.666666666666668
+          },
+          "fresh": {
+            "final_loss": 3.192031004849602,
+            "updates": 45,
+            "actual_seconds": 3.0801400413333035,
+            "overrun_seconds": 0.0801400413333037,
+            "accepted_refreshes": 45,
+            "attempted_refreshes": 46
+          },
+          "random": {
+            "final_loss": 2.6747388549879485,
+            "updates": 460.3333333333333,
+            "actual_seconds": 3.005346973333341,
+            "overrun_seconds": 0.005346973333341036,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.10885145523968864,
+            "updates": 26.66666666666667
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.408440694621965,
+            "updates": -388.66666666666663
+          }
+        }
+      },
+      {
+        "language": "en",
+        "fold": 5,
+        "seed": 28001,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.1295642329197304,
+            "updates": 78,
+            "actual_seconds": 3.009186368333303,
+            "overrun_seconds": 0.009186368333303108,
+            "accepted_refreshes": 19.666666666666668,
+            "attempted_refreshes": 20
+          },
+          "fresh": {
+            "final_loss": 3.1971228141410677,
+            "updates": 45.333333333333336,
+            "actual_seconds": 3.023075077000044,
+            "overrun_seconds": 0.023075077000044075,
+            "accepted_refreshes": 45.333333333333336,
+            "attempted_refreshes": 46.333333333333336
+          },
+          "random": {
+            "final_loss": 2.6675750779170615,
+            "updates": 470.6666666666667,
+            "actual_seconds": 3.0027371113333174,
+            "overrun_seconds": 0.0027371113333174435,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.06755858122133729,
+            "updates": 32.666666666666664
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.4619891550026689,
+            "updates": -392.6666666666667
+          }
+        }
+      }
+    ],
+    "languages": {
+      "ar": {
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.115934703790214,
+            "updates": 73.41666666666667,
+            "actual_seconds": 3.021673457999981,
+            "overrun_seconds": 0.021673457999980883,
+            "accepted_refreshes": 18.75,
+            "attempted_refreshes": 19.0
+          },
+          "fresh": {
+            "final_loss": 2.4230022604356645,
+            "updates": 40.916666666666664,
+            "actual_seconds": 3.0388348845833284,
+            "overrun_seconds": 0.038834884583328254,
+            "accepted_refreshes": 40.916666666666664,
+            "attempted_refreshes": 41.916666666666664
+          },
+          "random": {
+            "final_loss": 1.7179510863526197,
+            "updates": 402.25,
+            "actual_seconds": 3.003248303750008,
+            "overrun_seconds": 0.0032483037500081005,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.3070675566454506,
+            "updates": 32.5
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.3979836174375943,
+            "updates": -328.8333333333333
+          }
+        }
+      },
+      "en": {
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.1208220701081166,
+            "updates": 76.0,
+            "actual_seconds": 3.024698632166661,
+            "overrun_seconds": 0.024698632166661127,
+            "accepted_refreshes": 19.25,
+            "attempted_refreshes": 19.75
+          },
+          "fresh": {
+            "final_loss": 3.2174971837918984,
+            "updates": 44.16666666666667,
+            "actual_seconds": 3.041895275916673,
+            "overrun_seconds": 0.04189527591667286,
+            "accepted_refreshes": 44.16666666666667,
+            "attempted_refreshes": 45.16666666666667
+          },
+          "random": {
+            "final_loss": 2.701642193599733,
+            "updates": 446.8333333333333,
+            "actual_seconds": 3.0092456900833326,
+            "overrun_seconds": 0.009245690083332647,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.09667511368378179,
+            "updates": 31.833333333333332
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.41917987650838395,
+            "updates": -370.8333333333333
+          }
+        }
+      }
+    },
+    "drift_by_age": [
+      {
+        "age": 0,
+        "decisions": 32,
+        "agreement": 32
+      },
+      {
+        "age": 1,
+        "decisions": 32,
+        "agreement": 30
+      },
+      {
+        "age": 2,
+        "decisions": 32,
+        "agreement": 29
+      },
+      {
+        "age": 3,
+        "decisions": 32,
+        "agreement": 26
+      }
+    ]
+  },
+  "runs": 72,
+  "diagnostic_decisions": 128,
+  "wall_seconds": 237.739057926
+}
