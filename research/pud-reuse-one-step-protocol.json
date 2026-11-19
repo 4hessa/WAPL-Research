@@ -1,0 +1,19 @@
+{
+  "stage": 62,
+  "date": "2026-11-19",
+  "reference_commit": "8c9412748bb5f7474c0e438e215f8dcf18af45c8",
+  "languages": ["ar", "en"],
+  "folds": [0, 5],
+  "seeds": [28000, 28001],
+  "steps": 16,
+  "refresh_interval": 4,
+  "design": "Exploratory paired one-step branches on previously observed PUD trajectories. Stage 60 reported choices and stage 61 reported checkpoint losses. Freeze this plan before evaluating new one-step branch losses.",
+  "inputs": "Rebuild the published stage-60 PUD partition, 32 warmup updates, model and AdamW state, 64-chunk probe and four-candidate schedules. Use the same stage-60 policy implementations.",
+  "branch_comparison": "At each parent on the reuse4 trajectory, run the fresh policy and the four-step reuse policy from the same parent and four candidates. Apply one selected AdamW update on each branch; evaluate both branches on all complete held-out target chunks. Advance only via the reuse4 branch, irrespective of the target outcomes. Record parent and resulting state continuity. No tuning, adaptive stopping, candidate choice or rerun based on target loss.",
+  "estimand": "Signed immediate difference = target loss after reuse4 choice minus target loss after fresh choice, in nats per byte transition. Negative favors reuse4. Age zero denotes a refresh; stale ages are 1, 2, 3.",
+  "primary": "Arabic mean signed immediate difference over all 48 stale decisions, including agreements. Compute each state's mean over its 12 stale steps, then equally weight its four state means.",
+  "secondary": "English same contrast; per-language stale-step mean absolute differences, sign counts, results by age, and changed-choice-only signed and absolute means/counts. Preserve individual disagreements and per-state effects; use null for conditional means with zero changed choices. Report age zero as a separate parity control.",
+  "expected_coverage": "Eight states, 128 paired decisions, 256 post-update branch evaluations. The known stage-60 record has 32 refresh decisions and 11 changed choices among 96 stale steps. Counts reflect the same historical paths.",
+  "integrity": "Verify source and schedule hashes, both positions against the stage-60 diagnostics, all agreeing branch model/optimizer states and losses, and the final reuse4 checkpoint against stage 61 at step 16. Preserve raw rows and expose any numerical discrepancy or incomplete coverage. CPU single PyTorch thread and deterministic algorithms.",
+  "interpretation": "Steps are nested within eight short trajectories. Datasets were previously used, languages are parallel and there are only two seeds. Report descriptively within language. These one-step differences neither add up to a whole-trajectory contrast nor estimate policy speed."
+}
