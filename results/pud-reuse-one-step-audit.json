@@ -1,0 +1,61 @@
+{
+  "stage": 62,
+  "status": "passed",
+  "published_protocol_commit": "5785ae929fa2f5db3488602ee293416d089c938c",
+  "paired_decisions": 128,
+  "branch_loss_observations": 256,
+  "stale_steps": 96,
+  "changed_stale_steps": 11,
+  "age_zero_exact_controls": 32,
+  "agreeing_branch_losses_and_hashes_equal": 117,
+  "cached_parent_state_continuity_verified": true,
+  "candidate_schedule_verified": true,
+  "historical_candidate_positions_matched": true,
+  "input_and_protocol_hashes_verified": true,
+  "state_language_age_sign_and_absolute_summaries_recomputed": true,
+  "conditional_observations_and_empty_groups_verified": true,
+  "historical_comparison": {
+    "max_stage61_endpoint_step16_abs_difference": 0.0,
+    "max_stage61_initial_loss_abs_difference": 0.0,
+    "stage61_initial_state_hashes_differing_states": 0,
+    "stage61_endpoint_differences_by_state": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "stage61_cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "stage62_cpu": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "stale_results_by_language": {
+    "ar": {
+      "stale_count": 48,
+      "changed": 6,
+      "signs": {
+        "worse": 4,
+        "better": 2,
+        "tied": 42
+      },
+      "mean_signed_stale": 6.919197402329343e-06,
+      "mean_absolute_stale": 2.2564677373456316e-05
+    },
+    "en": {
+      "stale_count": 48,
+      "changed": 5,
+      "signs": {
+        "worse": 5,
+        "better": 0,
+        "tied": 43
+      },
+      "mean_signed_stale": 1.896414666501441e-05,
+      "mean_absolute_stale": 1.896414666501441e-05
+    }
+  },
+  "training_runs_in_audit": 0,
+  "result_sha256": "053d1f8ad201169d4e2684c40eb744c1e3a5b5d84ff1a94c1088b1c7a8052242",
+  "audit_script_sha256": "eba9c66e3a395824c64cd179472a2654761fd419d1695fc7d8988cf0e5c1b170"
+}

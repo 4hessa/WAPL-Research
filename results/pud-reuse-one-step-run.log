@@ -1,0 +1,8 @@
+ar fold 0 seed 28000: 16 paired steps
+ar fold 0 seed 28001: 32 paired steps
+ar fold 5 seed 28000: 48 paired steps
+ar fold 5 seed 28001: 64 paired steps
+en fold 0 seed 28000: 80 paired steps
+en fold 0 seed 28001: 96 paired steps
+en fold 5 seed 28000: 112 paired steps
+en fold 5 seed 28001: 128 paired steps
