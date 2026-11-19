@@ -1,0 +1,20 @@
+{
+  "stage": 61,
+  "date": "2026-11-19",
+  "reference_commit": "451d1ff5b37f2e8b45af6014d8dc6ea767cdf07c",
+  "languages": ["ar", "en"],
+  "folds": [0, 5],
+  "seeds": [28000, 28001],
+  "arms": ["random", "fresh", "reuse4"],
+  "updates": 64,
+  "checkpoints": [0, 16, 32, 64],
+  "refresh_interval": 4,
+  "primary_descriptive_contrast": "Arabic final target loss at 64 updates, reuse4 minus fresh; negative favors reuse4",
+  "design": "Exact update-count diagnostic on the exposed stage-60 PUD subset. Run one trajectory per state and arm, 24 trajectories total. Within each language pair arms by (fold,seed).",
+  "initialization": "Reconstruct the shared 32-step warmup model, AdamW state, candidate and random-choice schedules from stage 60. Clone into independent policies. All policies in a state start from exactly the same weights/optimizer state. Stage-58 fresh and random selectors and stage-60 CachedDecision(interval=4).",
+  "evaluation": "At each scheduled checkpoint evaluate next-byte negative log likelihood on all complete held-out target chunks using the stage-58 evaluator. Do not use target data for selection, checkpoint choice, stopping or tuning. Zero denotes immediately after warmup. Each admitted update uses one selected candidate.",
+  "secondary": "Summarize target losses and paired loss differences by language and checkpoint. At 64 updates show each state's reuse4-fresh, reuse4-random and fresh-random differences. Equal weights for the four states per language. No confidence interval or significance test on two seeds. No pooling across parallel languages.",
+  "controls": "Keep the matched number of accepted updates, data, candidate sets and fixed seeds. Do not equalize compute or wall time in this diagnostic. Refresh counts at 64 updates should be 64 (fresh), 16 (reuse4), zero (random). Check new trajectories against matching prefixes of the published decisions, within available coverage. Flag any historical numerical difference separately from within-stage pairing.",
+  "integrity": "Freeze this protocol on GitHub before evaluating checkpoint outcomes. Store individual losses, candidate positions, input and code hashes, environment metadata, and outputs for independent checks. Report any incomplete grid or mismatched replay, do not remove unfavorable states. No adaptive retuning or endpoint changes.",
+  "scope": "The budgets are selected for a follow-up to the exposed timing pilot. This experiment quantifies differences across policies at equal update counts. Cross-budget comparisons cannot assign a causal fraction of the stage-60 gain to a single mechanism."
+}
