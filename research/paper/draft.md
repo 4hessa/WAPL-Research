@@ -4,7 +4,7 @@ Working draft, 21 November 2026. Numbers come from committed, audited results in
 
 ## Abstract (provisional)
 
-Online data selection methods choose, at each training step, which examples to learn from. They are usually evaluated at equal numbers of updates or equal FLOPs of the training step, which hides the cost of the decision itself. We make that cost explicit. Writing r for the ratio of the wall-clock cost of a guided step to a random step, a for the loss reduction random training achieves in n updates, and s for the additional reduction a selection rule adds at the same n, a first-order argument gives a necessary condition for selection to beat random training under an equal time budget: s/a > r − 1. We decompose every timed comparison exactly into a selection term and a throughput term by replaying the random schedule to each guided run's update count. In pre-registered experiments on Arabic (UD PADT) and English (UD EWT) text with a 35,776-parameter byte-level Transformer, gradient-alignment selection improves loss per update (s/a ≈ 0.004–0.018) but costs r ≈ 6–11 random steps, and loses to random under equal time in every seed (e.g., Arabic +0.385 nats/byte, 95% CI [0.366, 0.408]). Cheap highest-loss selection (r ≈ 1.2–2.9) is worse still because its selection term is positive: it harms target loss per update, increasingly with the candidate pool. TODO: pretrained-LLM results (stage 66) and a near-boundary test (stage 67).
+Online data selection methods choose, at each training step, which examples to learn from. They are usually evaluated at equal numbers of updates or equal FLOPs of the training step, which hides the cost of the decision itself. We make that cost explicit. Writing r for the ratio of the wall-clock cost of a guided step to a random step, a for the loss reduction random training achieves in n updates, and s for the additional reduction a selection rule adds at the same n, a first-order argument gives a necessary condition for selection to beat random training under an equal time budget: s/a > r − 1. We decompose every timed comparison exactly into a selection term and a throughput term by replaying the random schedule to each guided run's update count. In pre-registered experiments on Arabic (UD PADT) and English (UD EWT) text with a 35,776-parameter byte-level Transformer, gradient-alignment selection improves loss per update (s/a ≈ 0.004–0.018) but costs r ≈ 6–11 random steps, and loses to random under equal time in every seed (e.g., Arabic +0.385 nats/byte, 95% CI [0.366, 0.408]). Cheap highest-loss selection (r ≈ 1.2–2.9) is worse still because its selection term is positive: it harms target loss per update, increasingly with the candidate pool. On a pretrained LLM (Qwen2.5-0.5B with LoRA), the per-update alignment gain is about 80 times larger (s/a = 0.35) but still below break-even at r ≈ 4. A pre-registered attempt to forecast equal-time winners from equal-update measurements under off-target contamination failed (6/10), because selection value changes over training. The single equal-time win, highest-loss selection at 95% contamination, came from the cheapest rule.
 
 ## 1 Introduction
 
@@ -55,13 +55,26 @@ Reusing the probe gradient beat fresh alignment in all eight seeds (−0.35455),
 
 English shows the same ordering with larger harm from highest-loss selection (loss64 selection term +0.4402). The inequality agreed with all 80 state-level outcomes, but none was near the boundary.
 
-### 4.3 Pretrained LLM (stage 66) — TODO
+### 4.3 Pretrained LLM (stage 66; `results/llm-selection.json`)
 
-Qwen2.5-0.5B, LoRA rank 8 on q/v projections, 64 matched updates; random, highest-loss of 4, gradient-dot alignment of 4. Report s/a and measured r per language.
+Qwen2.5-0.5B, LoRA rank 8 on q/v (540,672 trainable parameters), 64 matched updates, four seeds per language.
 
-### 4.4 Near-boundary test (stage 67) — TODO
+| arm | Arabic loss@64 − random | s/a | r | break-even r − 1 |
+| --- | --- | --- | --- | --- |
+| highest loss of 4 | +0.0034 | −0.073 | 2.12 | 1.12 |
+| gradient-dot of 4 | −0.0162 (4/4 seeds) | 0.346 | 4.17 | 3.17 |
 
-A rule with alignment-like s and r close to 1, e.g. per-example LoRA gradient inner products from one batched backward pass, so that s/a and r − 1 are comparable and the inequality can be tested for discrimination.
+English: gradient-dot −0.0232 (4/4), s/a 0.172, r 4.28. Relative to the from-scratch byte model, the alignment gain per update is about 80 times larger, and the gap to break-even narrows from about 1,100× to about 9×. Several factors changed together (pretraining, scale, LoRA, token units, dot-product scoring), so the increase is not attributed to one of them. Replay audit pending.
+
+### 4.4 Can equal-update measurements forecast equal-time outcomes? (stage 67; `results/mixture-crossover-phaseB.json`)
+
+Candidate pools mixed Arabic with a fraction ρ ∈ {0, .5, .8, .9, .95} of English; the target was Arabic. Phase A (64 equal updates, 4 seeds) produced committed predictions; phase B (8 new seeds, 3 s budget, 360 runs) tested them. The pre-registered rule s/a > r − 1 was correct in 6/10 cases, with 4 contradictions whose 95% intervals exclude zero, so it fails its pre-specified criterion. Phase A also exposed a sign error in the ratio form when a < 0 (ρ = .95); the undivided form s > (r − 1)a, added in an addendum before phase B, also scored 6/10.
+
+The failure has a clear mechanism: selection value is nonstationary. Highest-loss selection preferred Arabic during the first 64 updates (English share 0.70 at ρ = .8, below random's 0.82) and switched to English later (0.88 over about 340 updates), because it tracks whichever source currently has higher loss. The linear throughput estimate (r − 1)a from phase A also underestimated the measured throughput term at high ρ (alignment at ρ = .9: 0.27 against 2.38), because random's learning curve on the target was flat early and steep later.
+
+At ρ = .95, highest-loss selection (r = 1.21) beat random under equal time: −0.218 [−0.355, −0.086]. Alignment had the largest selection term at every ρ (down to −1.31) but never overcame its throughput cost (up to +2.50).
+
+Practical consequence: equal-update comparisons should be made at the update count each method attains in the budget, L_G(T/c_G) against L_R(T/c_R), not at a shared n. This requires measuring each curve over its full length.
 
 ## 5 Limitations
 
