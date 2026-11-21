@@ -69,6 +69,8 @@
 | 63 | أثر إعادة استخدام التدرّج على نصوص PADT العربية وEWT الإنجليزية | [تحميل Word](63_ud_reuse_transfer_ar.docx) | [قراءة النص](63_ud_reuse_transfer_ar.md) |
 | 64 | مقارنة زمنية لثلاث سياسات اختيار على نصوص PADT وEWT | [تحميل Word](64_ud_reuse_timed_ar.docx) | [قراءة النص](64_ud_reuse_timed_ar.md) |
 | 65 | كلفة القرار ومكسب الاختيار: اختبار متراجحة التعادل | [تحميل Word](65_ud_cost_frontier_ar.docx) | [قراءة النص](65_ud_cost_frontier_ar.md) |
+| 66 | الاختيار الموجه في الضبط الدقيق لنموذج لغوي كبير مدرب مسبقًا | [تحميل Word](66_llm_selection_ar.docx) | [قراءة النص](66_llm_selection_ar.md) |
+| 67 | هل يتنبأ قياس التحديثات المتساوية بنتيجة الميزانية الزمنية؟ | [تحميل Word](67_mixture_crossover_ar.docx) | [قراءة النص](67_mixture_crossover_ar.md) |
 
 افتح ملف Word ثم اختر **Download raw file**.
 التقارير تصف حالة البحث عند صدورها، مع فصل النتائج الرئيسية والثانوية والحدود وحالة بيانات التقييم.

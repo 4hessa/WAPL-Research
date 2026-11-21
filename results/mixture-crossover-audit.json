@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "stage": 67,
+  "checks": {
+    "phaseA_runs": 60,
+    "phaseB_runs": 360,
+    "policy_replay_decisions": 17214,
+    "random_curve_points": 229
+  },
+  "sha256": {
+    "mixture-crossover-phaseA.json": "0cf61ab62b31d47708282e953ce6d1b2d3df6bab61457059beebc75cf43988d1",
+    "mixture-crossover-phaseA-records.jsonl": "4265e6eb57135e0a3a47a31066843f9fe9cf32d54e4183056c8cede4cb3e3089",
+    "mixture-crossover-phaseB.json": "6f53030df3d3e12299dee78a3a3e55c735ffad96cdf99d0055df0304c85cbcf7",
+    "mixture-crossover-phaseB-records.jsonl": "cf1a4016e08c8f7f9c0ef2b6db453807dd5788580a12eb2432b4a0a3b7a1df2c"
+  },
+  "notes": "Timing is not replayable; schedules, choices, decisions, final losses, random-curve points and both summaries were recomputed on the audit host."
+}
