@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "stage": 65,
+  "result_sha256": "611e622e90b95e390983a4206417f05d890c7329909d123ed29929d35cb296d3",
+  "records_sha256": "516a5d05a3200153a5d773228c280f530f9e84c68e0cd8dec2bb978880ba5adb",
+  "checks": {
+    "order": 500,
+    "timing": 500,
+    "random_prefix": 20,
+    "policy_replay_decisions": 17550,
+    "final_loss_replays": 500,
+    "random_curve_points": 368
+  },
+  "notes": "Timing values are not replayable; choices, decisions, random-curve points, final losses and the summary were recomputed on the audit host."
+}

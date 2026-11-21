@@ -20,6 +20,11 @@
       "parallel_translations": true,
       "folds": 10,
       "protocol": "research/pud-transfer-protocol.json"
+    },
+    "UD_dev_unscored_sample": {
+      "stage": 65,
+      "status": "512 previously unscored dev chunks per language (seed 6501, excluding stage-49 and stage-63 samples) evaluated as stage-65 target; exposed",
+      "protocol": "research/ud-cost-frontier-protocol.json"
     }
   }
 }

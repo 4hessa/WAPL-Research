@@ -14,3 +14,6 @@ data/ud_raw/
 
 # Parallel UD preparation: texts stay local, metadata and folds are tracked.
 data/pud_raw/
+
+# Pretrained model weights stay local; revision and SHA-256 are tracked in code.
+models/

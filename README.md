@@ -233,3 +233,11 @@ OPENBLAS_NUM_THREADS=1 python -m tools.audit_ud_reuse_timed
 ```
 
 The audit recomputes the summary, replays all 144 final models from their recorded choices (exact loss match), replays 1,799 guided decisions without a clock, and checks deadline adherence. Stage 63 was first reproduced byte-identically on the stage-64 host (Intel Xeon 2.10 GHz, 4 logical CPUs). Timing outcomes are host-dependent. [Records](results/ud-reuse-timed-records.jsonl) · [Summary](results/ud-reuse-timed.json) · [Audit](results/ud-reuse-timed-audit.json)
+
+## Decision cost against selection gain (stage 65)
+
+Stage 65 tests the stage-64 break-even inequality s/a > r − 1 by varying decision cost: highest-loss selection from 4, 16 or 64 candidates via one batched no-grad forward pass, gradient-reuse alignment and random, under the same three-second deadline loop. Ten new seeds per language, five rotated repeats, 500 runs; the target is 512 previously unscored dev chunks per language. [Protocol](research/ud-cost-frontier-protocol.json) · [Arabic report](reports/65_ud_cost_frontier_ar.md)
+
+Primary (Arabic, loss16 minus random): +0.06381, paired seed-bootstrap 95% CI [+0.05633, +0.07212]; random was better in all ten seeds. No guided arm beat random in any seed or language. The pre-specified decomposition shows highest-loss selection *harms* target loss per update (Arabic loss64 selection term +0.0625; English +0.4402), increasingly with K, while alignment is the only per-update gain (Arabic −0.0064) and the most expensive (r ≈ 6). The inequality agreed with all 80 outcomes, but no case lay near the boundary, so this does not test its discriminating power.
+
+The audit recomputed the summary and exactly replayed all 500 final losses, 17,550 guided decisions and 368 random-curve points. [Records](results/ud-cost-frontier-records.jsonl) · [Summary](results/ud-cost-frontier.json) · [Audit](results/ud-cost-frontier-audit.json)
