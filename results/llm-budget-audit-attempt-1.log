@@ -1,0 +1,16 @@
+Token indices sequence length is longer than the specified maximum sequence length for this model (374591 > 131072). Running this sequence through the model will result in indexing errors
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/user/WAPL-Research/tools/audit_llm_budget.py", line 78, in <module>
+    main()
+  File "/home/user/WAPL-Research/tools/audit_llm_budget.py", line 53, in main
+    torch.testing.assert_close(grads[i], ref, rtol=1e-4, atol=1e-6)
+  File "/home/user/WAPL-Research/.venv/lib/python3.12/site-packages/torch/testing/_comparison.py", line 1530, in assert_close
+    raise error_metas[0].to_error(msg)
+AssertionError: Tensor-likes are not close!
+
+Mismatched elements: 32 / 540672 (0.0%)
+Greatest absolute difference: 2.864282578229904e-06 at index (22323,) (up to 1e-06 allowed)
+Greatest relative difference: 0.2957286834716797 at index (112358,) (up to 0.0001 allowed)
+exit 1

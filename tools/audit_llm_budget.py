@@ -45,14 +45,23 @@ def main():
     llm.lm_loss(model, batch, 'none').sum().backward()
     capture.active = False
     grads = capture.per_example()
-    worst = 0.
+    # Pre-registered tolerance rtol 1e-4, atol 1e-6. The first audit attempt failed it
+    # (results/llm-budget-audit-attempt-1.log); the outcome is recorded, not asserted.
+    gradient_check = []
     for i in range(4):
         model.zero_grad()
         llm.lm_loss(model, batch[i:i + 1]).backward()
         ref = s66.flat_grad(params)
-        torch.testing.assert_close(grads[i], ref, rtol=1e-4, atol=1e-6)
-        worst = max(worst, float((grads[i] - ref).abs().max()))
-    checks = dict(runs_replayed=0, choices_compared=0, per_example_max_abs_error=worst)
+        diff = (grads[i] - ref).abs()
+        allowed = 1e-6 + 1e-4 * ref.abs()
+        gradient_check.append(dict(max_abs_difference=float(diff.max()),
+                                   entries_outside_preregistered_tolerance=int((diff > allowed).sum()),
+                                   entries=int(diff.numel()),
+                                   relative_l2_difference=float(diff.norm() / ref.norm()),
+                                   cosine=float(torch.nn.functional.cosine_similarity(grads[i], ref, dim=0))))
+    passed = all(g['entries_outside_preregistered_tolerance'] == 0 for g in gradient_check)
+    checks = dict(runs_replayed=0, choices_compared=0, per_example_gradient=gradient_check,
+                  per_example_gradient_within_preregistered_tolerance=passed)
     for k, rho in enumerate(plan['rho']):
         for seed in plan['seeds']:
             ids, choices = stage.schedule(k, seed, rho, n_ar, n_en)
@@ -66,9 +75,9 @@ def main():
                 checks['runs_replayed'] += 1
                 checks['choices_compared'] += len(row['choices'])
                 print(rho, seed, row['arm'], 'replayed', flush=True)
-    audit = dict(status='passed', stage=68, result_sha256=digest(RESULT), records_sha256=digest(RECORDS),
+    audit = dict(status='passed' if passed else 'replay passed; per-example gradient tolerance not met', stage=68, result_sha256=digest(RESULT), records_sha256=digest(RECORDS),
                  checks=checks, notes='Step times are not replayable; all choices and losses were recomputed '
-                                      'exactly; per-example gradients matched separate backward passes.')
+                                      'exactly. See checks.per_example_gradient for the batched-versus-separate gradient comparison.')
     with OUTPUT.open('x') as out:
         json.dump(audit, out, indent=2)
         out.write('\n')
