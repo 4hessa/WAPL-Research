@@ -3,3 +3,4 @@ ar seed 31000 random: loss64 3.21910
 ar seed 31000 loss4: loss64 3.21810
 ar seed 31000 graddot4: loss64 3.20180
 ar seed 31001 loss4: loss64 3.24250
+ar seed 31001 graddot4: loss64 3.21164
