@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "stage": 64,
+  "result_sha256": "2c6cd92fb9565abd7b298fdc49702911bd238af7dc0689e51a768cfebf48a5a6",
+  "records_sha256": "9588868fa8fe89177fc9fda27c8d189798217747ee7a329817d0be6f8b2be648",
+  "checks": {
+    "order": 144,
+    "timing": 144,
+    "random_prefix": 16,
+    "policy_replay_decisions": 1799,
+    "final_loss_replays": 144,
+    "stage63_prefix": 32
+  },
+  "max_final_loss_error": 0.0,
+  "notes": "Timing values are not replayable; choice sequences, policy decisions and final losses were recomputed on the audit host."
+}

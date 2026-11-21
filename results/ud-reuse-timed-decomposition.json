@@ -1,0 +1,354 @@
+{
+  "stage": "64-posthoc",
+  "status": "exploratory, not specified in protocol 64",
+  "source_sha256": {
+    "results/ud-reuse-timed.json": "2c6cd92fb9565abd7b298fdc49702911bd238af7dc0689e51a768cfebf48a5a6",
+    "results/ud-reuse-timed-records.jsonl": "9588868fa8fe89177fc9fda27c8d189798217747ee7a329817d0be6f8b2be648",
+    "tools/decompose_ud_reuse_timed.py": "8c5cf10e8d8d429e2bf3750481ff8b5be8b9a54284584f4bd699be42c9cf8e69"
+  },
+  "definition": "Post-hoc exploratory decomposition of stage-64 timed contrasts (not in protocol 64).\n\nFor a guided run with n accepted updates, replay the random schedule's first n\nchoices from the same warmed state. Then\n\n  L_guided(T) - L_random(T) = [L_guided(T) - L_random@n]   (per-update selection)\n                            + [L_random@n - L_random(T)]   (fewer updates in T)\n\nNegative first term: the guided choices lower loss more than the same number of\nrandom updates. Positive second term: loss forgone through lower throughput.",
+  "languages": {
+    "ar": {
+      "reuse4": {
+        "final": 2.198662814994653,
+        "random_at_matched_updates": 2.210935098429521,
+        "selection_term": -0.012272283434867914,
+        "throughput_term": 0.4922849697371325,
+        "total": 0.48001268630226457,
+        "seeds_selection_negative": 8
+      },
+      "fresh": {
+        "final": 2.5532118156552315,
+        "random_at_matched_updates": 2.5702262396613755,
+        "selection_term": -0.017014424006144113,
+        "throughput_term": 0.8515761109689871,
+        "total": 0.8345616869628429,
+        "seeds_selection_negative": 8
+      }
+    },
+    "en": {
+      "reuse4": {
+        "final": 3.359841153025627,
+        "random_at_matched_updates": 3.3658629382650056,
+        "selection_term": -0.006021785239378574,
+        "throughput_term": 0.3708495895067851,
+        "total": 0.3648278042674065,
+        "seeds_selection_negative": 7
+      },
+      "fresh": {
+        "final": 3.437975915769736,
+        "random_at_matched_updates": 3.4465081493059793,
+        "selection_term": -0.008532233536243383,
+        "throughput_term": 0.45149480054775876,
+        "total": 0.4429625670115154,
+        "seeds_selection_negative": 8
+      }
+    }
+  },
+  "states": [
+    {
+      "language": "ar",
+      "seed": 29000,
+      "random_final": 1.7238855461279552,
+      "reuse4": {
+        "final": 2.4498172998428345,
+        "random_at_matched_updates": 2.4676997860272727,
+        "selection_term": -0.017882486184438218,
+        "throughput_term": 0.7438142398993175,
+        "total": 0.7259317537148793
+      },
+      "fresh": {
+        "final": 2.7606845696767173,
+        "random_at_matched_updates": 2.771908382574717,
+        "selection_term": -0.011223812897999785,
+        "throughput_term": 1.0480228364467619,
+        "total": 1.036799023548762
+      }
+    },
+    {
+      "language": "ar",
+      "seed": 29001,
+      "random_final": 1.7056204875310261,
+      "reuse4": {
+        "final": 2.0868869622548423,
+        "random_at_matched_updates": 2.091514011224111,
+        "selection_term": -0.004627048969268799,
+        "throughput_term": 0.38589352369308494,
+        "total": 0.38126647472381614
+      },
+      "fresh": {
+        "final": 2.4459652304649353,
+        "random_at_matched_updates": 2.4662062724431357,
+        "selection_term": -0.020241041978200425,
+        "throughput_term": 0.7605857849121096,
+        "total": 0.7403447429339092
+      }
+    },
+    {
+      "language": "ar",
+      "seed": 29002,
+      "random_final": 1.7169114748636882,
+      "reuse4": {
+        "final": 2.162298023700714,
+        "random_at_matched_updates": 2.1686940590540567,
+        "selection_term": -0.006396035353342544,
+        "throughput_term": 0.45178258419036843,
+        "total": 0.4453865488370259
+      },
+      "fresh": {
+        "final": 2.5326146682103476,
+        "random_at_matched_updates": 2.5412091414133706,
+        "selection_term": -0.008594473203022979,
+        "throughput_term": 0.8242976665496824,
+        "total": 0.8157031933466594
+      }
+    },
+    {
+      "language": "ar",
+      "seed": 29003,
+      "random_final": 1.7341821889082591,
+      "reuse4": {
+        "final": 2.132768968741099,
+        "random_at_matched_updates": 2.1372509201367698,
+        "selection_term": -0.004481951395670869,
+        "throughput_term": 0.4030687312285106,
+        "total": 0.39858677983283974
+      },
+      "fresh": {
+        "final": 2.503347714742025,
+        "random_at_matched_updates": 2.5178906520207724,
+        "selection_term": -0.014542937278747559,
+        "throughput_term": 0.7837084631125133,
+        "total": 0.7691655258337657
+      }
+    },
+    {
+      "language": "ar",
+      "seed": 29004,
+      "random_final": 1.714429497718811,
+      "reuse4": {
+        "final": 2.116744418938955,
+        "random_at_matched_updates": 2.1261462767918906,
+        "selection_term": -0.009401857852935791,
+        "throughput_term": 0.4117167790730796,
+        "total": 0.4023149212201438
+      },
+      "fresh": {
+        "final": 2.450388709704081,
+        "random_at_matched_updates": 2.470045328140259,
+        "selection_term": -0.01965661843617772,
+        "throughput_term": 0.7556158304214478,
+        "total": 0.73595921198527
+      }
+    },
+    {
+      "language": "ar",
+      "seed": 29005,
+      "random_final": 1.723213364680608,
+      "reuse4": {
+        "final": 2.2964643239974976,
+        "random_at_matched_updates": 2.341443657875061,
+        "selection_term": -0.04497933387756348,
+        "throughput_term": 0.618230293194453,
+        "total": 0.5732509593168895
+      },
+      "fresh": {
+        "final": 2.72191321849823,
+        "random_at_matched_updates": 2.758953551451365,
+        "selection_term": -0.037040332953135024,
+        "throughput_term": 1.035740186770757,
+        "total": 0.9986998538176219
+      }
+    },
+    {
+      "language": "ar",
+      "seed": 29006,
+      "random_final": 1.7095008095105488,
+      "reuse4": {
+        "final": 2.1592307090759277,
+        "random_at_matched_updates": 2.164908488591512,
+        "selection_term": -0.005677779515584458,
+        "throughput_term": 0.45540767908096336,
+        "total": 0.4497298995653789
+      },
+      "fresh": {
+        "final": 2.4868964751561484,
+        "random_at_matched_updates": 2.5002798438072205,
+        "selection_term": -0.013383368651072036,
+        "throughput_term": 0.7907790342966716,
+        "total": 0.7773956656455996
+      }
+    },
+    {
+      "language": "ar",
+      "seed": 29007,
+      "random_final": 1.7214576601982117,
+      "reuse4": {
+        "final": 2.185091813405355,
+        "random_at_matched_updates": 2.189823587735494,
+        "selection_term": -0.00473177433013916,
+        "throughput_term": 0.46836592753728246,
+        "total": 0.4636341532071433
+      },
+      "fresh": {
+        "final": 2.5238839387893677,
+        "random_at_matched_updates": 2.535316745440165,
+        "selection_term": -0.011432806650797378,
+        "throughput_term": 0.8138590852419534,
+        "total": 0.802426278591156
+      }
+    },
+    {
+      "language": "en",
+      "seed": 29000,
+      "random_final": 3.0086155931154885,
+      "reuse4": {
+        "final": 3.3763992389043174,
+        "random_at_matched_updates": 3.382733325163523,
+        "selection_term": -0.00633408625920584,
+        "throughput_term": 0.37411773204803467,
+        "total": 0.36778364578882883
+      },
+      "fresh": {
+        "final": 3.437472144762675,
+        "random_at_matched_updates": 3.4508289893468223,
+        "selection_term": -0.013356844584147431,
+        "throughput_term": 0.4422133962313337,
+        "total": 0.4288565516471863
+      }
+    },
+    {
+      "language": "en",
+      "seed": 29001,
+      "random_final": 2.9946191708246865,
+      "reuse4": {
+        "final": 3.3639745712280273,
+        "random_at_matched_updates": 3.3732099135716758,
+        "selection_term": -0.009235342343648423,
+        "throughput_term": 0.37859074274698923,
+        "total": 0.3693554004033408
+      },
+      "fresh": {
+        "final": 3.4296356439590454,
+        "random_at_matched_updates": 3.438623547554016,
+        "selection_term": -0.008987903594970703,
+        "throughput_term": 0.4440043767293296,
+        "total": 0.43501647313435887
+      }
+    },
+    {
+      "language": "en",
+      "seed": 29002,
+      "random_final": 3.0211389859517417,
+      "reuse4": {
+        "final": 3.374950110912323,
+        "random_at_matched_updates": 3.3858866691589355,
+        "selection_term": -0.010936558246612549,
+        "throughput_term": 0.36474768320719386,
+        "total": 0.3538111249605813
+      },
+      "fresh": {
+        "final": 3.438989301522573,
+        "random_at_matched_updates": 3.450246493021647,
+        "selection_term": -0.011257191499074004,
+        "throughput_term": 0.4291075070699053,
+        "total": 0.4178503155708313
+      }
+    },
+    {
+      "language": "en",
+      "seed": 29003,
+      "random_final": 2.9941635727882385,
+      "reuse4": {
+        "final": 3.3631924986839294,
+        "random_at_matched_updates": 3.3659998178482056,
+        "selection_term": -0.002807319164276123,
+        "throughput_term": 0.37183624505996704,
+        "total": 0.3690289258956909
+      },
+      "fresh": {
+        "final": 3.460926830768585,
+        "random_at_matched_updates": 3.4731696248054504,
+        "selection_term": -0.012242794036865234,
+        "throughput_term": 0.4790060520172119,
+        "total": 0.4667632579803467
+      }
+    },
+    {
+      "language": "en",
+      "seed": 29004,
+      "random_final": 2.9955695072809854,
+      "reuse4": {
+        "final": 3.362308979034424,
+        "random_at_matched_updates": 3.363729496796926,
+        "selection_term": -0.0014205177625021825,
+        "throughput_term": 0.36815998951594064,
+        "total": 0.36673947175343846
+      },
+      "fresh": {
+        "final": 3.4445417324701944,
+        "random_at_matched_updates": 3.4472190141677856,
+        "selection_term": -0.002677281697591294,
+        "throughput_term": 0.4516495068868003,
+        "total": 0.448972225189209
+      }
+    },
+    {
+      "language": "en",
+      "seed": 29005,
+      "random_final": 2.96921573082606,
+      "reuse4": {
+        "final": 3.353118062019348,
+        "random_at_matched_updates": 3.3496346275011697,
+        "selection_term": 0.003483434518178452,
+        "throughput_term": 0.38041889667510986,
+        "total": 0.3839023311932883
+      },
+      "fresh": {
+        "final": 3.4232394297917685,
+        "random_at_matched_updates": 3.428608775138855,
+        "selection_term": -0.0053693453470864405,
+        "throughput_term": 0.45939304431279515,
+        "total": 0.4540236989657087
+      }
+    },
+    {
+      "language": "en",
+      "seed": 29006,
+      "random_final": 2.960147261619568,
+      "reuse4": {
+        "final": 3.3044058084487915,
+        "random_at_matched_updates": 3.317460576693217,
+        "selection_term": -0.013054768244425308,
+        "throughput_term": 0.35731331507364894,
+        "total": 0.34425854682922363
+      },
+      "fresh": {
+        "final": 3.4231996138890586,
+        "random_at_matched_updates": 3.4291313687960305,
+        "selection_term": -0.005931754906971953,
+        "throughput_term": 0.46898410717646266,
+        "total": 0.4630523522694907
+      }
+    },
+    {
+      "language": "en",
+      "seed": 29007,
+      "random_final": 3.0166369676589966,
+      "reuse4": {
+        "final": 3.3803799549738565,
+        "random_at_matched_updates": 3.388249079386393,
+        "selection_term": -0.007869124412536621,
+        "throughput_term": 0.3716121117273965,
+        "total": 0.3637429873148599
+      },
+      "fresh": {
+        "final": 3.445802628993988,
+        "random_at_matched_updates": 3.454237381617228,
+        "selection_term": -0.008434752623240005,
+        "throughput_term": 0.43760041395823146,
+        "total": 0.42916566133499146
+      }
+    }
+  ]
+}

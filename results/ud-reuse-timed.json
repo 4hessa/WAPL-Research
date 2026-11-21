@@ -1,0 +1,1845 @@
+{
+  "stage": 64,
+  "protocol": {
+    "stage": 64,
+    "date": "2026-11-20",
+    "reference_commit": "f9ec8eaefac326a33e53ae310036048615dbb8e4",
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "seeds": [
+      29000,
+      29001,
+      29002,
+      29003,
+      29004,
+      29005,
+      29006,
+      29007
+    ],
+    "arms": [
+      "reuse4",
+      "fresh",
+      "random"
+    ],
+    "refresh_interval": 4,
+    "budget_seconds": 3.0,
+    "timing_repeats": 3,
+    "schedule_length": 20000,
+    "warmup_updates": 32,
+    "warmup_batch_size": 4,
+    "candidates_per_step": 4,
+    "probe_chunks": 64,
+    "target_chunks": 256,
+    "probe_seed": 6301,
+    "target_seed": 6302,
+    "design": "Timed follow-up to stage 63 using the same ByteTransformer and AdamW, PADT/EWT official prepared train/dev/test splits, sampled probe and target chunk indices, and eight initialization seeds per language. Compare the three policies afresh within each state on this host; no interim tuning or outcome-dependent restarts.",
+    "schedule": "For each language/seed, draw 32 warmup training batches of four chunks, then a 20000-by-4 matrix of training candidate indices, then 20000 uniform random positions with the stage-63 generator. Cross-check the first 16 candidate sets with stage 63. Use one common schedule in all nine runs of a state, with independent model/optimizer clones.",
+    "policies": "Stage-60 timed_run implements random, fresh and reuse4 without changing their decisions or timer. Recompute probe gradient every fourth accepted step for reuse4, every step for fresh. Random applies one uniformly chosen candidate. End each arm at the last accepted update and log a late attempt separately.",
+    "order": "Enumerate languages then seeds in listed order. Rotate the listed three arms left by (zero-based state index + zero-based repeat) modulo three. Three serial timing repeats per state; each arm has one run at each position.",
+    "timing": "Single-thread CPU, deterministic Torch algorithms. Three seconds per run including candidate indexing, per-step cloning, probe refreshes and trial updates. Setup, common warmup, schedule, initial clone and held-out loss evaluation are outside the stage-58 timer. Report accepted steps, attempts, actual and overrun seconds, final loss and refresh counts. Disallow schedule exhaustion or missing cases. Log completed rows immediately and preserve interruptions.",
+    "primary": "Mean Arabic final target loss for reuse4 minus fresh at the common deadline, nats per byte transition; negative favors reuse4. Average three repeats within each paired seed before averaging eight seeds.",
+    "secondary": "Report English same comparison and reuse4 minus random in each language. Describe losses, accepted updates, paired per-seed differences and their spread. Report magnitude and direction for these states without a pooled cross-language effect, confidence interval, significance test, or adaptive choice of period.",
+    "coverage": "Two languages, eight seeds, three policies, three repeats: 144 timed runs. Stage 63 measured one-step branch effects along reuse trajectories; its two branches do not provide historical full fresh trajectories. Audit seed/arm pairings, schedule and source hashes, age/refresh logic, deadline adherence and policy-choice prefixes where replay is justified.",
+    "scope": "Previously examined corpora and fixed 256-chunk test sample per language. Both timing noise and update throughput affect outcomes. The three-second policy clock is not total lifecycle cost."
+  },
+  "provenance": {
+    "sha256": {
+      "research/ud-reuse-timed-protocol.json": "7ab40233673a800abf628780fd714f70068671cbaa12392a31e447188bbfeeaf",
+      "data/multilingual_sources.json": "101697c45cc1d16688ac91121570bc1decedc671b7b35d93d19626a2bde31b3d",
+      "results/ud-reuse-transfer.json": "0f5a4678e27749a1be4e5cb60001b2819d5ab03b92f5c2a8d2943318c2e0495a",
+      "results/ud-reuse-transfer-audit.json": "049b4fcf531dcaebc9ba495e6e2c60198424a28dcc7e12ae3544fe075b74a82c",
+      "experiments/ud_reuse_timed.py": "a6ddf85d88eb21ba1b076a9a4083ebf5f72efad6651de92f97cae4ce4b95d495",
+      "tests/test_ud_reuse_timed.py": "f094ec0ef2daab7b9914de6b23c45aa6597529095621ac706052d6beaba156cb",
+      "experiments/pud_reuse.py": "edea81a05a30addc5c90696d86632464f233f2962a8f0322d102b90393b9f9c9",
+      "experiments/pud_policy.py": "e2af6d11cb3a21da0c6cb6398656605ff4ef512999847d90251ea92b0e9c972c",
+      "experiments/ud_reuse_transfer.py": "cdfbe3a5447bed3abdf897cfeab1aa98bf0ace3b751645e0c8cd037e5ff16608",
+      "experiments/multilingual_readiness.py": "b2b1e2622381aa66a5158e6d4f68a9d2dd3fd0286d6a30c57e98b854948caa25",
+      "experiments/multilingual_policy.py": "a6cab872043bb777cea3230653880e3ce270f2654797c18070a13b525f68b296",
+      "experiments/head_invariance.py": "bdd6168502f60fd0f87e8c90726fe859b6f4ddbfdeae78c71cfa8daeb73f0c40",
+      "data/ud_ar_train.txt": "2fe6a1b3c6c1a50dff892296156882941049da22f92e15f9a444da3b13d6d162",
+      "data/ud_ar_dev.txt": "f1b9e6e014412fb9a78f5a48c142b2c0b6d5554fe284520280086a01a766571b",
+      "data/ud_ar_test.txt": "cd70d1d9fa08fa5bcb48c4ac3f7d6d4d1e50a146e3b337a80c015700743dcdd7",
+      "data/ud_en_train.txt": "fb2155978102bd793938effcc40a35b2d948f8ea606e6c5c334df5409f967eef",
+      "data/ud_en_dev.txt": "5ed0defb7bcbf5aa8090fbaa2a9494b2094f423fb27aa5e0be5708325091aff4",
+      "data/ud_en_test.txt": "ca2a5896d37d2b1ae15af026ee17f2fff3ac47bf0995204e6c1fa9d2702fc55d"
+    },
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "numpy": "2.3.5",
+    "torch": "2.5.1+cpu",
+    "torch_threads": 1,
+    "interop_threads": 4,
+    "deterministic": true,
+    "openblas_num_threads": "1",
+    "logical_cpus": 4
+  },
+  "output_sha256": {
+    "ud-reuse-timed-records.jsonl": "9588868fa8fe89177fc9fda27c8d189798217747ee7a329817d0be6f8b2be648"
+  },
+  "populations": {
+    "ar": {
+      "train_chunks": 28935,
+      "dev_chunks": 3771,
+      "test_chunks": 3668,
+      "probe_ids": [
+        98,
+        103,
+        326,
+        334,
+        455,
+        519,
+        631,
+        650,
+        793,
+        931,
+        933,
+        1054,
+        1078,
+        1084,
+        1126,
+        1216,
+        1331,
+        1366,
+        1376,
+        1398,
+        1438,
+        1443,
+        1458,
+        1517,
+        1582,
+        1600,
+        1662,
+        1726,
+        1740,
+        1742,
+        1748,
+        1790,
+        1796,
+        1871,
+        1912,
+        1931,
+        1943,
+        1947,
+        2314,
+        2347,
+        2389,
+        2414,
+        2432,
+        2487,
+        2647,
+        2718,
+        2757,
+        2810,
+        2915,
+        2936,
+        2993,
+        3008,
+        3077,
+        3093,
+        3099,
+        3109,
+        3152,
+        3163,
+        3429,
+        3449,
+        3472,
+        3528,
+        3632,
+        3646
+      ],
+      "target_ids": [
+        9,
+        12,
+        21,
+        23,
+        27,
+        33,
+        52,
+        58,
+        77,
+        78,
+        95,
+        101,
+        116,
+        118,
+        150,
+        156,
+        170,
+        176,
+        220,
+        225,
+        227,
+        233,
+        247,
+        271,
+        292,
+        340,
+        349,
+        358,
+        363,
+        392,
+        419,
+        429,
+        430,
+        442,
+        473,
+        487,
+        488,
+        491,
+        498,
+        536,
+        540,
+        578,
+        591,
+        597,
+        604,
+        616,
+        622,
+        635,
+        650,
+        658,
+        660,
+        666,
+        672,
+        691,
+        711,
+        722,
+        727,
+        729,
+        741,
+        744,
+        776,
+        789,
+        792,
+        793,
+        803,
+        816,
+        827,
+        836,
+        867,
+        870,
+        887,
+        890,
+        900,
+        902,
+        909,
+        941,
+        942,
+        980,
+        983,
+        985,
+        986,
+        1033,
+        1034,
+        1052,
+        1093,
+        1099,
+        1103,
+        1108,
+        1131,
+        1146,
+        1178,
+        1180,
+        1184,
+        1192,
+        1195,
+        1217,
+        1228,
+        1241,
+        1279,
+        1334,
+        1335,
+        1345,
+        1351,
+        1358,
+        1361,
+        1408,
+        1417,
+        1431,
+        1458,
+        1481,
+        1484,
+        1490,
+        1491,
+        1507,
+        1511,
+        1521,
+        1538,
+        1539,
+        1577,
+        1591,
+        1602,
+        1625,
+        1635,
+        1658,
+        1688,
+        1702,
+        1722,
+        1742,
+        1753,
+        1764,
+        1803,
+        1831,
+        1836,
+        1838,
+        1840,
+        1852,
+        1860,
+        1880,
+        1881,
+        1927,
+        1984,
+        1994,
+        2040,
+        2041,
+        2043,
+        2065,
+        2073,
+        2078,
+        2118,
+        2133,
+        2141,
+        2143,
+        2164,
+        2179,
+        2196,
+        2202,
+        2217,
+        2221,
+        2241,
+        2265,
+        2266,
+        2275,
+        2306,
+        2333,
+        2340,
+        2342,
+        2345,
+        2360,
+        2373,
+        2379,
+        2414,
+        2417,
+        2466,
+        2471,
+        2474,
+        2485,
+        2486,
+        2521,
+        2537,
+        2561,
+        2585,
+        2593,
+        2611,
+        2618,
+        2620,
+        2623,
+        2625,
+        2632,
+        2644,
+        2668,
+        2674,
+        2680,
+        2717,
+        2743,
+        2763,
+        2772,
+        2781,
+        2873,
+        2951,
+        2956,
+        2957,
+        2959,
+        2966,
+        2979,
+        3006,
+        3014,
+        3041,
+        3049,
+        3060,
+        3066,
+        3075,
+        3080,
+        3085,
+        3108,
+        3149,
+        3153,
+        3191,
+        3196,
+        3198,
+        3210,
+        3212,
+        3213,
+        3215,
+        3224,
+        3226,
+        3238,
+        3239,
+        3243,
+        3292,
+        3300,
+        3331,
+        3335,
+        3341,
+        3346,
+        3368,
+        3380,
+        3381,
+        3384,
+        3388,
+        3397,
+        3410,
+        3432,
+        3454,
+        3470,
+        3487,
+        3489,
+        3514,
+        3534,
+        3546,
+        3547,
+        3578,
+        3595,
+        3607,
+        3616,
+        3661,
+        3664
+      ],
+      "discarded_tail_bytes": {
+        "train": 36,
+        "dev": 24,
+        "test": 32
+      }
+    },
+    "en": {
+      "train_chunks": 15087,
+      "dev_chunks": 1901,
+      "test_chunks": 1877,
+      "probe_ids": [
+        48,
+        52,
+        162,
+        167,
+        227,
+        259,
+        313,
+        324,
+        394,
+        463,
+        466,
+        524,
+        535,
+        538,
+        563,
+        609,
+        667,
+        683,
+        691,
+        704,
+        721,
+        722,
+        725,
+        756,
+        786,
+        793,
+        826,
+        864,
+        868,
+        870,
+        873,
+        894,
+        903,
+        937,
+        963,
+        967,
+        968,
+        979,
+        1163,
+        1183,
+        1194,
+        1201,
+        1225,
+        1239,
+        1315,
+        1367,
+        1373,
+        1408,
+        1461,
+        1480,
+        1498,
+        1503,
+        1535,
+        1544,
+        1558,
+        1561,
+        1582,
+        1703,
+        1724,
+        1736,
+        1776,
+        1808,
+        1823,
+        1883
+      ],
+      "target_ids": [
+        4,
+        6,
+        10,
+        11,
+        13,
+        15,
+        25,
+        28,
+        37,
+        39,
+        48,
+        55,
+        56,
+        74,
+        76,
+        83,
+        88,
+        107,
+        112,
+        116,
+        117,
+        137,
+        140,
+        169,
+        176,
+        177,
+        179,
+        190,
+        205,
+        210,
+        215,
+        226,
+        233,
+        234,
+        249,
+        250,
+        253,
+        257,
+        268,
+        288,
+        294,
+        296,
+        297,
+        305,
+        316,
+        319,
+        322,
+        323,
+        328,
+        333,
+        339,
+        341,
+        356,
+        362,
+        366,
+        367,
+        374,
+        380,
+        386,
+        390,
+        391,
+        399,
+        406,
+        412,
+        423,
+        430,
+        438,
+        439,
+        442,
+        464,
+        466,
+        469,
+        475,
+        481,
+        496,
+        510,
+        518,
+        523,
+        538,
+        545,
+        552,
+        554,
+        557,
+        559,
+        575,
+        588,
+        592,
+        596,
+        600,
+        601,
+        608,
+        609,
+        624,
+        626,
+        635,
+        639,
+        652,
+        661,
+        666,
+        675,
+        678,
+        708,
+        714,
+        728,
+        732,
+        734,
+        736,
+        738,
+        745,
+        749,
+        763,
+        772,
+        794,
+        807,
+        810,
+        825,
+        832,
+        833,
+        840,
+        846,
+        847,
+        850,
+        863,
+        882,
+        884,
+        888,
+        892,
+        899,
+        904,
+        917,
+        939,
+        965,
+        995,
+        997,
+        1007,
+        1009,
+        1020,
+        1039,
+        1042,
+        1051,
+        1067,
+        1074,
+        1079,
+        1085,
+        1086,
+        1094,
+        1101,
+        1125,
+        1139,
+        1142,
+        1145,
+        1147,
+        1149,
+        1151,
+        1155,
+        1175,
+        1177,
+        1184,
+        1193,
+        1205,
+        1208,
+        1215,
+        1220,
+        1231,
+        1243,
+        1244,
+        1245,
+        1247,
+        1249,
+        1271,
+        1278,
+        1279,
+        1312,
+        1315,
+        1317,
+        1319,
+        1322,
+        1324,
+        1334,
+        1336,
+        1366,
+        1403,
+        1415,
+        1425,
+        1439,
+        1441,
+        1450,
+        1470,
+        1474,
+        1483,
+        1500,
+        1512,
+        1513,
+        1516,
+        1519,
+        1523,
+        1526,
+        1529,
+        1538,
+        1563,
+        1570,
+        1575,
+        1578,
+        1581,
+        1583,
+        1592,
+        1598,
+        1602,
+        1612,
+        1613,
+        1616,
+        1619,
+        1626,
+        1633,
+        1635,
+        1644,
+        1648,
+        1650,
+        1656,
+        1657,
+        1658,
+        1669,
+        1670,
+        1671,
+        1677,
+        1680,
+        1693,
+        1695,
+        1702,
+        1703,
+        1708,
+        1715,
+        1727,
+        1736,
+        1739,
+        1743,
+        1770,
+        1771,
+        1774,
+        1775,
+        1780,
+        1782,
+        1800,
+        1805,
+        1811,
+        1821,
+        1829,
+        1830,
+        1832,
+        1837,
+        1841,
+        1854,
+        1864,
+        1870,
+        1875,
+        1876
+      ],
+      "discarded_tail_bytes": {
+        "train": 20,
+        "dev": 61,
+        "test": 37
+      }
+    }
+  },
+  "coverage": [
+    {
+      "language": "ar",
+      "seed": 29000,
+      "initial_model_sha256": "30576e69572e0eecdf5b690a3634635b552f746bb9d1e74bf8ce782db1769e77",
+      "initial_optimizer_sha256": "711d1730ae90d1952e3f16dea084ba746796e406850bf7e20838949960cfe886",
+      "schedule_sha256": "9cfe8bc0a9422ff2d80dca9c3b81d615f3e602320641d294727804eebcc4b19d",
+      "initial_loss": 3.5347957015037537
+    },
+    {
+      "language": "ar",
+      "seed": 29001,
+      "initial_model_sha256": "5dbb1b18dcbf97c4ffc00fe9b082362e61623c0a068df5c32572f60a6ed82efd",
+      "initial_optimizer_sha256": "ca9ff746bd9652e2aa5f30dca044d3c163f1e5765720a236040e9bbd5379f3f1",
+      "schedule_sha256": "bd5099e9963d320752b761bec9981c12dc888f808490c4a0436372a7af764073",
+      "initial_loss": 3.53202223777771
+    },
+    {
+      "language": "ar",
+      "seed": 29002,
+      "initial_model_sha256": "8c739716ea2e8eb3eef8b211466cbe63a9645285ac42e629246fab8f4c103d41",
+      "initial_optimizer_sha256": "1da1d76029d4c7fc38569396288bda682d6478d010ad62b1ec89b7f72e0aef0c",
+      "schedule_sha256": "425a03514a23a3822177e14c5c50fc21fc38bd1cc839499da1b0452822a6ce74",
+      "initial_loss": 3.6731797456741333
+    },
+    {
+      "language": "ar",
+      "seed": 29003,
+      "initial_model_sha256": "a43fff4c3f43f93c175cfc50c0777cc78db48423181271cb0be3e51ff1f171d6",
+      "initial_optimizer_sha256": "a21a1d85fc95c61c2061317805aca788e1b1ddce24ffa19c9652f9a3225dd57a",
+      "schedule_sha256": "3f6d089acd4a5d89b8532764e8acebfd2289e36070e3922d6ea8b4af220b3067",
+      "initial_loss": 3.4722025394439697
+    },
+    {
+      "language": "ar",
+      "seed": 29004,
+      "initial_model_sha256": "180ad3181377841a6e72af5097a063c1e77854375fa3c929ad733ca7a31bb37f",
+      "initial_optimizer_sha256": "34c7668a5bb6c962f5724a58d2bdd24bfbad629bcbbd5c1abd27329051f92c8c",
+      "schedule_sha256": "701a27070cbfdab81ef21f9f732565c03f3b2bdbcd461aa4bd9000a02adda1f6",
+      "initial_loss": 3.4179399013519287
+    },
+    {
+      "language": "ar",
+      "seed": 29005,
+      "initial_model_sha256": "dc6c502d1bc0b4b41afc8a73ff1afca7d4eeaf7b0b36e679a6c322592c1ecb6c",
+      "initial_optimizer_sha256": "44aa040b6dc831114b4295e31b777712bb2b5909772be04ddc5eda6c57fe2384",
+      "schedule_sha256": "d6522011c21987f2367e6176f5e6e35eefdbe8c79e2193a14b27da602ba99813",
+      "initial_loss": 3.4436479806900024
+    },
+    {
+      "language": "ar",
+      "seed": 29006,
+      "initial_model_sha256": "a71d2453b454432dc96696657088db0bdd6540ec43803b121381ec2de36c8cbc",
+      "initial_optimizer_sha256": "47663a11c405a8a584895d5a7e71d64fb795c747ec405e6e639aa9c1a188c6ff",
+      "schedule_sha256": "b52afe1b643a451e61b5c0a1806cba98f2c709de3445911335b4d309f508e13a",
+      "initial_loss": 3.5942856073379517
+    },
+    {
+      "language": "ar",
+      "seed": 29007,
+      "initial_model_sha256": "fcad757150cb38ae4d6285f3f647705c35b022e08fcfdedafedf84f6f363e786",
+      "initial_optimizer_sha256": "51a7a28656af6fd4fdd3f7470cd34615d316ac6920c9ada4678a31a02fec675d",
+      "schedule_sha256": "d4725a5f57224bd7745d9323b24c263495600658eef64567c4fd80a7eb97db0f",
+      "initial_loss": 3.6064260005950928
+    },
+    {
+      "language": "en",
+      "seed": 29000,
+      "initial_model_sha256": "5447df5db5d79f3bc225ec9648197474c4376c02f60f8dd786f575f46633ff38",
+      "initial_optimizer_sha256": "489c5bd6b3aa1a68da4047daf6f9f1493ba3fb9718805423883c30b912509f61",
+      "schedule_sha256": "ddf8f5426b7906ba45fa3b7ecbd8892cc933973c3e6a7a9101c01b159e0e50ef",
+      "initial_loss": 4.06916868686676
+    },
+    {
+      "language": "en",
+      "seed": 29001,
+      "initial_model_sha256": "673dd2324270fbb39e888666cd3629342fecb34202a382529ff9f2c51cf57e5a",
+      "initial_optimizer_sha256": "c727f834bc25d02b260b622c4a15775a1e2d040557d1fc66fe7ccc314ee4dcb3",
+      "schedule_sha256": "3c9f81f38ad935af51d1975ce98c7847e23df46cb8182093e43cd30eff158d33",
+      "initial_loss": 3.980634868144989
+    },
+    {
+      "language": "en",
+      "seed": 29002,
+      "initial_model_sha256": "b02df02f2b890b8e1d9e94ac0b4a9f145017dc26b62b6cb409c30be8b4e554f0",
+      "initial_optimizer_sha256": "bd22e652942361614dcfcb29b67668261d000a4fa735c8bf668719e46cca3061",
+      "schedule_sha256": "2ce0a1a22ed039657e007b4f6f59a080927cce05740ec783dd94b369f4f50403",
+      "initial_loss": 4.106339335441589
+    },
+    {
+      "language": "en",
+      "seed": 29003,
+      "initial_model_sha256": "30770a83d131d4175386f09833db1c8427e381cd843c9845b3c83132f4530e9a",
+      "initial_optimizer_sha256": "895ba4ace3ed699b56b8472a168bc4560804555f913ffeb53d8b9ffaa84e62a0",
+      "schedule_sha256": "67eb5a4f3d7543e33ca962f6dcd128ae08aa75fd048f8fefa4074c6783d6e20d",
+      "initial_loss": 4.132442116737366
+    },
+    {
+      "language": "en",
+      "seed": 29004,
+      "initial_model_sha256": "f747a24933ac364f44f0a1b152e0120ea29f92494219a3cb9c70ec82e57b9bc3",
+      "initial_optimizer_sha256": "ac2cb061dacbcab67dfecc5b90fd541676848ae772c0698a25556fe40dd4709a",
+      "schedule_sha256": "9a314c214d3076e3eca0c8ca85b6443076adfeeedce7740be64643e6b1816293",
+      "initial_loss": 4.1150782108306885
+    },
+    {
+      "language": "en",
+      "seed": 29005,
+      "initial_model_sha256": "021341e696eb247e151a0ad9b49cee989e1dd7dfca8aeca9e0c97fe674ff0c39",
+      "initial_optimizer_sha256": "873ab293e76c59fddedcf6a41e488a51b3559819dcf6392230b963bce72ffe1b",
+      "schedule_sha256": "00db78f3f8801e049ee9b9aa3060e41ba6c658ffa7e02c8baa1ce57358a72139",
+      "initial_loss": 3.9786548614501953
+    },
+    {
+      "language": "en",
+      "seed": 29006,
+      "initial_model_sha256": "8e30a9fd7eb99d2aa03477b8d5f82609cc44241e4e5b3c26f58603c90d2fca3b",
+      "initial_optimizer_sha256": "29bbc528b5d5438b8ddd8314fcfc7700debc18e66ec0d9040d4e1afc9da71cfe",
+      "schedule_sha256": "672f5c18808555c013bab13f9a2b299138f6376fe12ef26009e161dfa8fc0746",
+      "initial_loss": 4.246248364448547
+    },
+    {
+      "language": "en",
+      "seed": 29007,
+      "initial_model_sha256": "6657ea63bff3e73c3ff291d5c114bc7a0303e70985062c09b65d613dc4486dd4",
+      "initial_optimizer_sha256": "a495b18aca0122adf47210dce4aba4b8e975a67cbb4fee085e258d3b3228a7f4",
+      "schedule_sha256": "337ab3c3f7d28f9fbbcebd8b58ff8e4df173f1178dcd3a933d7acfb99ff6aa69",
+      "initial_loss": 4.083492994308472
+    }
+  ],
+  "summary": {
+    "primary": {
+      "language": "ar",
+      "contrast": "reuse4_minus_fresh",
+      "final_loss": -0.35454900066057843
+    },
+    "states": [
+      {
+        "language": "ar",
+        "seed": 29000,
+        "initial_loss": 3.5347957015037537,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.4498172998428345,
+            "updates": 64,
+            "attempted": 65,
+            "actual_seconds": 3.0308609176666246,
+            "overrun_seconds": 0.030860917666624726,
+            "accepted_refreshes": 16.333333333333332,
+            "attempted_refreshes": 16.666666666666668
+          },
+          "fresh": {
+            "final_loss": 2.7606845696767173,
+            "updates": 38,
+            "attempted": 39,
+            "actual_seconds": 3.045580694333315,
+            "overrun_seconds": 0.045580694333314874,
+            "accepted_refreshes": 38,
+            "attempted_refreshes": 39
+          },
+          "random": {
+            "final_loss": 1.7238855461279552,
+            "updates": 421.3333333333333,
+            "attempted": 422.3333333333333,
+            "actual_seconds": 3.0055848170000368,
+            "overrun_seconds": 0.005584817000036916,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.3108672698338828,
+            "updates": 26
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.7259317537148793,
+            "updates": -357.3333333333333
+          },
+          "fresh_minus_random": {
+            "final_loss": 1.036799023548762,
+            "updates": -383.3333333333333
+          }
+        }
+      },
+      {
+        "language": "ar",
+        "seed": 29001,
+        "initial_loss": 3.53202223777771,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.0868869622548423,
+            "updates": 69,
+            "attempted": 70,
+            "actual_seconds": 3.037958541333334,
+            "overrun_seconds": 0.03795854133333402,
+            "accepted_refreshes": 17.666666666666668,
+            "attempted_refreshes": 18
+          },
+          "fresh": {
+            "final_loss": 2.4459652304649353,
+            "updates": 36,
+            "attempted": 37,
+            "actual_seconds": 3.0570611320000203,
+            "overrun_seconds": 0.05706113200002013,
+            "accepted_refreshes": 36,
+            "attempted_refreshes": 37
+          },
+          "random": {
+            "final_loss": 1.7056204875310261,
+            "updates": 440,
+            "attempted": 441,
+            "actual_seconds": 3.0056201883333338,
+            "overrun_seconds": 0.005620188333333924,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.35907826821009303,
+            "updates": 33
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.38126647472381614,
+            "updates": -371
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.7403447429339092,
+            "updates": -404
+          }
+        }
+      },
+      {
+        "language": "ar",
+        "seed": 29002,
+        "initial_loss": 3.6731797456741333,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.162298023700714,
+            "updates": 66.33333333333333,
+            "attempted": 67.33333333333333,
+            "actual_seconds": 3.0553484890000013,
+            "overrun_seconds": 0.05534848900000119,
+            "accepted_refreshes": 17,
+            "attempted_refreshes": 17.333333333333332
+          },
+          "fresh": {
+            "final_loss": 2.5326146682103476,
+            "updates": 38.333333333333336,
+            "attempted": 39.333333333333336,
+            "actual_seconds": 3.0538213399999754,
+            "overrun_seconds": 0.05382133999997526,
+            "accepted_refreshes": 38.333333333333336,
+            "attempted_refreshes": 39.333333333333336
+          },
+          "random": {
+            "final_loss": 1.7169114748636882,
+            "updates": 414.3333333333333,
+            "attempted": 415.3333333333333,
+            "actual_seconds": 3.0509066223333243,
+            "overrun_seconds": 0.05090662233332447,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.37031664450963353,
+            "updates": 27.999999999999993
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.4453865488370259,
+            "updates": -348.0
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.8157031933466594,
+            "updates": -376.0
+          }
+        }
+      },
+      {
+        "language": "ar",
+        "seed": 29003,
+        "initial_loss": 3.4722025394439697,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.132768968741099,
+            "updates": 70,
+            "attempted": 71,
+            "actual_seconds": 3.0381156676666783,
+            "overrun_seconds": 0.03811566766667814,
+            "accepted_refreshes": 17.666666666666668,
+            "attempted_refreshes": 18.333333333333332
+          },
+          "fresh": {
+            "final_loss": 2.503347714742025,
+            "updates": 39.333333333333336,
+            "attempted": 40.333333333333336,
+            "actual_seconds": 3.032972991666687,
+            "overrun_seconds": 0.032972991666686845,
+            "accepted_refreshes": 39.333333333333336,
+            "attempted_refreshes": 40.333333333333336
+          },
+          "random": {
+            "final_loss": 1.7341821889082591,
+            "updates": 396.6666666666667,
+            "attempted": 397.6666666666667,
+            "actual_seconds": 3.0039659513333086,
+            "overrun_seconds": 0.003965951333308719,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.370578746000926,
+            "updates": 30.666666666666664
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.39858677983283974,
+            "updates": -326.6666666666667
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.7691655258337657,
+            "updates": -357.33333333333337
+          }
+        }
+      },
+      {
+        "language": "ar",
+        "seed": 29004,
+        "initial_loss": 3.4179399013519287,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.116744418938955,
+            "updates": 67.66666666666667,
+            "attempted": 68.66666666666667,
+            "actual_seconds": 3.012488332333343,
+            "overrun_seconds": 0.012488332333343047,
+            "accepted_refreshes": 17.333333333333332,
+            "attempted_refreshes": 17.666666666666668
+          },
+          "fresh": {
+            "final_loss": 2.450388709704081,
+            "updates": 37,
+            "attempted": 38,
+            "actual_seconds": 3.042197923333333,
+            "overrun_seconds": 0.042197923333333165,
+            "accepted_refreshes": 37,
+            "attempted_refreshes": 38
+          },
+          "random": {
+            "final_loss": 1.714429497718811,
+            "updates": 403.3333333333333,
+            "attempted": 404.3333333333333,
+            "actual_seconds": 3.0042941630000164,
+            "overrun_seconds": 0.004294163000016245,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.33364429076512625,
+            "updates": 30.66666666666667
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.4023149212201438,
+            "updates": -335.66666666666663
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.73595921198527,
+            "updates": -366.3333333333333
+          }
+        }
+      },
+      {
+        "language": "ar",
+        "seed": 29005,
+        "initial_loss": 3.4436479806900024,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.2964643239974976,
+            "updates": 66.33333333333333,
+            "attempted": 67.33333333333333,
+            "actual_seconds": 3.0182785800000147,
+            "overrun_seconds": 0.0182785800000147,
+            "accepted_refreshes": 17,
+            "attempted_refreshes": 17.333333333333332
+          },
+          "fresh": {
+            "final_loss": 2.72191321849823,
+            "updates": 36.333333333333336,
+            "attempted": 37.333333333333336,
+            "actual_seconds": 3.0807388549999737,
+            "overrun_seconds": 0.08073885499997384,
+            "accepted_refreshes": 36.333333333333336,
+            "attempted_refreshes": 37.333333333333336
+          },
+          "random": {
+            "final_loss": 1.723213364680608,
+            "updates": 404.6666666666667,
+            "attempted": 405.3333333333333,
+            "actual_seconds": 3.003242620666659,
+            "overrun_seconds": 0.0032426206666589983,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.4254488945007324,
+            "updates": 29.999999999999993
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.5732509593168895,
+            "updates": -338.33333333333337
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.9986998538176219,
+            "updates": -368.33333333333337
+          }
+        }
+      },
+      {
+        "language": "ar",
+        "seed": 29006,
+        "initial_loss": 3.5942856073379517,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.1592307090759277,
+            "updates": 67.33333333333333,
+            "attempted": 68.33333333333333,
+            "actual_seconds": 3.027545491666615,
+            "overrun_seconds": 0.027545491666614907,
+            "accepted_refreshes": 17,
+            "attempted_refreshes": 17.333333333333332
+          },
+          "fresh": {
+            "final_loss": 2.4868964751561484,
+            "updates": 41.333333333333336,
+            "attempted": 42.333333333333336,
+            "actual_seconds": 3.024120465666632,
+            "overrun_seconds": 0.02412046566663169,
+            "accepted_refreshes": 41.333333333333336,
+            "attempted_refreshes": 42.333333333333336
+          },
+          "random": {
+            "final_loss": 1.7095008095105488,
+            "updates": 408.3333333333333,
+            "attempted": 409.3333333333333,
+            "actual_seconds": 3.003854896666629,
+            "overrun_seconds": 0.003854896666628823,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.3276657660802207,
+            "updates": 25.999999999999993
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.4497298995653789,
+            "updates": -341.0
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.7773956656455996,
+            "updates": -367.0
+          }
+        }
+      },
+      {
+        "language": "ar",
+        "seed": 29007,
+        "initial_loss": 3.6064260005950928,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.185091813405355,
+            "updates": 63.666666666666664,
+            "attempted": 64.66666666666667,
+            "actual_seconds": 3.0450647266666997,
+            "overrun_seconds": 0.04506472666669955,
+            "accepted_refreshes": 16.333333333333332,
+            "attempted_refreshes": 16.666666666666668
+          },
+          "fresh": {
+            "final_loss": 2.5238839387893677,
+            "updates": 37,
+            "attempted": 38,
+            "actual_seconds": 3.0234033786666714,
+            "overrun_seconds": 0.023403378666671415,
+            "accepted_refreshes": 37,
+            "attempted_refreshes": 38
+          },
+          "random": {
+            "final_loss": 1.7214576601982117,
+            "updates": 412.6666666666667,
+            "attempted": 413.3333333333333,
+            "actual_seconds": 3.0023584440000377,
+            "overrun_seconds": 0.002358444000037707,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.3387921253840127,
+            "updates": 26.666666666666664
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.4636341532071433,
+            "updates": -349.0
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.802426278591156,
+            "updates": -375.6666666666667
+          }
+        }
+      },
+      {
+        "language": "en",
+        "seed": 29000,
+        "initial_loss": 4.06916868686676,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.3763992389043174,
+            "updates": 67.66666666666667,
+            "attempted": 68.66666666666667,
+            "actual_seconds": 3.0345931786667584,
+            "overrun_seconds": 0.03459317866675823,
+            "accepted_refreshes": 17.333333333333332,
+            "attempted_refreshes": 17.333333333333332
+          },
+          "fresh": {
+            "final_loss": 3.437472144762675,
+            "updates": 39.666666666666664,
+            "attempted": 40.666666666666664,
+            "actual_seconds": 3.046052905999886,
+            "overrun_seconds": 0.04605290599988621,
+            "accepted_refreshes": 39.666666666666664,
+            "attempted_refreshes": 40.666666666666664
+          },
+          "random": {
+            "final_loss": 3.0086155931154885,
+            "updates": 417.3333333333333,
+            "attempted": 418.3333333333333,
+            "actual_seconds": 3.0027364013333226,
+            "overrun_seconds": 0.0027364013333226467,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.06107290585835745,
+            "updates": 28.000000000000007
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.36778364578882883,
+            "updates": -349.66666666666663
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.4288565516471863,
+            "updates": -377.66666666666663
+          }
+        }
+      },
+      {
+        "language": "en",
+        "seed": 29001,
+        "initial_loss": 3.980634868144989,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.3639745712280273,
+            "updates": 67.66666666666667,
+            "attempted": 68.66666666666667,
+            "actual_seconds": 3.030738000999994,
+            "overrun_seconds": 0.03073800099999365,
+            "accepted_refreshes": 17,
+            "attempted_refreshes": 17.666666666666668
+          },
+          "fresh": {
+            "final_loss": 3.4296356439590454,
+            "updates": 37.333333333333336,
+            "attempted": 38.333333333333336,
+            "actual_seconds": 3.0288093943333934,
+            "overrun_seconds": 0.028809394333393357,
+            "accepted_refreshes": 37.333333333333336,
+            "attempted_refreshes": 38.333333333333336
+          },
+          "random": {
+            "final_loss": 2.9946191708246865,
+            "updates": 406.3333333333333,
+            "attempted": 407.3333333333333,
+            "actual_seconds": 3.0067846880000766,
+            "overrun_seconds": 0.006784688000076737,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.06566107273101807,
+            "updates": 30.333333333333336
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.3693554004033408,
+            "updates": -338.66666666666663
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.43501647313435887,
+            "updates": -369.0
+          }
+        }
+      },
+      {
+        "language": "en",
+        "seed": 29002,
+        "initial_loss": 4.106339335441589,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.374950110912323,
+            "updates": 65,
+            "attempted": 66,
+            "actual_seconds": 3.04211221233345,
+            "overrun_seconds": 0.04211221233344986,
+            "accepted_refreshes": 16.333333333333332,
+            "attempted_refreshes": 17
+          },
+          "fresh": {
+            "final_loss": 3.438989301522573,
+            "updates": 38.666666666666664,
+            "attempted": 39.666666666666664,
+            "actual_seconds": 3.0318415416666844,
+            "overrun_seconds": 0.03184154166668426,
+            "accepted_refreshes": 38.666666666666664,
+            "attempted_refreshes": 39.666666666666664
+          },
+          "random": {
+            "final_loss": 3.0211389859517417,
+            "updates": 404.6666666666667,
+            "attempted": 405.6666666666667,
+            "actual_seconds": 3.004609969666641,
+            "overrun_seconds": 0.0046099696666412155,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.06403919061024999,
+            "updates": 26.333333333333336
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.3538111249605813,
+            "updates": -339.6666666666667
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.4178503155708313,
+            "updates": -366.0
+          }
+        }
+      },
+      {
+        "language": "en",
+        "seed": 29003,
+        "initial_loss": 4.132442116737366,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.3631924986839294,
+            "updates": 71,
+            "attempted": 72,
+            "actual_seconds": 3.0253951216665578,
+            "overrun_seconds": 0.025395121666557923,
+            "accepted_refreshes": 18,
+            "attempted_refreshes": 18.333333333333332
+          },
+          "fresh": {
+            "final_loss": 3.460926830768585,
+            "updates": 38,
+            "attempted": 39,
+            "actual_seconds": 3.064757980666703,
+            "overrun_seconds": 0.06475798066670298,
+            "accepted_refreshes": 38,
+            "attempted_refreshes": 39
+          },
+          "random": {
+            "final_loss": 2.9941635727882385,
+            "updates": 399.6666666666667,
+            "attempted": 400.6666666666667,
+            "actual_seconds": 3.002978840000045,
+            "overrun_seconds": 0.0029788400000446322,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.09773433208465576,
+            "updates": 33
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.3690289258956909,
+            "updates": -328.6666666666667
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.4667632579803467,
+            "updates": -361.6666666666667
+          }
+        }
+      },
+      {
+        "language": "en",
+        "seed": 29004,
+        "initial_loss": 4.1150782108306885,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.362308979034424,
+            "updates": 70,
+            "attempted": 71,
+            "actual_seconds": 3.0420333570000366,
+            "overrun_seconds": 0.04203335700003663,
+            "accepted_refreshes": 17.666666666666668,
+            "attempted_refreshes": 18
+          },
+          "fresh": {
+            "final_loss": 3.4445417324701944,
+            "updates": 39.333333333333336,
+            "attempted": 40.333333333333336,
+            "actual_seconds": 3.035585884333235,
+            "overrun_seconds": 0.035585884333234695,
+            "accepted_refreshes": 39.333333333333336,
+            "attempted_refreshes": 40.333333333333336
+          },
+          "random": {
+            "final_loss": 2.9955695072809854,
+            "updates": 431,
+            "attempted": 432,
+            "actual_seconds": 3.0044446346666973,
+            "overrun_seconds": 0.004444634666697311,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.08223275343577052,
+            "updates": 30.666666666666664
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.36673947175343846,
+            "updates": -361
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.448972225189209,
+            "updates": -391.6666666666667
+          }
+        }
+      },
+      {
+        "language": "en",
+        "seed": 29005,
+        "initial_loss": 3.9786548614501953,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.353118062019348,
+            "updates": 70.33333333333333,
+            "attempted": 71.33333333333333,
+            "actual_seconds": 3.027791533000027,
+            "overrun_seconds": 0.027791533000026902,
+            "accepted_refreshes": 17.666666666666668,
+            "attempted_refreshes": 18.333333333333332
+          },
+          "fresh": {
+            "final_loss": 3.4232394297917685,
+            "updates": 41.666666666666664,
+            "attempted": 42.666666666666664,
+            "actual_seconds": 3.034247826666615,
+            "overrun_seconds": 0.034247826666614856,
+            "accepted_refreshes": 41.666666666666664,
+            "attempted_refreshes": 42.666666666666664
+          },
+          "random": {
+            "final_loss": 2.96921573082606,
+            "updates": 425.6666666666667,
+            "attempted": 426.6666666666667,
+            "actual_seconds": 3.0025601063333247,
+            "overrun_seconds": 0.0025601063333245597,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.0701213677724204,
+            "updates": 28.666666666666664
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.3839023311932883,
+            "updates": -355.33333333333337
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.4540236989657087,
+            "updates": -384.0
+          }
+        }
+      },
+      {
+        "language": "en",
+        "seed": 29006,
+        "initial_loss": 4.246248364448547,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.3044058084487915,
+            "updates": 74.66666666666667,
+            "attempted": 75.66666666666667,
+            "actual_seconds": 3.0255710316666864,
+            "overrun_seconds": 0.025571031666686395,
+            "accepted_refreshes": 19,
+            "attempted_refreshes": 19.333333333333332
+          },
+          "fresh": {
+            "final_loss": 3.4231996138890586,
+            "updates": 41,
+            "attempted": 42,
+            "actual_seconds": 3.030240945999973,
+            "overrun_seconds": 0.030240945999973217,
+            "accepted_refreshes": 41,
+            "attempted_refreshes": 42
+          },
+          "random": {
+            "final_loss": 2.960147261619568,
+            "updates": 420.6666666666667,
+            "attempted": 421.6666666666667,
+            "actual_seconds": 3.0030555526667135,
+            "overrun_seconds": 0.0030555526667133868,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.11879380544026708,
+            "updates": 33.66666666666667
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.34425854682922363,
+            "updates": -346.0
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.4630523522694907,
+            "updates": -379.6666666666667
+          }
+        }
+      },
+      {
+        "language": "en",
+        "seed": 29007,
+        "initial_loss": 4.083492994308472,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.3803799549738565,
+            "updates": 66.66666666666667,
+            "attempted": 67.66666666666667,
+            "actual_seconds": 3.051511982999955,
+            "overrun_seconds": 0.05151198299995485,
+            "accepted_refreshes": 17,
+            "attempted_refreshes": 17.333333333333332
+          },
+          "fresh": {
+            "final_loss": 3.445802628993988,
+            "updates": 41,
+            "attempted": 42,
+            "actual_seconds": 3.0525362413332005,
+            "overrun_seconds": 0.05253624133320045,
+            "accepted_refreshes": 41,
+            "attempted_refreshes": 42
+          },
+          "random": {
+            "final_loss": 3.0166369676589966,
+            "updates": 382.3333333333333,
+            "attempted": 383.3333333333333,
+            "actual_seconds": 3.0018007283333645,
+            "overrun_seconds": 0.0018007283333645319,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.06542267402013158,
+            "updates": 25.66666666666667
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.3637429873148599,
+            "updates": -315.66666666666663
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.42916566133499146,
+            "updates": -341.3333333333333
+          }
+        }
+      }
+    ],
+    "languages": {
+      "ar": {
+        "initial_loss": 3.534312464296818,
+        "arms": {
+          "reuse4": {
+            "final_loss": 2.198662814994653,
+            "updates": 66.79166666666667,
+            "attempted": 67.79166666666667,
+            "actual_seconds": 3.033207593291664,
+            "overrun_seconds": 0.033207593291663784,
+            "accepted_refreshes": 17.041666666666668,
+            "attempted_refreshes": 17.416666666666668
+          },
+          "fresh": {
+            "final_loss": 2.5532118156552315,
+            "updates": 37.91666666666667,
+            "attempted": 38.91666666666667,
+            "actual_seconds": 3.044987097583326,
+            "overrun_seconds": 0.044987097583325905,
+            "accepted_refreshes": 37.91666666666667,
+            "attempted_refreshes": 38.91666666666667
+          },
+          "random": {
+            "final_loss": 1.7186501286923885,
+            "updates": 412.6666666666667,
+            "attempted": 413.5833333333333,
+            "actual_seconds": 3.0099784629166684,
+            "overrun_seconds": 0.009978462916668226,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.35454900066057843,
+            "updates": 28.874999999999996,
+            "per_seed_final_loss": [
+              -0.3108672698338828,
+              -0.35907826821009303,
+              -0.37031664450963353,
+              -0.370578746000926,
+              -0.33364429076512625,
+              -0.4254488945007324,
+              -0.3276657660802207,
+              -0.3387921253840127
+            ],
+            "seeds_negative": 8,
+            "seeds_positive": 0,
+            "min": -0.4254488945007324,
+            "max": -0.3108672698338828,
+            "population_sd": 0.03329596158530327
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.48001268630226457,
+            "updates": -345.875,
+            "per_seed_final_loss": [
+              0.7259317537148793,
+              0.38126647472381614,
+              0.4453865488370259,
+              0.39858677983283974,
+              0.4023149212201438,
+              0.5732509593168895,
+              0.4497298995653789,
+              0.4636341532071433
+            ],
+            "seeds_negative": 0,
+            "seeds_positive": 8,
+            "min": 0.38126647472381614,
+            "max": 0.7259317537148793,
+            "population_sd": 0.10838113963619363
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.8345616869628429,
+            "updates": -374.75,
+            "per_seed_final_loss": [
+              1.036799023548762,
+              0.7403447429339092,
+              0.8157031933466594,
+              0.7691655258337657,
+              0.73595921198527,
+              0.9986998538176219,
+              0.7773956656455996,
+              0.802426278591156
+            ],
+            "seeds_negative": 0,
+            "seeds_positive": 8,
+            "min": 0.73595921198527,
+            "max": 1.036799023548762,
+            "population_sd": 0.10918647917554754
+          }
+        }
+      },
+      "en": {
+        "initial_loss": 4.089007429778576,
+        "arms": {
+          "reuse4": {
+            "final_loss": 3.359841153025627,
+            "updates": 69.125,
+            "attempted": 70.125,
+            "actual_seconds": 3.034968302291683,
+            "overrun_seconds": 0.03496830229168305,
+            "accepted_refreshes": 17.5,
+            "attempted_refreshes": 17.916666666666664
+          },
+          "fresh": {
+            "final_loss": 3.437975915769736,
+            "updates": 39.583333333333336,
+            "attempted": 40.583333333333336,
+            "actual_seconds": 3.0405090901249614,
+            "overrun_seconds": 0.040509090124961254,
+            "accepted_refreshes": 39.583333333333336,
+            "attempted_refreshes": 40.583333333333336
+          },
+          "random": {
+            "final_loss": 2.9950133487582207,
+            "updates": 410.9583333333333,
+            "attempted": 411.9583333333333,
+            "actual_seconds": 3.003621365125023,
+            "overrun_seconds": 0.003621365125023128,
+            "accepted_refreshes": 0,
+            "attempted_refreshes": 0
+          }
+        },
+        "contrasts": {
+          "reuse4_minus_fresh": {
+            "final_loss": -0.07813476274410885,
+            "updates": 29.541666666666668,
+            "per_seed_final_loss": [
+              -0.06107290585835745,
+              -0.06566107273101807,
+              -0.06403919061024999,
+              -0.09773433208465576,
+              -0.08223275343577052,
+              -0.0701213677724204,
+              -0.11879380544026708,
+              -0.06542267402013158
+            ],
+            "seeds_negative": 8,
+            "seeds_positive": 0,
+            "min": -0.11879380544026708,
+            "max": -0.06107290585835745,
+            "population_sd": 0.019122274820297217
+          },
+          "reuse4_minus_random": {
+            "final_loss": 0.3648278042674065,
+            "updates": -341.8333333333333,
+            "per_seed_final_loss": [
+              0.36778364578882883,
+              0.3693554004033408,
+              0.3538111249605813,
+              0.3690289258956909,
+              0.36673947175343846,
+              0.3839023311932883,
+              0.34425854682922363,
+              0.3637429873148599
+            ],
+            "seeds_negative": 0,
+            "seeds_positive": 8,
+            "min": 0.34425854682922363,
+            "max": 0.3839023311932883,
+            "population_sd": 0.010954542443417462
+          },
+          "fresh_minus_random": {
+            "final_loss": 0.4429625670115154,
+            "updates": -371.375,
+            "per_seed_final_loss": [
+              0.4288565516471863,
+              0.43501647313435887,
+              0.4178503155708313,
+              0.4667632579803467,
+              0.448972225189209,
+              0.4540236989657087,
+              0.4630523522694907,
+              0.42916566133499146
+            ],
+            "seeds_negative": 0,
+            "seeds_positive": 8,
+            "min": 0.4178503155708313,
+            "max": 0.4667632579803467,
+            "population_sd": 0.016626924136233366
+          }
+        }
+      }
+    }
+  },
+  "runs": 144,
+  "wall_seconds": 448.9743283550001
+}
