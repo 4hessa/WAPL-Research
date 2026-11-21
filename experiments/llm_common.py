@@ -28,6 +28,10 @@ class LoRALinear(nn.Module):
 def load_model(seed, rank=8, alpha=16, targets=('q_proj', 'v_proj')):
     from transformers import AutoModelForCausalLM
     model = AutoModelForCausalLM.from_pretrained(MODEL_DIR, torch_dtype=torch.float32)
+    return add_lora(model, seed, rank, alpha, targets)
+
+
+def add_lora(model, seed, rank=8, alpha=16, targets=('q_proj', 'v_proj')):
     model.config.use_cache = False
     for p in model.parameters():
         p.requires_grad_(False)
