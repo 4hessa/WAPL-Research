@@ -1,0 +1,21 @@
+{
+  "stage": 68,
+  "date": "2026-11-21",
+  "reference_commit": "41c565e",
+  "question": "On a pretrained LLM adapted with LoRA, does gradient-alignment selection beat random selection when every policy is charged its measured step cost, with and without off-target contamination, and does a single batched backward pass for per-example gradients lower that cost enough?",
+  "lesson_applied": "Stage 67 showed selection value is nonstationary, so each policy is evaluated at the update count it attains within the budget, not at a shared count and not by extrapolating a single-point s/a.",
+  "model": "Qwen/Qwen2.5-0.5B, revision and weights SHA-256 as in stage 66; LoRA rank 8, alpha 16, q_proj and v_proj, AdamW lr 5e-4, weight decay 0; one 65-token chunk per update; 4 torch threads; deterministic algorithms.",
+  "rho": [0.0, 0.9],
+  "seeds": [33000, 33001, 33002, 33003],
+  "arms": ["random", "loss4", "graddot4", "graddot4_batched"],
+  "pool": "Candidates mix Arabic PADT train chunks with English EWT train chunks (Qwen tokenizer, 65 tokens); each candidate slot is English with probability rho. Schedule per (rho index k, seed): rng = default_rng(seed + 1000 k); a 512-by-4 matrix of language flags (rng.random < rho), then Arabic indices, then English indices, then 512 uniform choices in [0,4).",
+  "probe": "The 16-chunk stage-66 Arabic probe.",
+  "target": "All Arabic dev token chunks from the stage-66 eligible pool that were neither stage-66 probe nor stage-66 target (none scored before).",
+  "policies": "random, loss4 and graddot4: the stage-66 implementations. graddot4_batched: probe gradient refreshed every 4 steps as in graddot4; one forward and one backward pass over the four candidates with the summed per-candidate mean losses; per-candidate LoRA gradients recovered exactly from saved layer inputs and output gradients (dB_i = s * sum_t g_it^T u_it, dA_i = s * sum_t (g_it B)^T x_it); the candidate with the largest dot product with the probe gradient wins (first index on ties); its per-example gradient is passed to AdamW.",
+  "budget": "Calibration before any target evaluation: on calibration seed 33999 with rho = 0.5, run 12 steps of each arm on train candidates only and take the median of steps 3-12 as the step cost c_arm. The budget is B = 96 random-step costs. Each arm runs N_arm = floor(96 * c_random / c_arm) updates (random runs 96). Costs and N_arm are written to the result before the main runs and used unchanged for both rho values.",
+  "measurement": "Arabic target mean token cross-entropy after N_arm updates for each arm, from the same adapter initialization per seed. Also the random-schedule loss at each guided arm's N_arm (replay of the random arm's prefix) to decompose arm minus random into selection and throughput terms. Record the English share of chosen candidates and per-step times.",
+  "primary": "rho = 0.9: graddot4_batched at N_batched minus random at 96, mean over 4 seeds. Negative favors graddot4_batched.",
+  "secondary": "All other arm-minus-random contrasts at both rho; selection and throughput terms; r = c_arm / c_random for graddot4 against graddot4_batched; choice agreement between graddot4 and graddot4_batched over their common prefix (same state up to the first disagreement). Descriptive with four seeds: per-seed values, signs, no intervals or tests.",
+  "coverage": "2 rho x 4 seeds x 4 arms = 32 runs plus calibration. Audit: summary recomputation; replay of all runs without timing; exact equality of per-example batched gradients with separately computed gradients on the calibration state up to float32 tolerance (rtol 1e-4, atol 1e-6).",
+  "scope": "One 0.5B model, LoRA, CPU, two contamination levels, short budgets (96 random updates). Costs are hardware- and implementation-specific. Charging measured median costs removes timing noise from outcomes but is not a wall-clock run."
+}
