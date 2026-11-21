@@ -1,2 +1,7 @@
 Token indices sequence length is longer than the specified maximum sequence length for this model (374591 > 131072). Running this sequence through the model will result in indexing errors
 costs {'random': 0.5662033799999904, 'loss4': 1.4372287380000017, 'graddot4': 2.3198131659999603, 'graddot4_batched': 1.6085237935000123} updates {'random': 96, 'loss4': 37, 'graddot4': 23, 'graddot4_batched': 33}
+rho 0.0 seed 33000 random: n 96 loss 3.34961
+rho 0.0 seed 33000 loss4: n 37 loss 3.37142
+rho 0.0 seed 33000 graddot4: n 23 loss 3.35710
+rho 0.0 seed 33000 graddot4_batched: n 33 loss 3.35806
+rho 0.0 seed 33001 loss4: n 37 loss 3.34594
