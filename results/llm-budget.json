@@ -1,0 +1,332 @@
+{
+  "stage": 68,
+  "protocol": {
+    "stage": 68,
+    "date": "2026-11-21",
+    "reference_commit": "41c565e",
+    "question": "On a pretrained LLM adapted with LoRA, does gradient-alignment selection beat random selection when every policy is charged its measured step cost, with and without off-target contamination, and does a single batched backward pass for per-example gradients lower that cost enough?",
+    "lesson_applied": "Stage 67 showed selection value is nonstationary, so each policy is evaluated at the update count it attains within the budget, not at a shared count and not by extrapolating a single-point s/a.",
+    "model": "Qwen/Qwen2.5-0.5B, revision and weights SHA-256 as in stage 66; LoRA rank 8, alpha 16, q_proj and v_proj, AdamW lr 5e-4, weight decay 0; one 65-token chunk per update; 4 torch threads; deterministic algorithms.",
+    "rho": [
+      0.0,
+      0.9
+    ],
+    "seeds": [
+      33000,
+      33001,
+      33002,
+      33003
+    ],
+    "arms": [
+      "random",
+      "loss4",
+      "graddot4",
+      "graddot4_batched"
+    ],
+    "pool": "Candidates mix Arabic PADT train chunks with English EWT train chunks (Qwen tokenizer, 65 tokens); each candidate slot is English with probability rho. Schedule per (rho index k, seed): rng = default_rng(seed + 1000 k); a 512-by-4 matrix of language flags (rng.random < rho), then Arabic indices, then English indices, then 512 uniform choices in [0,4).",
+    "probe": "The 16-chunk stage-66 Arabic probe.",
+    "target": "All Arabic dev token chunks from the stage-66 eligible pool that were neither stage-66 probe nor stage-66 target (none scored before).",
+    "policies": "random, loss4 and graddot4: the stage-66 implementations. graddot4_batched: probe gradient refreshed every 4 steps as in graddot4; one forward and one backward pass over the four candidates with the summed per-candidate mean losses; per-candidate LoRA gradients recovered exactly from saved layer inputs and output gradients (dB_i = s * sum_t g_it^T u_it, dA_i = s * sum_t (g_it B)^T x_it); the candidate with the largest dot product with the probe gradient wins (first index on ties); its per-example gradient is passed to AdamW.",
+    "budget": "Calibration before any target evaluation: on calibration seed 33999 with rho = 0.5, run 12 steps of each arm on train candidates only and take the median of steps 3-12 as the step cost c_arm. The budget is B = 96 random-step costs. Each arm runs N_arm = floor(96 * c_random / c_arm) updates (random runs 96). Costs and N_arm are written to the result before the main runs and used unchanged for both rho values.",
+    "measurement": "Arabic target mean token cross-entropy after N_arm updates for each arm, from the same adapter initialization per seed. Also the random-schedule loss at each guided arm's N_arm (replay of the random arm's prefix) to decompose arm minus random into selection and throughput terms. Record the English share of chosen candidates and per-step times.",
+    "primary": "rho = 0.9: graddot4_batched at N_batched minus random at 96, mean over 4 seeds. Negative favors graddot4_batched.",
+    "secondary": "All other arm-minus-random contrasts at both rho; selection and throughput terms; r = c_arm / c_random for graddot4 against graddot4_batched; choice agreement between graddot4 and graddot4_batched over their common prefix (same state up to the first disagreement). Descriptive with four seeds: per-seed values, signs, no intervals or tests.",
+    "coverage": "2 rho x 4 seeds x 4 arms = 32 runs plus calibration. Audit: summary recomputation; replay of all runs without timing; exact equality of per-example batched gradients with separately computed gradients on the calibration state up to float32 tolerance (rtol 1e-4, atol 1e-6).",
+    "scope": "One 0.5B model, LoRA, CPU, two contamination levels, short budgets (96 random updates). Costs are hardware- and implementation-specific. Charging measured median costs removes timing noise from outcomes but is not a wall-clock run."
+  },
+  "provenance": {
+    "sha256": {
+      "research/llm-budget-protocol.json": "888ffdba4bd33688ef17e6db5ff52d64ff1f4f6877dee967323e8704146ca70c",
+      "experiments/llm_budget.py": "9f8b6b08910bec68c7e99cfffc503120e27b3dd0fd4a11a775641cd08a4db381",
+      "experiments/llm_common.py": "a2bb6ba72f312b2f29fa00d060e792590a5f193165504be5f5bb677a67227f2c",
+      "experiments/llm_selection.py": "438d02dc080963f7c9928147dae9ca2dbf7e7843362351980724e075c80e77b2",
+      "tests/test_llm_budget.py": "2afd889e3ae6cc812cd5013b6f51686dca0b8ac1324b264d01ae0866d7af4804",
+      "research/llm-selection-protocol.json": "877e5d7cfcef8a7928d171bc17eb4f4975656c455156c04b90f3ce6d309bce00",
+      "models/qwen2.5-0.5b/tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "models/qwen2.5-0.5b/model.safetensors": "88c142557820ccad55bb59756bfcfcf891de9cc6202816bd346445188a0ed342",
+      "data/ud_ar_train.txt": "2fe6a1b3c6c1a50dff892296156882941049da22f92e15f9a444da3b13d6d162",
+      "data/ud_ar_dev.txt": "f1b9e6e014412fb9a78f5a48c142b2c0b6d5554fe284520280086a01a766571b",
+      "data/ud_en_train.txt": "fb2155978102bd793938effcc40a35b2d948f8ea606e6c5c334df5409f967eef",
+      "data/ud_en_dev.txt": "5ed0defb7bcbf5aa8090fbaa2a9494b2094f423fb27aa5e0be5708325091aff4"
+    },
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.30GHz",
+    "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "torch": "2.5.1+cpu",
+    "transformers": "4.46.3",
+    "torch_threads": 4,
+    "logical_cpus": 4
+  },
+  "population": {
+    "ar_train_chunks": 5762,
+    "en_train_chunks": 3466,
+    "eligible_dev_chunks": 243,
+    "target_ids": [
+      0,
+      3,
+      4,
+      6,
+      19,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      29,
+      31,
+      35,
+      36,
+      39,
+      42,
+      44,
+      46,
+      48,
+      50,
+      51,
+      52,
+      53,
+      54,
+      58,
+      61,
+      63,
+      66,
+      67,
+      68,
+      70,
+      86,
+      90,
+      91,
+      94,
+      95,
+      97,
+      99,
+      100,
+      101,
+      102,
+      105,
+      108,
+      112,
+      118,
+      119,
+      121,
+      124,
+      128,
+      131,
+      136,
+      140,
+      142,
+      143,
+      148,
+      149,
+      150,
+      153,
+      158,
+      161,
+      162,
+      165,
+      175,
+      178,
+      180,
+      181,
+      182,
+      185,
+      186,
+      187,
+      188,
+      190,
+      193,
+      196,
+      197,
+      198,
+      200,
+      202,
+      204,
+      205,
+      206,
+      210,
+      211,
+      215,
+      216,
+      217,
+      219,
+      220,
+      221,
+      223,
+      226,
+      227,
+      231,
+      233,
+      237,
+      238,
+      239,
+      241
+    ],
+    "probe_ids": [
+      2,
+      8,
+      13,
+      28,
+      34,
+      37,
+      38,
+      47,
+      59,
+      92,
+      113,
+      146,
+      160,
+      166,
+      203,
+      232
+    ]
+  },
+  "costs": {
+    "random": 0.5662033799999904,
+    "loss4": 1.4372287380000017,
+    "graddot4": 2.3198131659999603,
+    "graddot4_batched": 1.6085237935000123
+  },
+  "updates": {
+    "random": 96,
+    "loss4": 37,
+    "graddot4": 23,
+    "graddot4_batched": 33
+  },
+  "r": {
+    "random": 1.0,
+    "loss4": 2.538361282830961,
+    "graddot4": 4.097137615109256,
+    "graddot4_batched": 2.8408940149739825
+  },
+  "output_sha256": {
+    "llm-budget-records.jsonl": "25d5e1862539cfbf4e5a0a639e35b611d775e74658129ef0722d5b71281fe92e"
+  },
+  "summary": {
+    "primary": {
+      "rho": 0.9,
+      "contrast": "graddot4_batched_minus_random",
+      "mean": -0.03713139680900934
+    },
+    "per_rho": {
+      "0.0": {
+        "loss0": 3.398161090985693,
+        "random_final": 3.3441381701315294,
+        "random_english_share": 0.0,
+        "arms": {
+          "loss4": {
+            "updates": 37,
+            "final": 3.355165787417479,
+            "minus_random": 0.011027617285950031,
+            "per_seed": [
+              0.02181106625181295,
+              0.0041491864907619025,
+              0.015797366999616536,
+              0.0023528494016087365
+            ],
+            "seeds_negative": 0,
+            "selection_term": -0.0025038966024765186,
+            "throughput_term": 0.01353151388842655,
+            "english_share": 0.0
+          },
+          "graddot4": {
+            "updates": 23,
+            "final": 3.357988076980668,
+            "minus_random": 0.013849906849138782,
+            "per_seed": [
+              0.0074869237764918495,
+              0.023939715491400726,
+              0.02012117944582581,
+              0.0038518086828367437
+            ],
+            "seeds_negative": 0,
+            "selection_term": -0.0015404832483542075,
+            "throughput_term": 0.01539039009749299,
+            "english_share": 0.0
+          },
+          "graddot4_batched": {
+            "updates": 33,
+            "final": 3.3516765248895894,
+            "minus_random": 0.007538354758060306,
+            "per_seed": [
+              0.008454072355020159,
+              0.01876287267665644,
+              0.004531130646214354,
+              -0.001594656645649728
+            ],
+            "seeds_negative": 1,
+            "selection_term": -0.005987450329944299,
+            "throughput_term": 0.013525805088004605,
+            "english_share": 0.0
+          }
+        },
+        "graddot_agreement_prefix": [
+          23,
+          23,
+          23,
+          23
+        ]
+      },
+      "0.9": {
+        "loss0": 3.398161090985693,
+        "random_final": 3.3955475116016887,
+        "random_english_share": 0.890625,
+        "arms": {
+          "loss4": {
+            "updates": 37,
+            "final": 3.4285094948730084,
+            "minus_random": 0.032961983271319495,
+            "per_seed": [
+              0.02940842599579785,
+              0.019688863946934365,
+              0.03532408463834491,
+              0.047426558504200855
+            ],
+            "seeds_negative": 0,
+            "selection_term": 0.038523982871662366,
+            "throughput_term": -0.005561999600342871,
+            "english_share": 0.9864864864864865
+          },
+          "graddot4": {
+            "updates": 23,
+            "final": 3.3614730256976504,
+            "minus_random": -0.0340744859040385,
+            "per_seed": [
+              -0.03790522103357796,
+              -0.028237015309959812,
+              -0.045585820169159685,
+              -0.024569887103456534
+            ],
+            "seeds_negative": 4,
+            "selection_term": -0.026446745251164416,
+            "throughput_term": -0.007627740652874082,
+            "english_share": 0.7826086956521738
+          },
+          "graddot4_batched": {
+            "updates": 33,
+            "final": 3.3584161147926794,
+            "minus_random": -0.03713139680900934,
+            "per_seed": [
+              -0.0384936742108275,
+              -0.03263861964447301,
+              -0.042147308889061375,
+              -0.035245984491675486
+            ],
+            "seeds_negative": 4,
+            "selection_term": -0.028767608030877856,
+            "throughput_term": -0.008363788778131487,
+            "english_share": 0.7954545454545454
+          }
+        },
+        "graddot_agreement_prefix": [
+          23,
+          23,
+          23,
+          23
+        ]
+      }
+    }
+  },
+  "runs": 32,
+  "wall_seconds": 3973.61383982
+}

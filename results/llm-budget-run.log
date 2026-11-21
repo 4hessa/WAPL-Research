@@ -27,3 +27,9 @@ rho 0.9 seed 33001 random: n 96 loss 3.38940
 rho 0.9 seed 33002 graddot4: n 23 loss 3.36067
 rho 0.9 seed 33002 graddot4_batched: n 33 loss 3.36410
 rho 0.9 seed 33002 random: n 96 loss 3.40625
+rho 0.9 seed 33002 loss4: n 37 loss 3.44158
+rho 0.9 seed 33003 graddot4_batched: n 33 loss 3.35463
+rho 0.9 seed 33003 random: n 96 loss 3.38988
+rho 0.9 seed 33003 loss4: n 37 loss 3.43730
+rho 0.9 seed 33003 graddot4: n 23 loss 3.36531
+exit 0
