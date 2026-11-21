@@ -1,0 +1,4 @@
+Token indices sequence length is longer than the specified maximum sequence length for this model (374591 > 131072). Running this sequence through the model will result in indexing errors
+ar seed 31000 random: loss64 3.21910
+ar seed 31000 loss4: loss64 3.21810
+ar seed 31000 graddot4: loss64 3.20180
