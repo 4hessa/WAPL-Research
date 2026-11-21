@@ -1,0 +1,28 @@
+{
+  "stage": 69,
+  "date": "2026-11-21",
+  "reference_commit": "0653b27",
+  "question": "On an A100 GPU, does cost-charged gradient-alignment selection beat random selection for LoRA adaptation of Qwen2.5-0.5B and Qwen2.5-1.5B, with and without 90% off-target contamination, and does the answer change with model size?",
+  "hardware": "Google Colab runtime with one NVIDIA A100 GPU, run by the project owner from colab/stage69_gpu.ipynb. Torch, CUDA and driver versions are recorded, not pinned (Colab preinstalls them).",
+  "models": {
+    "qwen2.5-0.5b": {"repo": "Qwen/Qwen2.5-0.5B", "revision": "060db6499f32faf8b98477b0a26969ef7d8b9987", "safetensors_sha256": "88c142557820ccad55bb59756bfcfcf891de9cc6202816bd346445188a0ed342"},
+    "qwen2.5-1.5b": {"repo": "Qwen/Qwen2.5-1.5B", "revision": "8faed761d45a263340a0528343f099c05c9a4323", "safetensors_sha256": "a961db72e75d52b18e6b0c9d379e51a26973b233385e0e127fdda7d648aec796"}
+  },
+  "numerics": "float32 weights, TF32 disabled for matmul and cuDNN, torch.use_deterministic_algorithms(True), CUBLAS_WORKSPACE_CONFIG=:4096:8.",
+  "adapters": "As stages 66 and 68: LoRA rank 8, alpha 16 on q_proj and v_proj; AdamW lr 5e-4, weight decay 0; one 65-token chunk per update.",
+  "candidates": "Arabic UD-PADT train and English UD-EWT train (r2.15, prepared by tools/prepare_multilingual.py, hashes checked), Qwen tokenizer, 65-token chunks. Each candidate slot is English with probability rho.",
+  "evaluation_source": "UD-PADT dev is exhausted: every dev line meets material scored in stages 49, 63, 65, 66, 67 or 68. Probe and target therefore come from Arabic Wikipedia, wikimedia/wikipedia revision b04c8d1ceb2f5cd4588862100d08de323dccfbaa, file 20231101.ar/train-00004-of-00007.parquet (SHA-256 f035e9118745d465529d48b0b1893824a4f266af2474694dcd35823e767aad17; declared licenses CC BY-SA 3.0 and GFDL). Articles in file order whose text tokenizes to at least 65 tokens are eligible; probe = first 65 tokens of 16 articles (seed 6901), target = first 65 tokens of 256 different articles (seed 6902). This adds a news-to-encyclopedia domain shift between candidates and target; Qwen pretraining may include Wikipedia.",
+  "rho": [0.0, 0.9],
+  "seeds": [34000, 34001, 34002, 34003, 34004, 34005],
+  "arms": ["random", "loss4", "graddot4", "graddot4_batched"],
+  "policies": "Identical decision rules to stage 68, executed on the GPU: random uses the scheduled column; loss4 picks the highest mean loss from one no-grad batched forward; graddot4 computes four separate candidate gradients; graddot4_batched recovers the four per-example LoRA gradients from one batched backward. Probe gradient refreshed every 4 steps.",
+  "schedule": "Per model, rho index k and seed: rng = default_rng(seed + 1000 k); 4096-by-4 language flags, Arabic indices, English indices, then 4096 choices in [0,4).",
+  "budget": "Per model, before any target evaluation: calibration seed 34999, rho 0.5, 24 steps per arm on train candidates; cost = median of steps 5-24 with torch.cuda.synchronize around each step. Budget = 400 random-step costs; N_arm = floor(400 c_random / c_arm + 1e-9). Costs and N_arm are journaled before the main runs.",
+  "measurement": "Wikipedia target mean token cross-entropy at N_arm for each arm; random also at every guided N_arm for the selection/throughput decomposition; English share of choices.",
+  "primary": "Qwen2.5-1.5B, rho 0.9: graddot4_batched at its N minus random at 400, mean over six seeds; negative favours graddot4_batched.",
+  "secondary": "All other model, rho and arm contrasts; paired seed-bootstrap 95% intervals (seed 6903, 10000 resamples) reported as secondary; decomposition terms; r per arm and model; change of each contrast from 0.5B to 1.5B. No multiplicity adjustment; no pooled effect across models.",
+  "resumption": "Colab sessions may disconnect. The journal (JSON lines) lives on Google Drive; a restarted run skips completed (model, rho, seed, arm) entries, reuses the journaled calibration, and must reproduce the journaled schedule digest for each state. Interruptions are kept in the journal.",
+  "coverage": "2 models x 2 rho x 6 seeds x 4 arms = 96 runs plus two calibrations.",
+  "audit": "Back on CPU: summary recomputation from the journal, and data, schedule and sample-index checks. Exact replay on a different device is not expected to match bitwise; a GPU replay of a subset by the owner is optional.",
+  "scope": "Two model sizes from one family, LoRA only, short budgets, one GPU type. Not full fine-tuning or multi-GPU pretraining."
+}
