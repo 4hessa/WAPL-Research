@@ -1,0 +1,94 @@
+{
+  "stage": 67,
+  "written_before_phase_B": true,
+  "status": "addendum; the pre-registered predictions file is unchanged and remains primary",
+  "reason": "The protocol states the rule as s/a > r - 1, derived assuming a > 0. Phase A found a < 0 at rho = 0.95 (random training raised Arabic target loss), where dividing by a reverses the inequality. The undivided first-order form of the same derivation is s > (r - 1) a. Both forms will be evaluated in phase B.",
+  "predictions_sha256": "5cf4939a54f35d49790861fb1f5a6912665c0b01e542b58391adf8ab8c8dcc4d",
+  "per_rho": {
+    "0.0": {
+      "a": 1.4326651319861412,
+      "arms": {
+        "loss4": {
+          "s": -0.01824425905942917,
+          "throughput_estimate": 0.29836486526045425,
+          "predicted_guided_wins": false,
+          "preregistered_prediction": false
+        },
+        "reuse4": {
+          "s": 0.011902324855327606,
+          "throughput_estimate": 4.967097685428116,
+          "predicted_guided_wins": false,
+          "preregistered_prediction": false
+        }
+      }
+    },
+    "0.5": {
+      "a": 1.2300420477986336,
+      "arms": {
+        "loss4": {
+          "s": -0.5179250165820122,
+          "throughput_estimate": 0.2561668610915022,
+          "predicted_guided_wins": false,
+          "preregistered_prediction": false
+        },
+        "reuse4": {
+          "s": 0.46981485188007355,
+          "throughput_estimate": 4.264596710139627,
+          "predicted_guided_wins": false,
+          "preregistered_prediction": false
+        }
+      }
+    },
+    "0.8": {
+      "a": 0.6871660202741623,
+      "arms": {
+        "loss4": {
+          "s": 0.3676805645227432,
+          "throughput_estimate": 0.1431082480289234,
+          "predicted_guided_wins": true,
+          "preregistered_prediction": true
+        },
+        "reuse4": {
+          "s": 1.0617481544613838,
+          "throughput_estimate": 2.3824274581714735,
+          "predicted_guided_wins": false,
+          "preregistered_prediction": false
+        }
+      }
+    },
+    "0.9": {
+      "a": 0.07905538380146027,
+      "arms": {
+        "loss4": {
+          "s": 0.9675401747226715,
+          "throughput_estimate": 0.01646396524171453,
+          "predicted_guided_wins": true,
+          "preregistered_prediction": true
+        },
+        "reuse4": {
+          "s": 1.1461433917284012,
+          "throughput_estimate": 0.27408764625721566,
+          "predicted_guided_wins": true,
+          "preregistered_prediction": true
+        }
+      }
+    },
+    "0.95": {
+      "a": -0.33220888674259186,
+      "arms": {
+        "loss4": {
+          "s": 1.2933745831251144,
+          "throughput_estimate": -0.06918536475712718,
+          "predicted_guided_wins": true,
+          "preregistered_prediction": false
+        },
+        "reuse4": {
+          "s": 1.3581224754452705,
+          "throughput_estimate": -1.1517792647959422,
+          "predicted_guided_wins": true,
+          "preregistered_prediction": false
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "stage": 67,
+  "written_before_phase_B": true,
+  "source": "mixture-crossover-phaseA.json",
+  "source_sha256": "0cf61ab62b31d47708282e953ce6d1b2d3df6bab61457059beebc75cf43988d1",
+  "r": {
+    "loss4": 1.2082586213617297,
+    "reuse4": 4.467033275628128
+  },
+  "per_rho": {
+    "0.0": {
+      "loss0": 3.556601770222187,
+      "random_final": 2.123936638236046,
+      "a": 1.4326651319861412,
+      "arms": {
+        "loss4": {
+          "final": 2.142180897295475,
+          "s": -0.01824425905942917,
+          "s_over_a": -0.012734489485436611,
+          "r": 1.2082586213617297,
+          "threshold": 0.20825862136172968,
+          "predicted_guided_wins": false,
+          "english_share": 0.0
+        },
+        "reuse4": {
+          "final": 2.1120343133807182,
+          "s": 0.011902324855327606,
+          "s_over_a": 0.008307820571320181,
+          "r": 4.467033275628128,
+          "threshold": 3.467033275628128,
+          "predicted_guided_wins": false,
+          "english_share": 0.0
+        }
+      },
+      "random_english_share": 0.0
+    },
+    "0.5": {
+      "loss0": 3.963924117386341,
+      "random_final": 2.7338820695877075,
+      "a": 1.2300420477986336,
+      "arms": {
+        "loss4": {
+          "final": 3.2518070861697197,
+          "s": -0.5179250165820122,
+          "s_over_a": -0.42106285513485153,
+          "r": 1.2082586213617297,
+          "threshold": 0.20825862136172968,
+          "predicted_guided_wins": false,
+          "english_share": 0.74609375
+        },
+        "reuse4": {
+          "final": 2.264067217707634,
+          "s": 0.46981485188007355,
+          "s_over_a": 0.38195023716537657,
+          "r": 4.467033275628128,
+          "threshold": 3.467033275628128,
+          "predicted_guided_wins": false,
+          "english_share": 0.0625
+        }
+      },
+      "random_english_share": 0.48828125
+    },
+    "0.8": {
+      "loss0": 4.521816939115524,
+      "random_final": 3.834650918841362,
+      "a": 0.6871660202741623,
+      "arms": {
+        "loss4": {
+          "final": 3.4669703543186188,
+          "s": 0.3676805645227432,
+          "s_over_a": 0.5350680238467667,
+          "r": 1.2082586213617297,
+          "threshold": 0.20825862136172968,
+          "predicted_guided_wins": true,
+          "english_share": 0.6953125
+        },
+        "reuse4": {
+          "final": 2.772902764379978,
+          "s": 1.0617481544613838,
+          "s_over_a": 1.5451115496627328,
+          "r": 4.467033275628128,
+          "threshold": 3.467033275628128,
+          "predicted_guided_wins": false,
+          "english_share": 0.3515625
+        }
+      },
+      "random_english_share": 0.82421875
+    },
+    "0.9": {
+      "loss0": 4.939167156815529,
+      "random_final": 4.860111773014069,
+      "a": 0.07905538380146027,
+      "arms": {
+        "loss4": {
+          "final": 3.892571598291397,
+          "s": 0.9675401747226715,
+          "s_over_a": 12.238763866513537,
+          "r": 1.2082586213617297,
+          "threshold": 0.20825862136172968,
+          "predicted_guided_wins": true,
+          "english_share": 0.7578125
+        },
+        "reuse4": {
+          "final": 3.7139683812856674,
+          "s": 1.1461433917284012,
+          "s_over_a": 14.497980233791873,
+          "r": 4.467033275628128,
+          "threshold": 3.467033275628128,
+          "predicted_guided_wins": true,
+          "english_share": 0.71484375
+        }
+      },
+      "random_english_share": 0.9140625
+    },
+    "0.95": {
+      "loss0": 5.077760383486748,
+      "random_final": 5.40996927022934,
+      "a": -0.33220888674259186,
+      "arms": {
+        "loss4": {
+          "final": 4.116594687104225,
+          "s": 1.2933745831251144,
+          "s_over_a": -3.8932570281519006,
+          "r": 1.2082586213617297,
+          "threshold": 0.20825862136172968,
+          "predicted_guided_wins": false,
+          "english_share": 0.796875
+        },
+        "reuse4": {
+          "final": 4.051846794784069,
+          "s": 1.3581224754452705,
+          "s_over_a": -4.088158172895585,
+          "r": 4.467033275628128,
+          "threshold": 3.467033275628128,
+          "predicted_guided_wins": false,
+          "english_share": 0.79296875
+        }
+      },
+      "random_english_share": 0.94140625
+    }
+  }
+}

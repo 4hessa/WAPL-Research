@@ -1,0 +1,641 @@
+{
+  "stage": 66,
+  "protocol": {
+    "stage": 66,
+    "date": "2026-11-21",
+    "reference_commit": "edde644",
+    "question": "In LoRA adaptation of a pretrained multilingual LLM to Arabic PADT and English EWT text, how large is the per-update selection gain s/a of gradient alignment and of highest-loss selection relative to random, and does it exceed the measured decision-cost ratio minus one (r - 1)?",
+    "model": {
+      "name": "Qwen/Qwen2.5-0.5B",
+      "revision": "060db6499f32faf8b98477b0a26969ef7d8b9987",
+      "safetensors_sha256": "88c142557820ccad55bb59756bfcfcf891de9cc6202816bd346445188a0ed342",
+      "declared_license": "apache-2.0",
+      "dtype": "float32"
+    },
+    "adapters": "Base weights frozen. LoRA rank 8, alpha 16, on q_proj and v_proj of all 24 layers (540,672 trainable parameters); A Kaiming-uniform from torch.Generator(seed), B zeros. AdamW lr 5e-4, weight decay 0, default betas. One update uses one 65-token chunk (64 next-token predictions). lr was chosen between two values (2e-4, 1e-3) piloted for 32 updates on held-out train chunks only.",
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "seeds": [
+      31000,
+      31001,
+      31002,
+      31003
+    ],
+    "arms": [
+      "random",
+      "loss4",
+      "graddot4"
+    ],
+    "updates": 64,
+    "checkpoints": [
+      0,
+      16,
+      32,
+      64
+    ],
+    "candidates_per_step": 4,
+    "probe_chunks": 16,
+    "probe_seed": 6601,
+    "target_chunks": 128,
+    "target_seed": 6602,
+    "data": "Qwen tokenizer, no special tokens, 65-token chunks. Candidates: train split chunks. Probe and target: dev sentences (lines) whose bytes do not intersect any dev byte chunk scored before (stage-49 sample seed 4800, stage-63 probe seed 6301, stage-65 target seed 6501), joined by newlines, tokenized and chunked; probe and target drawn disjointly without replacement. Test splits are not read.",
+    "schedule": "Per language/seed: np.random.default_rng(seed) draws a 64-by-4 matrix of train chunk indices, then 64 integers in [0,4). All arms share it; random applies column choice[step].",
+    "policies": "random: update on the scheduled column. loss4: one no-grad batched forward over the four candidates, update the highest mean-loss one. graddot4: probe gradient (mean loss over 16 probe chunks) recomputed at steps 0, 4, 8, ...; each candidate's adapter gradient by its own backward pass; score = dot(candidate gradient, probe gradient); the highest score wins (first index on ties) and its already computed gradient is passed to AdamW, which is identical to recomputing it. Each arm starts from the same freshly loaded model with the seed's adapter initialization.",
+    "measurement": "Target mean token cross-entropy (nats per token) at each checkpoint; the checkpoint-0 value is shared. Per-step wall time of decision plus update recorded for every step, single process, 4 torch threads, deterministic algorithms; evaluations outside the step timer. No time budget: all arms run exactly 64 updates.",
+    "primary": "Arabic target loss after 64 updates, graddot4 minus random, mean over four seeds. Negative favors graddot4.",
+    "decomposition": "Per language and arm at 64 updates: a = loss0 - random loss; s = random loss - arm loss (seed means); r = median step time of arm / median step time of random within language. Break-even criterion: selection would pay off under equal time only if s/a > r - 1 (first-order).",
+    "secondary": "loss4 minus random; English; checkpoints 16 and 32; per-seed values; per-arm step times. Descriptive only with four seeds: no confidence intervals, no significance tests, no pooled language effect.",
+    "coverage": "2 languages x 4 seeds x 3 arms x 64 updates = 1,536 updates; 2 x 4 x (1 + 3 x 3) = 80 target evaluations. Audit: summary recomputation, exact replay of final adapter losses from recorded choices for every run, untimed replay of loss4 and graddot4 decisions, data disjointness from previously scored dev chunks.",
+    "scope": "One 0.5B pretrained model, LoRA only, 64 updates of one chunk, CPU. Pretraining data of the model are unknown, so UD text may have been seen in pretraining. Step-time ratios depend on hardware, batch shapes and implementation. Not a claim about larger models, full fine-tuning or accelerator training."
+  },
+  "provenance": {
+    "sha256": {
+      "research/llm-selection-protocol.json": "877e5d7cfcef8a7928d171bc17eb4f4975656c455156c04b90f3ce6d309bce00",
+      "data/multilingual_sources.json": "101697c45cc1d16688ac91121570bc1decedc671b7b35d93d19626a2bde31b3d",
+      "experiments/llm_selection.py": "438d02dc080963f7c9928147dae9ca2dbf7e7843362351980724e075c80e77b2",
+      "experiments/llm_common.py": "a2bb6ba72f312b2f29fa00d060e792590a5f193165504be5f5bb677a67227f2c",
+      "tests/test_llm_selection.py": "91152c3490f20770ab3c50e170d038d071d86de3a07fa5321707d6aa60d25d3b",
+      "experiments/ud_cost_frontier.py": "11ac4291bc06d9bc6f9e952dc3bfcdd9ee940ef108042b2bbb0a446f41c994da",
+      "research/ud-cost-frontier-protocol.json": "9ccee575808ac6be6570e948148216c4d8e4f2b00c57adabd23c491d22511f27",
+      "models/qwen2.5-0.5b/tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "models/qwen2.5-0.5b/config.json": "479dcf0c5286339e41ad3992cd08ae88a467c4187587936248e2b7c96283484b",
+      "models/qwen2.5-0.5b/model.safetensors": "88c142557820ccad55bb59756bfcfcf891de9cc6202816bd346445188a0ed342",
+      "data/ud_ar_train.txt": "2fe6a1b3c6c1a50dff892296156882941049da22f92e15f9a444da3b13d6d162",
+      "data/ud_ar_dev.txt": "f1b9e6e014412fb9a78f5a48c142b2c0b6d5554fe284520280086a01a766571b",
+      "data/ud_en_train.txt": "fb2155978102bd793938effcc40a35b2d948f8ea606e6c5c334df5409f967eef",
+      "data/ud_en_dev.txt": "5ed0defb7bcbf5aa8090fbaa2a9494b2094f423fb27aa5e0be5708325091aff4"
+    },
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "numpy": "2.3.5",
+    "torch": "2.5.1+cpu",
+    "transformers": "4.46.3",
+    "torch_threads": 4,
+    "deterministic": true,
+    "logical_cpus": 4
+  },
+  "output_sha256": {
+    "llm-selection-records.jsonl": "0ea907c04b3102da71d182d1b1a556bb38f52a9411f62a0db42630533b2467c9"
+  },
+  "populations": {
+    "ar": {
+      "train_chunks": 5762,
+      "eligible_dev_lines": 370,
+      "excluded_dev_lines": 533,
+      "eligible_dev_chunks": 243,
+      "probe_ids": [
+        2,
+        8,
+        13,
+        28,
+        34,
+        37,
+        38,
+        47,
+        59,
+        92,
+        113,
+        146,
+        160,
+        166,
+        203,
+        232
+      ],
+      "target_ids": [
+        1,
+        5,
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17,
+        18,
+        20,
+        27,
+        30,
+        32,
+        33,
+        40,
+        41,
+        43,
+        45,
+        49,
+        55,
+        56,
+        57,
+        60,
+        62,
+        64,
+        65,
+        69,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        87,
+        88,
+        89,
+        93,
+        96,
+        98,
+        103,
+        104,
+        106,
+        107,
+        109,
+        110,
+        111,
+        114,
+        115,
+        116,
+        117,
+        120,
+        122,
+        123,
+        125,
+        126,
+        127,
+        129,
+        130,
+        132,
+        133,
+        134,
+        135,
+        137,
+        138,
+        139,
+        141,
+        144,
+        145,
+        147,
+        151,
+        152,
+        154,
+        155,
+        156,
+        157,
+        159,
+        163,
+        164,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        176,
+        177,
+        179,
+        183,
+        184,
+        189,
+        191,
+        192,
+        194,
+        195,
+        199,
+        201,
+        207,
+        208,
+        209,
+        212,
+        213,
+        214,
+        218,
+        222,
+        224,
+        225,
+        228,
+        229,
+        230,
+        234,
+        235,
+        236,
+        240,
+        242
+      ]
+    },
+    "en": {
+      "train_chunks": 3466,
+      "eligible_dev_lines": 790,
+      "excluded_dev_lines": 1088,
+      "eligible_dev_chunks": 154,
+      "probe_ids": [
+        1,
+        5,
+        8,
+        17,
+        21,
+        22,
+        24,
+        30,
+        37,
+        57,
+        69,
+        89,
+        99,
+        104,
+        124,
+        125
+      ],
+      "target_ids": [
+        0,
+        2,
+        3,
+        4,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        18,
+        19,
+        20,
+        23,
+        25,
+        26,
+        27,
+        28,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        53,
+        54,
+        55,
+        56,
+        58,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        100,
+        101,
+        102,
+        103,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        140,
+        141,
+        142,
+        143,
+        144,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152
+      ]
+    }
+  },
+  "summary": {
+    "primary": {
+      "language": "ar",
+      "contrast": "graddot4_minus_random",
+      "updates": 64,
+      "mean": -0.01615975797176361
+    },
+    "languages": {
+      "ar": {
+        "arms": {
+          "random": {
+            "loss": {
+              "0": 3.2707259356975555,
+              "16": 3.245339587330818,
+              "32": 3.231644183397293,
+              "64": 3.224055029451847
+            },
+            "median_step_seconds": 0.647731709999789,
+            "mean_step_seconds": 0.6495319633749901
+          },
+          "loss4": {
+            "loss": {
+              "0": 3.2707259356975555,
+              "16": 3.23899944126606,
+              "32": 3.2281974107027054,
+              "64": 3.2274649664759636
+            },
+            "median_step_seconds": 1.3737024855004165,
+            "mean_step_seconds": 1.391507572148445
+          },
+          "graddot4": {
+            "loss": {
+              "0": 3.2707259356975555,
+              "16": 3.2282758951187134,
+              "32": 3.2194637805223465,
+              "64": 3.2078952714800835
+            },
+            "median_step_seconds": 2.697851636999985,
+            "mean_step_seconds": 4.940928077628936
+          }
+        },
+        "contrasts": {
+          "loss4_minus_random": {
+            "16": {
+              "mean": -0.006340146064758301,
+              "per_seed": [
+                -0.006246089935302734,
+                -0.004866659641265869,
+                -0.0057513415813446045,
+                -0.008496493101119995
+              ],
+              "seeds_negative": 4
+            },
+            "32": {
+              "mean": -0.0034467726945877075,
+              "per_seed": [
+                -0.006700873374938965,
+                -0.006106913089752197,
+                0.0007743537425994873,
+                -0.0017536580562591553
+              ],
+              "seeds_negative": 3
+            },
+            "64": {
+              "mean": 0.003409937024116516,
+              "per_seed": [
+                -0.0009998083114624023,
+                0.024534255266189575,
+                -0.004929244518280029,
+                -0.004965454339981079
+              ],
+              "seeds_negative": 3
+            }
+          },
+          "graddot4_minus_random": {
+            "16": {
+              "mean": -0.017063692212104797,
+              "per_seed": [
+                -0.017980456352233887,
+                -0.016608744859695435,
+                -0.017611533403396606,
+                -0.01605403423309326
+              ],
+              "seeds_negative": 4
+            },
+            "32": {
+              "mean": -0.012180402874946594,
+              "per_seed": [
+                -0.013464361429214478,
+                -0.008056074380874634,
+                -0.009153366088867188,
+                -0.018047809600830078
+              ],
+              "seeds_negative": 4
+            },
+            "64": {
+              "mean": -0.01615975797176361,
+              "per_seed": [
+                -0.017293781042099,
+                -0.006327897310256958,
+                -0.019036561250686646,
+                -0.02198079228401184
+              ],
+              "seeds_negative": 4
+            }
+          }
+        },
+        "decomposition": {
+          "loss4": {
+            "a": 0.046670906245708466,
+            "s": -0.003409937024116516,
+            "s_over_a": -0.07306344141174825,
+            "r": 2.120789308741522,
+            "break_even_s_over_a": 1.120789308741522,
+            "pays_off_first_order": false
+          },
+          "graddot4": {
+            "a": 0.046670906245708466,
+            "s": 0.01615975797176361,
+            "s_over_a": 0.34624907188832554,
+            "r": 4.1650757487245205,
+            "break_even_s_over_a": 3.1650757487245205,
+            "pays_off_first_order": false
+          }
+        }
+      },
+      "en": {
+        "arms": {
+          "random": {
+            "loss": {
+              "0": 4.091760039329529,
+              "16": 4.023700639605522,
+              "32": 3.9744404777884483,
+              "64": 3.9567833617329597
+            },
+            "median_step_seconds": 0.5986382149994824,
+            "mean_step_seconds": 0.6109468429803684
+          },
+          "loss4": {
+            "loss": {
+              "0": 4.091760039329529,
+              "16": 4.01880869269371,
+              "32": 3.9711709693074226,
+              "64": 3.949912942945957
+            },
+            "median_step_seconds": 1.4239904999994906,
+            "mean_step_seconds": 1.4413669066367518
+          },
+          "graddot4": {
+            "loss": {
+              "0": 4.091760039329529,
+              "16": 4.000540517270565,
+              "32": 3.958052061498165,
+              "64": 3.9335528016090393
+            },
+            "median_step_seconds": 2.5618893255004878,
+            "mean_step_seconds": 4.660840559703146
+          }
+        },
+        "contrasts": {
+          "loss4_minus_random": {
+            "16": {
+              "mean": -0.004891946911811829,
+              "per_seed": [
+                -0.010791867971420288,
+                -0.0019167959690093994,
+                -0.010557591915130615,
+                0.0036984682083129883
+              ],
+              "seeds_negative": 3
+            },
+            "32": {
+              "mean": -0.003269508481025696,
+              "per_seed": [
+                0.00035703182220458984,
+                -0.009606808423995972,
+                -0.00080832839012146,
+                -0.0030199289321899414
+              ],
+              "seeds_negative": 3
+            },
+            "64": {
+              "mean": -0.0068704187870025635,
+              "per_seed": [
+                -0.01943737268447876,
+                -0.009973973035812378,
+                -0.00208127498626709,
+                0.004010945558547974
+              ],
+              "seeds_negative": 3
+            }
+          },
+          "graddot4_minus_random": {
+            "16": {
+              "mean": -0.023160122334957123,
+              "per_seed": [
+                -0.019030749797821045,
+                -0.015429198741912842,
+                -0.04429277777671814,
+                -0.013887763023376465
+              ],
+              "seeds_negative": 4
+            },
+            "32": {
+              "mean": -0.016388416290283203,
+              "per_seed": [
+                -0.013306796550750732,
+                -0.02654486894607544,
+                -0.013859003782272339,
+                -0.011842995882034302
+              ],
+              "seeds_negative": 4
+            },
+            "64": {
+              "mean": -0.02323056012392044,
+              "per_seed": [
+                -0.030950605869293213,
+                -0.03102797269821167,
+                -0.016297459602355957,
+                -0.014646202325820923
+              ],
+              "seeds_negative": 4
+            }
+          }
+        },
+        "decomposition": {
+          "loss4": {
+            "a": 0.13497667759656906,
+            "s": 0.0068704187870025635,
+            "s_over_a": 0.050900784560259475,
+            "r": 2.378716333705361,
+            "break_even_s_over_a": 1.378716333705361,
+            "pays_off_first_order": false
+          },
+          "graddot4": {
+            "a": 0.13497667759656906,
+            "s": 0.02323056012392044,
+            "s_over_a": 0.17210795626007416,
+            "r": 4.2795285387898305,
+            "break_even_s_over_a": 3.2795285387898305,
+            "pays_off_first_order": false
+          }
+        }
+      }
+    }
+  },
+  "runs": 24,
+  "wall_seconds": 6213.999870752999
+}
