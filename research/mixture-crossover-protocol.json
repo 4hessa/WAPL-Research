@@ -1,0 +1,33 @@
+{
+  "stage": 67,
+  "date": "2026-11-21",
+  "reference_commit": "a39e967",
+  "question": "When a fraction rho of candidate training chunks is off-target, can equal-update measurements of s/a plus a measured step-cost ratio r predict, before any timed run, the contamination levels at which a guided selector beats random selection under an equal time budget?",
+  "hypothesis": "Selection gain s/a grows with rho while r is fixed by the method. The first-order rule 'guided wins in time iff s/a > r - 1' predicts the sign of the timed contrast at each rho.",
+  "model": "ByteTransformer (35,776 parameters) and AdamW exactly as in stages 58-65; single thread; deterministic Torch.",
+  "target_language": "ar",
+  "rho": [0.0, 0.5, 0.8, 0.9, 0.95],
+  "arms": ["random", "loss4", "reuse4"],
+  "pool": "Candidates mix UD r2.15 Arabic-PADT train chunks (on-target) and English-EWT train chunks (off-target). Each candidate slot is independently English with probability rho, otherwise Arabic; the index is uniform within its language. Warmup batches are drawn from the same mixture.",
+  "probe": "The stage-63 Arabic PADT dev probe (64 chunks, seed 6301), used only by reuse4.",
+  "target": "512 Arabic PADT dev chunks drawn (seed 6701) from chunks never scored before: excluding the stage-49 sample (seed 4800), the stage-63 probe (6301), the stage-65 target (6501) and every chunk whose bytes meet any dev line eligible in stage 66 (all such lines treated as exposed). Test splits are not read.",
+  "schedule": "Per rho and seed: rng = default_rng(seed + 1000 * index of rho); 32 warmup batches of four mixture chunks; then for the schedule length a 4-column matrix of language flags (rng.random < rho) and within-language indices; then uniform choices in [0,4). One common schedule per (rho, seed) for all arms.",
+  "policies": "random and reuse4: unchanged stage-58/60 decision functions in the stage-58 deadline loop. loss4: the stage-65 LossDecision (one batched no-grad forward, highest mean loss).",
+  "phase_A": {
+    "seeds": [32000, 32001, 32002, 32003],
+    "updates": 64,
+    "measure": "Each arm runs exactly 64 updates (no budget) from the warmed state, recording per-step wall time of the decision and update. Target loss at 0 and 64. Per rho: a = loss0 - random loss64; s = random loss64 - arm loss64 (seed means); r = median step time of arm / median step time of random, pooled over all rho values per arm.",
+    "prediction": "For each rho and guided arm: predicted timed winner is the guided arm iff s/a > r - 1. Predictions are written to results/mixture-crossover-predictions.json, committed and pushed before any phase-B run."
+  },
+  "phase_B": {
+    "seeds": [32100, 32101, 32102, 32103, 32104, 32105, 32106, 32107],
+    "budget_seconds": 3.0,
+    "timing_repeats": 3,
+    "schedule_length": 20000,
+    "order": "Enumerate rho then seeds; in repeat j of state i rotate arms left by (i + j) mod 3.",
+    "measure": "Timed runs as in stage 64. Average repeats within seed, then seeds equally. Paired seed-bootstrap 95% intervals (seed 6702, 10000 resamples) for each arm minus random at each rho."
+  },
+  "primary": "Agreement between phase-A predicted and phase-B observed timed winner (sign of mean arm-minus-random final loss) over the 10 (rho, guided arm) cases. Secondary: the same with sign taken only when the bootstrap interval excludes zero; the phase-B selection/throughput decomposition (replay of random schedule) per rho; reuse4 minus random at each rho with interval.",
+  "falsification": "The rule is not supported as a forecasting tool if fewer than 8 of 10 predicted winners agree with observed signs, or if any case with an interval excluding zero contradicts the prediction. If no case is predicted or observed to favour a guided arm, the design is non-discriminating and is reported as such.",
+  "scope": "Synthetic contamination by a second language, one small model and one CPU host. The linear rule ignores curvature of learning curves; disagreement is informative about that approximation."
+}
