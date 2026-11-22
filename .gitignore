@@ -17,3 +17,6 @@ data/pud_raw/
 
 # Pretrained model weights stay local; revision and SHA-256 are tracked in code.
 models/
+
+# Arabic Wikipedia shard for stage 69 (hash pinned in the protocol).
+data/wiki/

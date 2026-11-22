@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "stage": 69,
+  "journal_sha256": "366982173c00d6fa09ed4f8c7851470ab631338149d2443570454fb3a928d5b2",
+  "result_sha256": "36e481385a12692337e424e4534a46b54115cd0e08c584839bcda1574acd861a",
+  "checks": {
+    "runs": 96,
+    "schedules": 24,
+    "random_choice_sequences": 24
+  },
+  "devices": [
+    "NVIDIA L4"
+  ],
+  "notes": "CPU audit of journal, summary, budgets, evaluation samples, schedules and random choices. Guided GPU trajectories were not replayed."
+}
