@@ -90,6 +90,12 @@ Applying the stage-67 lesson, each policy was charged its measured step cost (ca
 
 With 90% off-target candidates, random training barely moved the Arabic target (3.3982 to 3.3956 in 96 updates), so extra throughput was worthless (negative throughput term) and alignment's selection term decided the outcome. Highest-loss selection chose English 99% of the time and hurt the target. Four seeds, descriptive; stage 69 replicates on an A100 with six seeds, two model sizes and a new Arabic Wikipedia target.
 
+### 4.6 GPU replication with two model sizes (stage 69; `results/llm-gpu-scale.json`)
+
+Colab, NVIDIA L4 (the protocol named an A100; see `research/llm-gpu-scale-deviations.md`); Qwen2.5-0.5B and 1.5B; budget 400 random-step costs; six seeds; new target of 256 Arabic Wikipedia article openings. On the GPU, batched alignment cost only 1.30 (0.5B) and 1.89 (1.5B) random steps. Batched alignment minus random: 0.5B −0.215 (ρ 0) and −0.192 (ρ 0.9); 1.5B −0.249 (ρ 0) and −0.172 (ρ 0.9, primary, 95% CI [−0.219, −0.126]); 6/6 seeds in every cell. Highest-loss selection was inconclusive or harmful under contamination.
+
+Critical context (post hoc): random LoRA training on the PADT-news/EWT pool raised Wikipedia loss above its starting value (+0.03 to +0.19), and only the alignment policies finished below it (−0.03 to −0.14). In this domain-shifted setting alignment works mainly as a filter against harmful updates; it does not show that alignment beats random when random training already helps the target (stage 68, ρ 0, showed the opposite).
+
 ## 5 Limitations
 
 Small models on CPU; wall-clock ratios are hardware- and implementation-specific; corpora reused across stages (exposure ledger: `data/evaluation_status.json`); the original WAPLV hypothesis (weight–sample features) was not supported in stages 18–55 and is not the subject of this paper.
