@@ -107,6 +107,10 @@ Synthesis of stages 68–70: on pretrained LLMs adapted with LoRA, the selection
 
 Qwen2.5-1.5B on an L4, Arabic Wikipedia candidates and target, English contamination ρ ∈ {0, .25, .5, .75, .9}, six seeds, r = 1.95. Alignment minus random: +0.025, +0.009, −0.018, −0.038, −0.093; selection term −0.005, −0.026, −0.056, −0.116, −0.230; throughput term +0.030 to +0.137. Pre-registered crossover estimate ρ* = 0.34, 95% CI [0.29, 0.52]; the prediction (crossover in [0, 0.5]) held. Exploratory: the same seeds and schedules on a Tesla T4 (r = 3.24, outside the protocol) gave ρ* ≈ 0.72 [0.43, 0.80], so a 1.7-fold higher decision cost roughly doubled the contamination needed for alignment to pay.
 
+### 4.9 Same-language contamination (stage 72; `results/llm-gpu-noise.json`)
+
+Qwen2.5-1.5B on an L4, r = 1.96, six seeds; clean Arabic Wikipedia candidates mixed at ρ ∈ {0.5, 0.9} with Arabic news (PADT), garbled Arabic Wikipedia (token-permuted chunks) or English. Primary (garbled, ρ 0.5): −0.0049 [−0.021, +0.017], inconclusive. At ρ 0.9: garbled −0.242 [−0.269, −0.217], news −0.091 [−0.143, −0.034], English −0.063 [−0.119, −0.012]. At ρ 0.5 alignment chose 14–16% contaminant chunks against about 50% for random for every type, but its selection term roughly equalled the throughput cost, as expected near the stage-71 crossover. The filtering effect is therefore not specific to a second language.
+
 ## 5 Discussion: when alignment pays
 
 | stage | model, hardware | candidate pool → target | alignment r | alignment − random | selection | throughput |
@@ -124,7 +128,7 @@ Two cautions. In stage 69, random training on the news pool raised the Wikipedia
 
 ## 6 Limitations
 
-Small and mid-sized models (35,776 parameters to 1.5 billion), LoRA rather than full fine-tuning, short budgets (96–400 random-step costs), contamination by a second language rather than low-quality text in the same language, four to six seeds per cell, and one model family. Wall-clock ratios are hardware- and implementation-specific; stage 69 ran on an L4 instead of the pre-registered A100 and a secondary stage-71 run on a T4 (documented deviations). Qwen pretraining data are unknown, so evaluation text may have been seen in pretraining. Corpora were reused across stages (exposure ledger: `data/evaluation_status.json`). The original WAPLV hypothesis (weight–sample features) was not supported in stages 18–55 and is not the subject of this paper.
+Small and mid-sized models (35,776 parameters to 1.5 billion), LoRA rather than full fine-tuning, short budgets (96–400 random-step costs), contamination mostly by a second language (stage 72 adds same-language news and one synthetic garbling type), four to six seeds per cell, and one model family. Wall-clock ratios are hardware- and implementation-specific; stage 69 ran on an L4 instead of the pre-registered A100 and a secondary stage-71 run on a T4 (documented deviations). Qwen pretraining data are unknown, so evaluation text may have been seen in pretraining. Corpora were reused across stages (exposure ledger: `data/evaluation_status.json`). The original WAPLV hypothesis (weight–sample features) was not supported in stages 18–55 and is not the subject of this paper.
 
 ## 7 Reproducibility and audit status
 
