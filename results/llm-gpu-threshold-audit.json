@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "stage": 71,
+  "checks": {
+    "primary": {
+      "runs": 60,
+      "schedules": 30,
+      "random_choice_sequences": 30
+    },
+    "t4_secondary": {
+      "runs": 60,
+      "schedules": 30,
+      "random_choice_sequences": 30
+    }
+  },
+  "devices": {
+    "primary": "NVIDIA L4",
+    "t4_secondary": "Tesla T4"
+  },
+  "result_sha256": "3d0fa8c4690851918346bfe89ab66da15e3576d945acc4e760a76373faa604f2",
+  "notes": "CPU audit of both journals; the T4 journal is summarised separately as a secondary result. Alignment-arm GPU trajectories were not replayed."
+}
