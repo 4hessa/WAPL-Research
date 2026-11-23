@@ -1,24 +1,25 @@
-# Selection Must Pay for Itself: A Break-Even Analysis of Online Data Selection
+# When Does Data Selection Pay for Itself? Cost-Charged Evaluation of Online Selection for Language-Model Adaptation
 
-Working draft, 21 November 2026. Numbers come from committed, audited results in this repository; each claim names its source file. Sections marked TODO depend on stages not yet complete. Literature statements marked [snippet] were checked only against search-result summaries and must be verified against the papers before submission.
+Working draft, 23 November 2026. Numbers come from committed results in this repository; each claim names its source file. Audit status is stated per stage (Section 7). Literature statements marked [snippet] were checked only against search-result summaries and must be verified against the papers before submission.
 
 ## Abstract (provisional)
 
-Online data selection methods choose, at each training step, which examples to learn from. They are usually evaluated at equal numbers of updates or equal FLOPs of the training step, which hides the cost of the decision itself. We make that cost explicit. Writing r for the ratio of the wall-clock cost of a guided step to a random step, a for the loss reduction random training achieves in n updates, and s for the additional reduction a selection rule adds at the same n, a first-order argument gives a necessary condition for selection to beat random training under an equal time budget: s/a > r − 1. We decompose every timed comparison exactly into a selection term and a throughput term by replaying the random schedule to each guided run's update count. In pre-registered experiments on Arabic (UD PADT) and English (UD EWT) text with a 35,776-parameter byte-level Transformer, gradient-alignment selection improves loss per update (s/a ≈ 0.004–0.018) but costs r ≈ 6–11 random steps, and loses to random under equal time in every seed (e.g., Arabic +0.385 nats/byte, 95% CI [0.366, 0.408]). Cheap highest-loss selection (r ≈ 1.2–2.9) is worse still because its selection term is positive: it harms target loss per update, increasingly with the candidate pool. On a pretrained LLM (Qwen2.5-0.5B with LoRA), the per-update alignment gain is about 80 times larger (s/a = 0.35) but still below break-even at r ≈ 4. A pre-registered attempt to forecast equal-time winners from equal-update measurements under off-target contamination failed (6/10), because selection value changes over training. The single equal-time win, highest-loss selection at 95% contamination, came from the cheapest rule. Charging measured costs on the pretrained LLM, batched gradient alignment beat random under 90% contamination in all four seeds (−0.037 nats/token), while random won without contamination.
+Online data selection chooses, at each step, which examples a model learns from. It is usually compared with random training at equal numbers of updates, which hides the cost of the decision. We charge each policy its measured step cost and decompose every cost-matched comparison exactly into a selection term (value per update) and a throughput term (updates forgone). Across pre-registered experiments on Arabic and English text, from a 35,776-parameter byte-level Transformer trained from scratch to LoRA adaptation of Qwen2.5-0.5B and 1.5B on GPUs, three results recur. (1) On models trained from scratch, gradient-alignment selection improves loss per update by only 0.4–2% of random training's gain but costs 6–11 random steps, and loses in every seed. (2) Per-update value is not stationary: a pre-registered forecast of cost-matched winners from equal-update measurements failed (6/10 correct), because rules such as highest-loss selection change what they pick as training proceeds. (3) On pretrained LLMs, computing per-example LoRA gradients from one batched backward pass lowers the cost of alignment to 1.3–2.1 random steps on a GPU, and alignment then wins exactly when much of the candidate pool is unsuitable for the target: with 90% off-language candidates it beat random in every seed for both model sizes (e.g. Qwen2.5-1.5B on Arabic Wikipedia, −0.090 nats/token, 95% CI [−0.109, −0.073]), whereas with in-domain candidates random won (+0.027 [+0.022, +0.033]). Highest-loss selection, despite being cheap, chose off-target data and was the worst policy whenever contamination was present. The value of a selection rule is therefore a property of the candidate pool and the cost ratio together, and should be reported as such.
 
 ## 1 Introduction
 
-The question is not whether a selection rule picks better examples, but whether it picks examples better by more than it costs to pick them. Three observations motivate this paper:
+The question is not whether a selection rule picks better examples, but whether it picks examples better by more than it costs to pick them, and in which data regimes. Three observations motivate this paper:
 
-1. In this project, every gradient-guided policy lost to uniform random selection under an equal wall-clock budget (stages 35, 37, 58, 60, 64, 65), despite small gains at equal update counts (stage 58; stage 64 decomposition).
+1. In this project, every gradient-guided policy lost to uniform random selection under equal wall-clock budgets on small from-scratch models (stages 35, 37, 58, 60, 64, 65), despite small gains at equal update counts (stage 58; stage 64 decomposition).
 2. The gap is not noise: the decomposition attributes nearly all of it to throughput (Arabic reuse4, stage 64: selection −0.0123, throughput +0.4923).
 3. Recent online selection methods address exactly this cost. GREATS (Wang et al., NeurIPS 2024) computes per-example gradient inner products from activations and output gradients already available in backpropagation ("ghost inner products"), and reports runtime comparable to regular training [snippet]. A later paper reports that the method was memory-intensive and unstable beyond GPT-2 124M in its setting (ESLM, arXiv 2505.19893) [snippet]. Compute-positive selection has also been studied in FLOPs rather than wall-clock (arXiv 2312.05328) [snippet].
 
 Contributions:
-- A break-even inequality and an exact replay decomposition that separate the selection value of a rule from its throughput cost, applicable to any online selection method.
-- Pre-registered, audited experiments in which each protocol was pushed before outcomes were measured and every final model was reconstructed exactly from its recorded choices.
-- Evidence that cheap loss-based rules can have negative per-update value on held-out text, so lowering r alone is not sufficient.
-- Arabic as the primary language throughout.
+- An exact replay decomposition of cost-matched comparisons into selection and throughput terms, with a first-order break-even condition, applicable to any online selection method.
+- Evidence that equal-update comparisons at a shared update count can mislead in either direction, because per-update selection value changes over training (pre-registered falsification, stage 67).
+- A regime map for LoRA adaptation of pretrained LLMs: cost-charged gradient alignment wins under off-target contamination and loses on in-domain pools, replicated across two model sizes and three stages (68–70).
+- Evidence that cheap loss-based rules can have negative per-update value and pick off-target data under contamination.
+- Pre-registered protocols committed before outcomes, append-only run journals and audits; Arabic as the primary language throughout.
 
 ## 2 The break-even condition
 
@@ -26,7 +27,7 @@ Let L_R(n) be target loss after n random updates and L_G(n) after n guided updat
 
 L_G(N_G) − L_R(N_R) = [L_G(N_G) − L_R(N_G)] + [L_R(N_G) − L_R(N_R)].
 
-The first bracket (selection term, −s) is measured by replaying the first N_G steps of the random schedule. The second (throughput term) is the loss forgone by fewer updates. If L_R decreases approximately linearly over [N_G, N_R], with a = L_R(0) − L_R(N_G), the throughput term is ≈ (r − 1) a, so the guided rule wins only if s/a > r − 1. Concavity of real learning curves makes the throughput term smaller than (r − 1)a, so the linear condition is conservative in that respect; this is why the decomposition is measured rather than assumed.
+The first bracket (selection term, −s) is measured by replaying the first N_G steps of the random schedule. The second (throughput term) is the loss forgone by fewer updates. If L_R decreases approximately linearly over [N_G, N_R], with a = L_R(0) − L_R(N_G), the throughput term is ≈ (r − 1) a, so the guided rule wins only if s/a > r − 1. Curvature of real learning curves can move the throughput term either way: concavity makes it smaller than (r − 1)a, while a random curve that is flat early and steep later (stage 67, high contamination) makes it larger. This is why the decomposition is measured by replay rather than assumed, and why a single-point estimate of s/a is not a forecast.
 
 ## 3 Experimental protocol
 
@@ -102,10 +103,25 @@ Colab L4; Arabic candidates from Arabic Wikipedia (excluding stage-69 articles),
 
 Synthesis of stages 68–70: on pretrained LLMs adapted with LoRA, the selection term of gradient alignment is large when a substantial fraction of candidates is unsuitable for the target (off-language or off-domain) and near zero when candidates are in-domain. With batched per-example gradients the cost is 1.3–2.1 random steps on a GPU, so alignment pays off exactly in the first regime. This matches the break-even decomposition: the method's value is a property of the candidate pool, not of the method alone.
 
-## 5 Limitations
+## 5 Discussion: when alignment pays
 
-Small models on CPU; wall-clock ratios are hardware- and implementation-specific; corpora reused across stages (exposure ledger: `data/evaluation_status.json`); the original WAPLV hypothesis (weight–sample features) was not supported in stages 18–55 and is not the subject of this paper.
+| stage | model, hardware | candidate pool → target | alignment r | alignment − random | selection | throughput |
+| --- | --- | --- | --- | --- | --- | --- |
+| 68 | Qwen2.5-0.5B, CPU | PADT Arabic → PADT dev | 2.84 | +0.0075 (1/4 seeds better) | −0.0060 | +0.0135 |
+| 68 | same | 90% English → PADT dev | 2.84 | −0.0371 (4/4) | −0.0288 | −0.0084 |
+| 69 | Qwen2.5-1.5B, L4 | PADT Arabic → Wikipedia (domain shift) | 1.89 | −0.249 (6/6) | −0.229 | −0.020 |
+| 69 | same | 90% English → Wikipedia | 1.89 | −0.172 (6/6) | −0.186 | +0.014 |
+| 70 | Qwen2.5-1.5B, L4 | Wikipedia Arabic → Wikipedia | 2.08 | +0.027 (0/6) | −0.001 | +0.028 |
+| 70 | same | 90% English → Wikipedia | 2.08 | −0.090 (6/6) | −0.186 | +0.097 |
 
-## 6 Reproducibility
+Across these cells the throughput term is small or modest once per-example gradients are batched, and the sign of the outcome is set by the selection term. The selection term is near zero when candidates already match the target (stage 70, ρ 0; stage 68, ρ 0) and large when many candidates do not (off-language contamination, or off-domain news for a Wikipedia target). A practical rule follows: use target-aligned selection when a substantial share of the pool is expected to be unsuitable for the target, and random sampling when the pool is curated and in-domain. Where the boundary lies is the subject of stage 71 (pre-registered prediction: between 0 and 50% off-target candidates for Qwen2.5-1.5B on an L4).
 
-Every stage has a protocol committed before outcomes, a journal of runs written as they complete, and an audit that recomputes summaries and replays trajectories (`tools/audit_*.py`).
+Two cautions. In stage 69, random training on the news pool raised the Wikipedia loss above its starting value, so alignment's win there is partly harm avoidance. And the throughput term depends on hardware: the same batched rule cost 1.3–2.1 random steps on an L4, 2.84 on a CPU and 3.24 on a T4.
+
+## 6 Limitations
+
+Small and mid-sized models (35,776 parameters to 1.5 billion), LoRA rather than full fine-tuning, short budgets (96–400 random-step costs), contamination by a second language rather than low-quality text in the same language, four to six seeds per cell, and one model family. Wall-clock ratios are hardware- and implementation-specific; stage 69 ran on an L4 instead of the pre-registered A100 and the first stage-71 attempt on a T4 (documented deviations). Qwen pretraining data are unknown, so evaluation text may have been seen in pretraining. Corpora were reused across stages (exposure ledger: `data/evaluation_status.json`). The original WAPLV hypothesis (weight–sample features) was not supported in stages 18–55 and is not the subject of this paper.
+
+## 7 Reproducibility and audit status
+
+Every stage has a protocol committed before outcomes and a journal of runs written as they complete. Stages 64, 65 and 67 passed exact replay audits of all trajectories. Stages 69 and 70 passed CPU audits of journals, summaries, budgets, samples, schedules and random choices; their GPU trajectories were not replayed. The stage-68 audit found that batched per-example gradients differ from separately computed ones in 32 of 540,672 entries beyond the pre-registered tolerance (maximum absolute difference 2.9e-6); its full replay and the stage-66 replay were interrupted by machine restarts and are being rerun.
