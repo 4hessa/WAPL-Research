@@ -96,6 +96,12 @@ Colab, NVIDIA L4 (the protocol named an A100; see `research/llm-gpu-scale-deviat
 
 Critical context (post hoc): random LoRA training on the PADT-news/EWT pool raised Wikipedia loss above its starting value (+0.03 to +0.19), and only the alignment policies finished below it (−0.03 to −0.14). In this domain-shifted setting alignment works mainly as a filter against harmful updates; it does not show that alignment beats random when random training already helps the target (stage 68, ρ 0, showed the opposite).
 
+### 4.7 In-domain candidates and a no-update baseline (stage 70; `results/llm-gpu-indomain.json`)
+
+Colab L4; Arabic candidates from Arabic Wikipedia (excluding stage-69 articles), target 256 new Wikipedia articles, English EWT as contamination; six seeds; no-update baseline pre-specified. Random training improved the target by about one nat per token (0.5B −1.129, 1.5B −0.996 at ρ 0). Primary (1.5B, ρ 0): batched alignment minus random +0.0274 [0.0223, 0.0325], 0/6 seeds favouring alignment; selection term −0.0008, throughput term +0.0282. At ρ 0.9 alignment won in every seed (0.5B −0.189 [−0.226, −0.142]; 1.5B −0.090 [−0.109, −0.073]) by choosing English 66–67% of the time against 90% in the pool. Highest-loss selection chose English 99–100% of the time.
+
+Synthesis of stages 68–70: on pretrained LLMs adapted with LoRA, the selection term of gradient alignment is large when a substantial fraction of candidates is unsuitable for the target (off-language or off-domain) and near zero when candidates are in-domain. With batched per-example gradients the cost is 1.3–2.1 random steps on a GPU, so alignment pays off exactly in the first regime. This matches the break-even decomposition: the method's value is a property of the candidate pool, not of the method alone.
+
 ## 5 Limitations
 
 Small models on CPU; wall-clock ratios are hardware- and implementation-specific; corpora reused across stages (exposure ledger: `data/evaluation_status.json`); the original WAPLV hypothesis (weight–sample features) was not supported in stages 18–55 and is not the subject of this paper.
