@@ -15,7 +15,14 @@ from tools.audit_pud_reuse import digest, read_json, read_rows, require
 
 RESULT = Path('results/llm-selection.json')
 RECORDS = Path('results/llm-selection-records.jsonl')
+PROGRESS = Path('results/llm-selection-audit-progress.jsonl')  # resumable: one verified run per line
 OUTPUT = Path('results/llm-selection-audit.json')
+
+
+def verified():
+    if not PROGRESS.exists():
+        return set()
+    return {tuple(json.loads(l)['key']) for l in PROGRESS.read_text().splitlines() if l.strip()}
 
 
 def main():
@@ -36,12 +43,18 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(llm.MODEL_DIR)
     manifest = read_json(stage.MANIFEST)
     checks = dict(runs_replayed=0, choices_compared=0, losses_compared=0)
+    done = verified()
     for lang in plan['languages']:
         train, probe, target, population = stage.prepare_language(manifest['languages'][lang]['splits'],
                                                                   tokenizer, plan, {})
         require(population == result['populations'][lang], 'population')
         require(not set(population['probe_ids']) & set(population['target_ids']), 'probe/target overlap')
         for row in [r for r in rows if r['language'] == lang]:
+            key = (lang, row['seed'], row['arm'])
+            if list(key) in [list(k) for k in done]:
+                checks['runs_replayed'] += 1
+                checks['choices_compared'] += len(row['choices'])
+                continue
             ids, choices = stage.schedule(row['seed'], len(train), plan)
             require(ids.tolist() == row['candidate_ids'], 'schedule')
             ticks = iter(range(10 ** 6))
@@ -51,6 +64,8 @@ def main():
             require(replay['losses'] == row['losses'], f'{lang} {row["seed"]} {row["arm"]}: losses')
             if row['arm'] == 'random':
                 require(row['choices'] == choices.tolist(), 'random choices')
+            with PROGRESS.open('a') as fh:
+                fh.write(json.dumps(dict(key=list(key))) + '\n')
             checks['runs_replayed'] += 1
             checks['choices_compared'] += len(row['choices'])
             checks['losses_compared'] += len(row['losses'])

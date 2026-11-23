@@ -13,7 +13,14 @@ from tools.audit_pud_reuse import digest, read_json, require
 
 RESULT = Path('results/llm-budget.json')
 RECORDS = Path('results/llm-budget-records.jsonl')
+PROGRESS = Path('results/llm-budget-audit-progress.jsonl')  # resumable: one verified run per line
 OUTPUT = Path('results/llm-budget-audit.json')
+
+
+def verified():
+    if not PROGRESS.exists():
+        return set()
+    return {tuple(json.loads(l)['key']) for l in PROGRESS.read_text().splitlines() if l.strip()}
 
 
 def main():
@@ -62,16 +69,24 @@ def main():
     passed = all(g['entries_outside_preregistered_tolerance'] == 0 for g in gradient_check)
     checks = dict(runs_replayed=0, choices_compared=0, per_example_gradient=gradient_check,
                   per_example_gradient_within_preregistered_tolerance=passed)
+    done = verified()
     for k, rho in enumerate(plan['rho']):
         for seed in plan['seeds']:
             ids, choices = stage.schedule(k, seed, rho, n_ar, n_en)
             for row in [r for r in rows if r['rho'] == rho and r['seed'] == seed]:
+                key = (rho, seed, row['arm'])
+                if list(key) in [list(k) for k in done]:
+                    checks['runs_replayed'] += 1
+                    checks['choices_compared'] += len(row['choices'])
+                    continue
                 checkpoints = [0] + ([n[a] for a in stage.ARMS] if row['arm'] == 'random' else [])
                 ticks = iter(range(10 ** 6))
                 replay = stage.run(row['arm'], seed, pool, probe, target, ids, choices, n[row['arm']], checkpoints,
                                    clock=lambda: float(next(ticks)))
                 require(replay['choices'] == row['choices'], f'{rho} {seed} {row["arm"]}: choices')
                 require(replay['losses'] == row['losses'], f'{rho} {seed} {row["arm"]}: losses')
+                with PROGRESS.open('a') as fh:
+                    fh.write(json.dumps(dict(key=list(key))) + '\n')
                 checks['runs_replayed'] += 1
                 checks['choices_compared'] += len(row['choices'])
                 print(rho, seed, row['arm'], 'replayed', flush=True)
