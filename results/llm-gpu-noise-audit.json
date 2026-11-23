@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "stage": 72,
+  "journal_sha256": "f3cbf9ba2ef128244f2469441f3e1cd4ccd3113084cdd0f73cefff166606b433",
+  "result_sha256": "5aeeb97cb7e57727cb357b14351158686449489283cd24cb9cbbc639e2f463be",
+  "checks": {
+    "runs": 72,
+    "schedules": 36,
+    "random_choice_sequences": 36
+  },
+  "device": "NVIDIA L4",
+  "notes": "CPU audit of journal, summary, budget, samples (including garbling), schedules, contaminant shares and random choices. Alignment GPU trajectories were not replayed."
+}
