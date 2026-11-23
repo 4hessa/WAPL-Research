@@ -103,6 +103,10 @@ Colab L4; Arabic candidates from Arabic Wikipedia (excluding stage-69 articles),
 
 Synthesis of stages 68–70: on pretrained LLMs adapted with LoRA, the selection term of gradient alignment is large when a substantial fraction of candidates is unsuitable for the target (off-language or off-domain) and near zero when candidates are in-domain. With batched per-example gradients the cost is 1.3–2.1 random steps on a GPU, so alignment pays off exactly in the first regime. This matches the break-even decomposition: the method's value is a property of the candidate pool, not of the method alone.
 
+### 4.8 Where alignment starts to pay (stage 71; `results/llm-gpu-threshold.json`)
+
+Qwen2.5-1.5B on an L4, Arabic Wikipedia candidates and target, English contamination ρ ∈ {0, .25, .5, .75, .9}, six seeds, r = 1.95. Alignment minus random: +0.025, +0.009, −0.018, −0.038, −0.093; selection term −0.005, −0.026, −0.056, −0.116, −0.230; throughput term +0.030 to +0.137. Pre-registered crossover estimate ρ* = 0.34, 95% CI [0.29, 0.52]; the prediction (crossover in [0, 0.5]) held. Exploratory: the same seeds and schedules on a Tesla T4 (r = 3.24, outside the protocol) gave ρ* ≈ 0.72 [0.43, 0.80], so a 1.7-fold higher decision cost roughly doubled the contamination needed for alignment to pay.
+
 ## 5 Discussion: when alignment pays
 
 | stage | model, hardware | candidate pool → target | alignment r | alignment − random | selection | throughput |
@@ -114,13 +118,13 @@ Synthesis of stages 68–70: on pretrained LLMs adapted with LoRA, the selection
 | 70 | Qwen2.5-1.5B, L4 | Wikipedia Arabic → Wikipedia | 2.08 | +0.027 (0/6) | −0.001 | +0.028 |
 | 70 | same | 90% English → Wikipedia | 2.08 | −0.090 (6/6) | −0.186 | +0.097 |
 
-Across these cells the throughput term is small or modest once per-example gradients are batched, and the sign of the outcome is set by the selection term. The selection term is near zero when candidates already match the target (stage 70, ρ 0; stage 68, ρ 0) and large when many candidates do not (off-language contamination, or off-domain news for a Wikipedia target). A practical rule follows: use target-aligned selection when a substantial share of the pool is expected to be unsuitable for the target, and random sampling when the pool is curated and in-domain. Where the boundary lies is the subject of stage 71 (pre-registered prediction: between 0 and 50% off-target candidates for Qwen2.5-1.5B on an L4).
+Across these cells the throughput term is small or modest once per-example gradients are batched, and the sign of the outcome is set by the selection term. The selection term is near zero when candidates already match the target (stage 70, ρ 0; stage 68, ρ 0) and large when many candidates do not (off-language contamination, or off-domain news for a Wikipedia target). A practical rule follows: use target-aligned selection when a substantial share of the pool is expected to be unsuitable for the target, and random sampling when the pool is curated and in-domain. Stage 71 located the boundary at about one third of the pool (ρ* = 0.34 [0.29, 0.52]) for Qwen2.5-1.5B on an L4 at r = 1.95, and an exploratory T4 run at r = 3.24 moved it to about 0.72, so the threshold must be reported together with the cost ratio of the hardware in use.
 
 Two cautions. In stage 69, random training on the news pool raised the Wikipedia loss above its starting value, so alignment's win there is partly harm avoidance. And the throughput term depends on hardware: the same batched rule cost 1.3–2.1 random steps on an L4, 2.84 on a CPU and 3.24 on a T4.
 
 ## 6 Limitations
 
-Small and mid-sized models (35,776 parameters to 1.5 billion), LoRA rather than full fine-tuning, short budgets (96–400 random-step costs), contamination by a second language rather than low-quality text in the same language, four to six seeds per cell, and one model family. Wall-clock ratios are hardware- and implementation-specific; stage 69 ran on an L4 instead of the pre-registered A100 and the first stage-71 attempt on a T4 (documented deviations). Qwen pretraining data are unknown, so evaluation text may have been seen in pretraining. Corpora were reused across stages (exposure ledger: `data/evaluation_status.json`). The original WAPLV hypothesis (weight–sample features) was not supported in stages 18–55 and is not the subject of this paper.
+Small and mid-sized models (35,776 parameters to 1.5 billion), LoRA rather than full fine-tuning, short budgets (96–400 random-step costs), contamination by a second language rather than low-quality text in the same language, four to six seeds per cell, and one model family. Wall-clock ratios are hardware- and implementation-specific; stage 69 ran on an L4 instead of the pre-registered A100 and a secondary stage-71 run on a T4 (documented deviations). Qwen pretraining data are unknown, so evaluation text may have been seen in pretraining. Corpora were reused across stages (exposure ledger: `data/evaluation_status.json`). The original WAPLV hypothesis (weight–sample features) was not supported in stages 18–55 and is not the subject of this paper.
 
 ## 7 Reproducibility and audit status
 
