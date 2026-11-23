@@ -54,6 +54,7 @@ def main():
             if list(key) in [list(k) for k in done]:
                 checks['runs_replayed'] += 1
                 checks['choices_compared'] += len(row['choices'])
+                checks['losses_compared'] += len(row['losses'])
                 continue
             ids, choices = stage.schedule(row['seed'], len(train), plan)
             require(ids.tolist() == row['candidate_ids'], 'schedule')
