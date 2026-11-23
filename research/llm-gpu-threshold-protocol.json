@@ -1,0 +1,22 @@
+{
+  "stage": 71,
+  "date": "2026-11-23",
+  "reference_commit": "4bfc1a4",
+  "question": "At what fraction rho of off-target candidates does cost-charged batched gradient alignment start to beat random selection for LoRA adaptation of Qwen2.5-1.5B to Arabic Wikipedia?",
+  "motivation": "Stage 70 found random better at rho 0 (+0.0274) and alignment better at rho 0.9 (-0.0896). A practical rule needs the crossover.",
+  "prediction": "Written before running: linear interpolation of the stage-70 means puts the crossover near rho 0.2. We predict the seed-mean contrast is positive at rho 0, negative at rho 0.5, 0.75 and 0.9, and that the estimated crossover lies between 0 and 0.5.",
+  "hardware": "One Colab GPU, NVIDIA L4 (as stages 69-70) or A100; device journaled with the calibration; resuming on a different device type aborts.",
+  "model": "Qwen2.5-1.5B only (revision and weight SHA-256 as in research/llm-gpu-scale-protocol.json); numerics, LoRA and optimizer exactly as stage 70.",
+  "data": "Same Arabic Wikipedia shard as stage 70. Eligible articles (at least 65 tokens) minus the stage-69 and stage-70 probe and target articles. From the rest: probe 16 articles (seed 7101), target 256 different articles (seed 7102), Arabic candidates = all other remaining eligible articles (first 65 tokens). Off-target candidates: UD-EWT English train chunks. Each candidate slot is English with probability rho.",
+  "rho": [0.0, 0.25, 0.5, 0.75, 0.9],
+  "seeds": [36000, 36001, 36002, 36003, 36004, 36005],
+  "arms": ["random", "graddot4_batched"],
+  "schedule": "Per rho index k and seed: experiments.llm_gpu.schedule(k, seed, rho, n_ar, n_en).",
+  "budget": "Before any target evaluation: calibration seed 36999, rho 0.5, 24 steps per arm; cost = median of steps 5-24 with CUDA synchronisation; budget = 400 random-step costs; N_align = floor(400 c_random / c_align + 1e-9).",
+  "primary": "The crossover rho*: using seed-mean contrasts d(rho) = alignment minus random at each rho, scan rho upward and take the first interval where d changes from positive to non-positive; rho* is the linear interpolation of the zero inside it. Report the estimate and a 95% percentile interval from 10,000 paired seed-bootstrap resamples (seed 7103), resampling the same seed set across rho; resamples without a crossing are counted and reported.",
+  "secondary": "d(rho) with paired seed-bootstrap 95% intervals at each rho; selection and throughput terms; English share; random minus no-update. Agreement of the five signs with the prediction is reported descriptively.",
+  "resumption": "Journal on Google Drive; completed (rho, seed, arm) entries are skipped; samples and schedule digests re-verified.",
+  "coverage": "5 rho x 6 seeds x 2 arms = 60 runs plus one calibration.",
+  "audit": "CPU audit as stage 70: journal digest, summary recomputation, budget, samples, schedules, random choices and English shares.",
+  "scope": "One model, LoRA, one GPU type, short budget, second-language contamination; the crossover is specific to this pool, target and cost ratio."
+}
