@@ -1,0 +1,27 @@
+{
+  "stage": 72,
+  "date": "2026-11-23",
+  "reference_commit": "0319dd2",
+  "question": "Does cost-charged batched gradient alignment still beat random selection when the unsuitable candidates are in the same language as the target: off-domain Arabic news, or garbled Arabic text?",
+  "motivation": "Stages 68-71 used English as contamination. Realistic LLM data noise is often same-language: other domains, or text corrupted by extraction.",
+  "hardware": "One Colab GPU, NVIDIA L4 or A100; device journaled with the calibration; resuming on a different device type aborts.",
+  "model": "Qwen2.5-1.5B (revision and SHA-256 as in research/llm-gpu-scale-protocol.json); numerics, LoRA and optimizer as stages 69-71.",
+  "data": "Same Arabic Wikipedia shard. Eligible articles minus the stage-69, -70 and -71 probe and target articles. From the rest: probe 16 articles (seed 7201), target 256 different articles (seed 7202). The remaining articles are split by position: even positions form the clean Arabic Wikipedia pool, odd positions the source of garbled chunks. Garbled chunk = the 65 tokens of an odd-position article permuted uniformly at random (one permutation per chunk from default_rng(7204)), keeping the token multiset and destroying order.",
+  "contamination_types": {
+    "news": "UD-PADT Arabic train chunks (r2.15, Qwen tokenizer): same language, other domain.",
+    "garbled": "Token-permuted Arabic Wikipedia chunks as defined above: same language and vocabulary, no syntax.",
+    "english": "UD-EWT English train chunks, as in stages 68-71, for comparison within this stage."
+  },
+  "rho": [0.5, 0.9],
+  "seeds": [37000, 37001, 37002, 37003, 37004, 37005],
+  "arms": ["random", "graddot4_batched"],
+  "schedule": "For contamination type index t (news 0, garbled 1, english 2) and rho index k: experiments.llm_gpu.schedule(3 * t + k, seed, rho, n_clean, n_contaminant), so each slot is a contaminant with probability rho.",
+  "budget": "Before any target evaluation: one calibration, seed 37999, type english, rho 0.5, 24 steps per arm; cost = median of steps 5-24 with CUDA synchronisation; budget = 400 random-step costs.",
+  "primary": "Garbled contamination at rho 0.5: alignment at its N minus random at 400, mean over six seeds, paired seed-bootstrap 95% interval (seed 7203, 10000 resamples). Negative favours alignment.",
+  "prediction": "Written before running: negative for garbled at rho 0.5 and 0.9, and for english at rho 0.9 (as in stage 71); news is open, because stage 69 showed news training harms a Wikipedia target but the news is in the target language.",
+  "secondary": "All type x rho contrasts with intervals; selection and throughput terms; share of contaminant chunks chosen by each arm; random minus no update. No multiplicity adjustment; no pooling across types.",
+  "resumption": "Journal on Google Drive; completed (type, rho, seed, arm) entries are skipped; samples and schedule digests re-verified.",
+  "coverage": "3 types x 2 rho x 6 seeds x 2 arms = 72 runs plus one calibration.",
+  "audit": "CPU audit as stage 71: journal digest, summary recomputation, budget, samples (including the garbling permutations), schedules, random choices and contaminant shares.",
+  "scope": "One model, LoRA, short budget, synthetic garbling by token permutation (one kind of corruption), one Arabic domain pair."
+}
