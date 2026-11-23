@@ -43,7 +43,8 @@ def stage69_rows(n):
 
 
 def split(eligible, chunks):
-    remaining = [r for r in range(len(eligible)) if r not in stage69_rows(len(eligible))]
+    used = stage69_rows(len(eligible))  # computed once; it was recomputed per row before
+    remaining = [r for r in range(len(eligible)) if r not in used]
     probe = np.sort(np.random.default_rng(7001).choice(len(remaining), 16, replace=False))
     rest = np.setdiff1d(np.arange(len(remaining)), probe)
     target = np.sort(rest[np.random.default_rng(7002).choice(len(rest), 256, replace=False)])
