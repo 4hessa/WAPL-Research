@@ -1,0 +1,62 @@
+{
+  "stage": 75,
+  "date": "2026-11-24",
+  "status": "Draft awaiting the owner's approval; no stage-75 run before approval.",
+  "reference_commit": "ba4425f",
+  "question": "On the stage-74 pools, does the one-pass gradient-alignment filter beat random sampling at equal cost (full scoring charged) when its kept set is large enough that each kept chunk is seen about once within the filter's update budget, and does the stage-74 result at kept fraction 0.25 replicate on fresh seeds and fresh target items?",
+  "motivation": "Stage 74: the filter found the in-format QA chunks (93% of kept vs 25% of pool) and beat a repetition-matched random subset at equal repetition (-0.257 at sigma 0.25), but keeping 512 of 2048 chunks forced about 2.8 views per chunk by step N, and repetition cost more (+0.344) than selection gained, so it lost to random at equal cost (+0.063 [+0.035, +0.091]).",
+  "smoke_test_before_protocol": {
+    "commit": "ba4425f",
+    "files": "results/llm-once-filter-smoke.json (v2), results/llm-once-filter-smoke-v1.json; tools/smoke_llm_once_filter.py",
+    "content": "Costs and data only; no target item evaluated, no loss printed. The stage-74 population and both pools (sigma 0.25, 0.1) rebuild with the journaled digests. Of 8,229 ArabicMMLU test items outside every evaluated set and the 4,946 trained items, 6,360 survive the decontamination below (v2). On this L4: random step 0.1146 s (v1 0.1128), complete align_grad scoring 101.9 s (888.7 random steps; v1 902.9), implied N = 1511 (v1 1497), so the one-pass kept fraction is about 0.73; one 512-item evaluation 32.6 s; about 6.6-7 h for the grid below. v1 also tested the evaluated prompt against trained 8-grams and dropped 3,493 items through template-token matches ('سؤال: ', 'الجواب:' plus common words), not shared content; the criterion was restricted to content fields before this protocol. The smoke process ran without PYTORCH_CUDA_ALLOC_CONF=expandable_segments and logged two allocator OOM retries; the runner sets it, as in stage 74."
+  },
+  "hardware": "The Colab NVIDIA L4 of this session; device journaled with the calibration; resuming on a different device type aborts; resuming on another L4 is allowed with the journaled calibration (no recalibration), as stage 74 deviation 1.",
+  "model": "As stage 74: Qwen2.5-1.5B (revision 8faed76 and SHA-256 as research/llm-gpu-scale-protocol.json), float32, deterministic algorithms, TF32 off, LoRA rank 8 alpha 16 on q_proj and v_proj, AdamW lr 5e-4 weight decay 0, one 65-token chunk per update. transformers 4.46.3, tokenizers 0.20.3, huggingface_hub 0.26.2; torch 2.14.1+cu130.",
+  "data": {
+    "pools": "Exactly the stage-74 phase-B pools (research/llm-qa-mix-protocol.json with amendment 1), rebuilt by experiments.llm_qa_mix.load_inputs and checked against the stage-74 journaled pool_sha256: sigma 0.25 bf12ca51... (512 QA, 768 kept web, 768 removed web), sigma 0.1 dba2e789... (205 QA, 922 kept, 921 removed). Same data files and hashes (FineWeb-2 af9c133, ArabicMMLU 7aa530e).",
+    "probe": "All 120 All/dev items, as stages 73-74 (the filter's alignment target; already exposed, not used for any claim)."
+  },
+  "task": {
+    "format": "ArabicMMLU cloze, item loss (mean NLL of the correct continuation) and accuracy exactly as stages 73-74 (experiments.llm_web_filter.evaluate).",
+    "target_eligibility": "ArabicMMLU All/test rows that are (1) not the stage-73 target, the stage-74 pilot or the stage-74 target, and (2) not one of the 4,946 IDs recorded as used for training in data/evaluation_status.json (8,229 rows), and (3) survive decontamination against everything trained in stage 75 or stage 74: with the 4,946 trained items as the reference set, criteria (a)-(d) of stage-74 amendment 1 (experiments.llm_qa_mix.near_duplicates: identical normalised question; character 5-gram Jaccard >= 0.5; containment of >= 20 normalised characters; any shared content 8-gram, fields tokenized alone), and (e), the stage-74 deviation-2 fix: any token 8-gram of a candidate content field (Question, Context, every option; each tokenized alone and with one leading space) occurring in any chunk of the sigma 0.25 or 0.1 pool as trained, or in any of the 4,946 items tokenized in the training template. Smoke count: 6,360 eligible (drops: (a) 210, (b) 717, (c) 237, (d) 1,406, 1,535 by (a)-(d) in total; (e) 334 more). The function is moved unchanged from tools/smoke_llm_once_filter.py into the stage-75 module; counts journaled.",
+    "target": "512 items: default_rng(7522).choice over the eligible rows (in row order), sorted. Never evaluated before; exposed after this stage."
+  },
+  "design": {
+    "sigma": [0.25, 0.1],
+    "seeds": [37500, 37501, 37502, 37503, 37504, 37505],
+    "budget": "B = 2400 random-step costs. Calibration before any target evaluation, seed 75999 on the sigma 0.25 pool: c_r = median of steps 5-24 of 24 random steps; S = wall-clock of complete align_grad scoring of all 2048 chunks (probe gradient included). N = floor(B - S / c_r + 1e-9), shared by both filter arms (expected about 1500). Full scoring charged to every filter arm.",
+    "kept_sizes": "K_q = 512 (stage-74 fraction 0.25, replication). K_1 = N (fraction N/2048, about 0.73): with one pass without replacement, every kept chunk is seen exactly once by step N.",
+    "arms": {
+      "random": "As stage 74: each step a pool chunk drawn uniformly with replacement; 2400 updates.",
+      "align_q": "Stage-74 align_grad replicated: keep the 512 highest alignment scores (ties to the lower index), train with replacement on the kept set with the stage-74 filter schedule.",
+      "random512": "Stage-74 repetition control replicated: a random 512-chunk subset with the align_q schedule. No scoring, no charge.",
+      "align_once": "Keep the N highest alignment scores (ties to the lower index); train on the kept chunks in a random order without replacement (one pass by step N; a second pass, freshly permuted, from N to 2400). Full scoring charged.",
+      "random_once": "Repetition-matched control for align_once: a uniformly random N-chunk subset of the pool with the align_once order. No scoring, no charge."
+    },
+    "scoring": "Each filter arm scores the full pool at the seed's initial adapter as stage 74 (scores are deterministic; align_q and align_once of the same sigma and seed must give identical scores, checked by the audit).",
+    "schedule": "Per sigma index k (0.25 -> 0, 0.1 -> 1) and seed: rng = default_rng(seed + 1000 k); in this order: rand = rng.integers(2048, size=2400); filt = rng.integers(512, size=2400); subset512 = sort(rng.choice(2048, 512, replace=False)) (the first three exactly as stage 74's schedule function); subsetN = sort(rng.choice(2048, N, replace=False)); once = concatenate(rng.permutation(N), rng.permutation(N))[:2400]. align_q trains kept512[filt], random512 subset512[filt], align_once keptN[once], random_once subsetN[once].",
+    "run_order": "For sigma 0.25 then 0.1, seeds in order; arms in the order (random, align_q, random512, align_once, random_once) rotated left by the seed index mod 5.",
+    "measurement": "Every arm trains 2400 updates; target loss and accuracy at 0, N and 2400. Per filter run: all scores, kept indices and digest, QA share of the kept set, scoring seconds. Per control: subset digest and QA share. Views per kept chunk at N and 2400 (max and mean) journaled for every arm. Step seconds per update; adapter digest at step 50 for every arm.",
+    "coverage": "2 sigma x 6 seeds x 5 arms = 60 runs plus one calibration; about 7 h on this L4 (60 x ~373 s + 24 x ~102 s scoring)."
+  },
+  "primary": "sigma 0.25: align_once loss at N minus random loss at 2400 (equal cost, scoring charged), mean over six seeds, paired seed-bootstrap 95% interval (seed 7503, 10000 resamples). Negative favours the filter.",
+  "secondary": "Per sigma, paired seed-bootstrap intervals, no multiplicity adjustment, no pooling across sigma: (1) the same charged contrast at sigma 0.1; (2) once-selection at matched repetition: align_once at N minus random_once at N; (3) fixing repetition: align_once at N minus align_q at N; (4) once-repetition effect: random_once at N minus random at N; (5) replication of stage 74: align_q at N minus random at 2400, align_q at N minus random512 at N, random512 at N minus random at N; (6) selection and throughput terms for both filter arms; (7) amortized contrasts at 2400 (noting align_once is then in its second pass); (8) accuracy versions of the charged and matched contrasts; (9) QA share of kept sets (align_q, align_once) and of control subsets; (10) random at 2400 minus no update.",
+  "prediction": {
+    "written": "Before any stage-75 run, 24 November 2026.",
+    "reasoning": "At sigma 0.25 the pool has 512 QA chunks; the stage-74 filter ranked QA chunks highest, so a kept set of N (about 1500) should contain almost all 512 QA chunks plus about 1000 web chunks (QA share about 0.33), each seen once. Random at 2400 draws about 600 QA chunks with replacement (about 360 distinct, 1.17 views) and about 1800 web chunks. The filter thus trains on more distinct QA chunks, without repetition and with fewer web updates; stage 74 showed random had plateaued by N (3.045 at N vs 3.070 at 2400), so its extra updates bring little. The gain is diluted compared with stage 74's matched-selection effect (-0.26), so a small effect is expected.",
+    "items": [
+      "sigma 0.25: QA share of align_once kept sets > 0.30 (pool 0.25).",
+      "sigma 0.25 (primary): align_once at N minus random at 2400 is negative.",
+      "sigma 0.25: align_once at N minus random_once at N is negative.",
+      "sigma 0.25: align_once at N minus align_q at N is negative (fixing repetition helps the filter).",
+      "Replication at sigma 0.25: align_q at N minus random at 2400 positive; align_q minus random512 at N negative; random512 minus random at N positive (the three stage-74 signs).",
+      "sigma 0.1: QA share of align_once kept sets > 0.12 (pool 0.10); the charged contrast for align_once is predicted negative but with low confidence (the QA enrichment is at most 205/N, about 0.14)."
+    ],
+    "what_would_refute": "A primary contrast >= 0 means that removing repetition at this kept size does not make the offline filter worth its scoring cost on this pool; it would then lose either through dilution (a QA share near the pool's) or through the cost of the web chunks it keeps."
+  },
+  "resumption": "Append-only JSON-lines journal outside the repository (/content/stage75-journal/journal.jsonl); completed (sigma, seed, arm) entries skipped; population, target, pools and schedule digests re-verified on restart; outcomes not printed or read before the run finishes. After every finished run the runner copies the journal and run log to branch colab/stage75-journal (results/stage75-interim/), commits and pushes; the commit message counts only entries of kind 'run'. Not on main.",
+  "audit": "tools/audit_llm_once_filter.py: journal digest; summary recomputation; environments; calibration and N; run grid and order; schedules and subset digests; checkpoints; kept sets recomputed from journaled scores; identical scores between align_q and align_once of each sigma and seed; views per chunk from the schedules; QA shares; data hashes; pool digests equal stage 74; target eligibility recomputed (criteria (a)-(e) and counts), target disjoint from all exposed and trained IDs. On the same GPU type: recompute align_grad scores of seed 37500 on both pools; replay the first 50 steps of seed 37500 for the random and align_once arms at sigma 0.25 to their adapter digests.",
+  "exposure": "After the run, data/evaluation_status.json records the 512 stage-75 target items as evaluated and exposed. No new item is trained (pools unchanged).",
+  "licenses": "As stage 74: FineWeb-2 ODC-By 1.0; ArabicMMLU CC BY-NC 4.0 (non-commercial research use); Qwen2.5 Apache-2.0. No dataset text is committed; journals hold indices, scores and digests only.",
+  "scope": "One model, LoRA, one budget, two kept sizes (512 and N), the stage-74 pools only (QA from ArabicMMLU's own distribution and template), one task scored by answer loss. As in stage 74, a win measures finding target-distribution data hidden in web noise at equal cost, not a general capability gain."
+}
