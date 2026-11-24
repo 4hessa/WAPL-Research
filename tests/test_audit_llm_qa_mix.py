@@ -19,6 +19,46 @@ def run(key):
     return dict(kind='run', sigma=key[0], seed=key[1], arm=key[2])
 
 
+class SpaceMergeTokenizer:
+    """A space joins the following character into one token, as in byte-level BPE (' ج' differs from 'ج')."""
+    def toks(self, text):
+        out, i = [], 0
+        while i < len(text):
+            if text[i] == ' ' and i + 1 < len(text):
+                out.append(text[i:i + 2]); i += 2
+            else:
+                out.append(text[i]); i += 1
+        return out
+
+    def __call__(self, text, add_special_tokens=False):
+        self.vocab = getattr(self, 'vocab', {})
+        return {'input_ids': [self.vocab.setdefault(s, len(self.vocab)) for s in self.toks(text)]}
+
+    def decode(self, ids):
+        inv = {v: k for k, v in self.vocab.items()}
+        return ''.join(inv[i] for i in ids)
+
+
+def mmlu(i, q, answer):
+    return {'ID': i, 'Question': q, 'Context': float('nan'), 'Answer Key': 'A', 'Option 1': answer, 'Option 2': 'no'}
+
+
+class TemplatedOverlapTests(unittest.TestCase):
+    def test_finds_overlap_that_fields_alone_miss(self):
+        tok = SpaceMergeTokenizer()
+        train = [mmlu(7, 'qqqq', 'abcdefgh')]
+        evals = [('target', mmlu(9, 'zz abcdefgh', 'yes'))]
+        self.assertFalse(stage.content_banned(train, tok) & stage.content_banned([r for _, r in evals], tok))
+        hits = audit.templated_overlap(train, evals, tok)
+        self.assertEqual([(h['training_id'], h['eval_set'], h['eval_id'], h['eval_field']) for h in hits],
+                         [(7, 'target', 9, 'Question')])
+        self.assertEqual(hits[0]['ngram'], ' abcdefgh')
+
+    def test_no_overlap(self):
+        tok = SpaceMergeTokenizer()
+        self.assertEqual(audit.templated_overlap([mmlu(7, 'qqqq', 'abcdefgh')], [('dev', mmlu(9, 'zzzz', 'yes'))], tok), [])
+
+
 class ResumptionTests(unittest.TestCase):
     def setUp(self):
         order = audit.expected_order(PLAN)

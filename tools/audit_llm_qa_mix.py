@@ -89,6 +89,27 @@ def reconcile_resumption(final_text, snapshot_text, snapshot_message, old_log_te
                      f'entry after the resumption environment.'))
 
 
+def templated_overlap(train_records, labeled_evals, tokenizer):
+    """Post-run finding (deviation 2): 8-grams of each training item in its templated form (as trained) shared with
+    the content fields of evaluation items, each field tokenized alone and with a leading space."""
+    where = {}
+    for label, r in labeled_evals:
+        fields = [('Question', r['Question'])] + ([('Context', r['Context'])] if s73._present(r.get('Context')) else [])
+        fields.append(('answer', r[f'Option {s73.LETTERS.index(str(r["Answer Key"]).strip()) + 1}']))
+        for name, f in fields:
+            for text in (str(f), ' ' + str(f).strip()):
+                for g in s73.ngrams(tokenizer(text, add_special_tokens=False)['input_ids']):
+                    where.setdefault(g, set()).add((label, int(r['ID']), name))
+    hits = []
+    for r in train_records:
+        ids = tokenizer(stage.mmlu_qa_text(r), add_special_tokens=False)['input_ids']
+        shared = sorted({(g, m) for g in s73.ngrams(ids) if g in where for m in where[g]}, key=str)
+        for g, (label, eid, name) in shared:
+            hits.append(dict(training_id=int(r['ID']), eval_set=label, eval_id=eid, eval_field=name,
+                             ngram=tokenizer.decode(list(g))))
+    return hits
+
+
 def check_run(row, k, n):
     """Schedule, checkpoints and selection digests of one run; raises on any mismatch."""
     tag = f"sigma {row['sigma']} seed {row['seed']} {row['arm']}"
@@ -222,11 +243,14 @@ def main():
     require(bool((pools[0.1][:205] == pools[0.25][:205]).all()) and bool((pools[1.0][:512] == pools[0.25][:512]).all()),
             'QA prefixes nested across pools')
     eval_banned = stage.content_banned(evals, tok)
+    labeled = [('dev', r) for r in dev] + [('pilot', test[i]) for i in pilot_rows] + [('target', test[i]) for i in target_rows]
+    templated = templated_overlap(used_records, labeled, tok)
     qa_chunk_hits = {str(s): sum(bool(s73.ngrams(c) & eval_banned) for c in pool[:stage.composition(s)[0]].tolist())
                      for s, pool in pools.items()}
     data_checks = dict(qa_items_in_pools=len(used), near_duplicate_recheck=counts, web_chunks_checked={
         str(s): stage.POOL_SIZE - stage.composition(s)[0] for s in pools},
         qa_chunks_sharing_an_eval_8gram_after_templating=qa_chunk_hits,
+        templated_item_overlap=templated,
         qa_chunk_note='Informational. Decontamination is defined per item on fields tokenized alone (amendment 1); '
                       'chunk-level 8-grams span template tokens and item boundaries, so they are reported, not required.')
 
@@ -263,6 +287,13 @@ def main():
             torch.cuda.empty_cache()
     status = 'passed'
     findings = []
+    if templated:
+        status = 'passed_with_findings'
+        items = sorted({h['training_id'] for h in templated})
+        findings.append(f'Deviation 2 (post-run audit finding): {len(items)} pooled training item(s) {items} share '
+                        f'{len(templated)} token 8-gram match(es) with evaluation items when tokenized in the trained '
+                        'template, which criterion (d) of amendment 1 (fields tokenized alone) did not test; see '
+                        'data.templated_item_overlap and research/llm-qa-mix-deviations.md section 2.')
     if gpu and not gpu['random_replay_step50']['0.25']['identical_adapter_digest']:
         status = 'passed_with_findings'
         findings.append('The step-50 replay of a run made on the lost machine did not reproduce its adapter digest on '
