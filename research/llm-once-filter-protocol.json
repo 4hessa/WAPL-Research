@@ -1,7 +1,7 @@
 {
   "stage": 75,
   "date": "2026-11-24",
-  "status": "Approved by the owner on 24 November 2026 as drafted in commit e103949 (60 runs: one new kept size N, without-replacement order for the two once arms only, fresh 512-item target with criterion (e), all arms to 2400 updates).",
+  "status": "Approved by the owner on 24 November 2026, with amendment 1 (sigma 0.25 only, 30 runs) approved before any code or run.",
   "reference_commit": "ba4425f",
   "question": "On the stage-74 pools, does the one-pass gradient-alignment filter beat random sampling at equal cost (full scoring charged) when its kept set is large enough that each kept chunk is seen about once within the filter's update budget, and does the stage-74 result at kept fraction 0.25 replicate on fresh seeds and fresh target items?",
   "motivation": "Stage 74: the filter found the in-format QA chunks (93% of kept vs 25% of pool) and beat a repetition-matched random subset at equal repetition (-0.257 at sigma 0.25), but keeping 512 of 2048 chunks forced about 2.8 views per chunk by step N, and repetition cost more (+0.344) than selection gained, so it lost to random at equal cost (+0.063 [+0.035, +0.091]).",
@@ -23,8 +23,7 @@
   },
   "design": {
     "sigma": [
-      0.25,
-      0.1
+      0.25
     ],
     "seeds": [
       37500,
@@ -45,9 +44,9 @@
     },
     "scoring": "Each filter arm scores the full pool at the seed's initial adapter as stage 74 (scores are deterministic; align_q and align_once of the same sigma and seed must give identical scores, checked by the audit).",
     "schedule": "Per sigma index k (0.25 -> 0, 0.1 -> 1) and seed: rng = default_rng(seed + 1000 k); in this order: rand = rng.integers(2048, size=2400); filt = rng.integers(512, size=2400); subset512 = sort(rng.choice(2048, 512, replace=False)) (the first three exactly as stage 74's schedule function); subsetN = sort(rng.choice(2048, N, replace=False)); once = concatenate(rng.permutation(N), rng.permutation(N))[:2400]. align_q trains kept512[filt], random512 subset512[filt], align_once keptN[once], random_once subsetN[once].",
-    "run_order": "For sigma 0.25 then 0.1, seeds in order; arms in the order (random, align_q, random512, align_once, random_once) rotated left by the seed index mod 5.",
+    "run_order": "Seeds in order; arms in the order (random, align_q, random512, align_once, random_once) rotated left by the seed index mod 5. Sigma index k = 0 for sigma 0.25 in the schedule.",
     "measurement": "Every arm trains 2400 updates; target loss and accuracy at 0, N and 2400. Per filter run: all scores, kept indices and digest, QA share of the kept set, scoring seconds. Per control: subset digest and QA share. Views per kept chunk at N and 2400 (max and mean) journaled for every arm. Step seconds per update; adapter digest at step 50 for every arm.",
-    "coverage": "2 sigma x 6 seeds x 5 arms = 60 runs plus one calibration; about 7 h on this L4 (60 x ~373 s + 24 x ~102 s scoring)."
+    "coverage": "Amendment 1: 1 sigma x 6 seeds x 5 arms = 30 runs plus one calibration; about 3.5 h on this L4 (30 x ~373 s + 12 x ~102 s scoring)."
   },
   "primary": "sigma 0.25: align_once loss at N minus random loss at 2400 (equal cost, scoring charged), mean over six seeds, paired seed-bootstrap 95% interval (seed 7503, 10000 resamples). Negative favours the filter.",
   "secondary": "Per sigma, paired seed-bootstrap intervals, no multiplicity adjustment, no pooling across sigma: (1) the same charged contrast at sigma 0.1; (2) once-selection at matched repetition: align_once at N minus random_once at N; (3) fixing repetition: align_once at N minus align_q at N; (4) once-repetition effect: random_once at N minus random at N; (5) replication of stage 74: align_q at N minus random at 2400, align_q at N minus random512 at N, random512 at N minus random at N; (6) selection and throughput terms for both filter arms; (7) amortized contrasts at 2400 (noting align_once is then in its second pass); (8) accuracy versions of the charged and matched contrasts; (9) QA share of kept sets (align_q, align_once) and of control subsets; (10) random at 2400 minus no update.",
@@ -68,5 +67,16 @@
   "audit": "tools/audit_llm_once_filter.py: journal digest; summary recomputation; environments; calibration and N; run grid and order; schedules and subset digests; checkpoints; kept sets recomputed from journaled scores; identical scores between align_q and align_once of each sigma and seed; views per chunk from the schedules; QA shares; data hashes; pool digests equal stage 74; target eligibility recomputed (criteria (a)-(e) and counts), target disjoint from all exposed and trained IDs. On the same GPU type: recompute align_grad scores of seed 37500 on both pools; replay the first 50 steps of seed 37500 for the random and align_once arms at sigma 0.25 to their adapter digests.",
   "exposure": "After the run, data/evaluation_status.json records the 512 stage-75 target items as evaluated and exposed. No new item is trained (pools unchanged).",
   "licenses": "As stage 74: FineWeb-2 ODC-By 1.0; ArabicMMLU CC BY-NC 4.0 (non-commercial research use); Qwen2.5 Apache-2.0. No dataset text is committed; journals hold indices, scores and digests only.",
-  "scope": "One model, LoRA, one budget, two kept sizes (512 and N), the stage-74 pools only (QA from ArabicMMLU's own distribution and template), one task scored by answer loss. As in stage 74, a win measures finding target-distribution data hidden in web noise at equal cost, not a general capability gain."
+  "scope": "One model, LoRA, one budget, two kept sizes (512 and N), the stage-74 pools only (QA from ArabicMMLU's own distribution and template), one task scored by answer loss. As in stage 74, a win measures finding target-distribution data hidden in web noise at equal cost, not a general capability gain.",
+  "amendment_1": {
+    "date": "2026-11-24",
+    "approved_by_owner": "Requested by the owner on 24 November 2026, after approving the draft and before any stage-75 code or run: run the sigma 0.25 pool only (30 runs) to shorten the run; leave sigma 0.1 to a later stage.",
+    "changes": [
+      "design.sigma = [0.25]; 30 runs.",
+      "Secondary (1) (charged contrast at sigma 0.1) is not measured; all other secondaries are measured at sigma 0.25 only.",
+      "The sigma 0.1 prediction item is not tested in stage 75 and stays recorded for a later stage.",
+      "Target eligibility criterion (e) is unchanged: it still uses the chunks of both stage-74 pools, so the eligible set and target stay as in the smoke test and remain valid for a later sigma 0.1 run."
+    ],
+    "unchanged": "Primary endpoint, arms, seeds, schedules, budget rule, measurements, audit (GPU replays at sigma 0.25 only), backups."
+  }
 }
