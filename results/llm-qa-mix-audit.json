@@ -1,0 +1,126 @@
+{
+  "status": "passed",
+  "stage": 74,
+  "journal_sha256": "ebfe0f44e5909c82a6c48e5e41a69cdbb2fbc92cd19ddc001851c856be12f269",
+  "pilot_journal_sha256": "c6430ac39476865344c01ed1805c85c60b93eb62652d238d51da736f8eef16fd",
+  "result_sha256": "86500671f7a0d0676a129e50e97791b1ac77cb76c416fe042f8a82ea2d4f269b",
+  "resumption": {
+    "snapshot_commit": "e42a7db",
+    "snapshot_journal_sha256": "c32a83bdc0d7e3f4ed8d6ff3462b896ac9e0ef5de2d1d7152c709a3cb87faba2",
+    "snapshot_commit_message_count": 16,
+    "snapshot_journal_lines": 16,
+    "snapshot_line_kinds": {
+      "environment": 1,
+      "calibration": 1,
+      "run": 14
+    },
+    "finished_runs_before_loss": 14,
+    "lost_machine_log_last_progress": 14,
+    "resumed_runs_in_second_environment": 14,
+    "restarted_run": {
+      "sigma": 0.25,
+      "seed": 37404,
+      "arm": "random"
+    },
+    "explanation": "The snapshot commit message said 16 finished runs because the lost machine's snapshot script counted every journal line. The snapshot holds 16 lines: 1 environment, 1 calibration and 14 run entries. Finished runs before the loss = 14, confirmed three ways: the run entries in the snapshot, the lost machine's log (last line 14/36), and the resumed process (resumed_runs = 14). The snapshot is a byte-for-byte prefix of the final journal, so no finished run was altered or dropped; the run in progress at the loss (0.25, 37404, random) was restarted from step 0 and is the first entry after the resumption environment."
+  },
+  "checks": {
+    "runs": 36,
+    "schedules": 12,
+    "kept_sets": 12,
+    "random512_subsets": 12
+  },
+  "data": {
+    "qa_items_in_pools": 4946,
+    "near_duplicate_recheck": {
+      "identical": 0,
+      "jaccard": 0,
+      "containment": 0,
+      "ngram8": 0,
+      "dropped_total": 0
+    },
+    "web_chunks_checked": {
+      "0.25": 1536,
+      "0.1": 1843,
+      "1.0": 0
+    },
+    "qa_chunks_sharing_an_eval_8gram_after_templating": {
+      "0.25": 2,
+      "0.1": 1,
+      "1.0": 9
+    },
+    "qa_chunk_note": "Informational. Decontamination is defined per item on fields tokenized alone (amendment 1); chunk-level 8-grams span template tokens and item boundaries, so they are reported, not required."
+  },
+  "costs_by_session": {
+    "calibration": {
+      "random": 0.10678201750124572,
+      "align_grad": 105.3983020600026,
+      "scoring_in_random_steps": 987.0416810468395
+    },
+    "sessions": [
+      {
+        "started": "2026-11-24T04:48:23Z",
+        "runs": 14,
+        "random_step_seconds_median": 0.1076630452507743,
+        "align_grad_scoring_seconds_median": 106.11640860199986,
+        "scoring_in_random_steps": 985.634470535624
+      },
+      {
+        "started": "2026-11-24T10:29:43Z",
+        "runs": 22,
+        "random_step_seconds_median": 0.1093333717499263,
+        "align_grad_scoring_seconds_median": 104.536290388,
+        "scoring_in_random_steps": 956.1242712527107
+      }
+    ]
+  },
+  "environments": [
+    {
+      "device": "NVIDIA L4",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "phase": "B",
+      "time": "2026-11-24T04:48:23Z",
+      "resumed_runs": 0
+    },
+    {
+      "device": "NVIDIA L4",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "phase": "B",
+      "time": "2026-11-24T10:29:43Z",
+      "resumed_runs": 14
+    }
+  ],
+  "device": "NVIDIA L4",
+  "gpu": {
+    "score_recomputation": {
+      "0.25": {
+        "max_rel_diff": 0.0,
+        "identical_kept_set": true,
+        "audit_scoring_seconds": 103.76376424699993
+      },
+      "0.1": {
+        "max_rel_diff": 0.0,
+        "identical_kept_set": true,
+        "audit_scoring_seconds": 104.36943903000065
+      }
+    },
+    "random_replay_step50": {
+      "0.25": {
+        "original_run_on": "lost machine",
+        "identical_adapter_digest": true
+      },
+      "0.1": {
+        "original_run_on": "resumed machine",
+        "identical_adapter_digest": true
+      }
+    }
+  },
+  "findings": [],
+  "notes": "CPU: digests, summary and gate recomputation, environments, budget, resumption reconciliation, grid order, schedules, checkpoints, kept sets, QA shares, random512 subsets, data hashes, samples, pools, decontamination and ID disjointness. GPU: align_grad scores of seed 37400 on both pools and the first 50 random steps of seed 37400 on both pools. Full trajectories were not replayed."
+}
