@@ -19,3 +19,5 @@
 {"key": [0.9, 33000, "graddot4"]}
 {"key": [0.9, 33000, "graddot4_batched"]}
 {"key": [0.9, 33001, "loss4"]}
+{"key": [0.9, 33001, "graddot4"]}
+{"key": [0.9, 33001, "graddot4_batched"]}
