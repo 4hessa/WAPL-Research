@@ -29,9 +29,23 @@
     "gate": "Phase B runs as specified if and only if the sigma 0.25 pilot loss at 2400 is below its loss at 0. Otherwise phase B is not run and the outcome is reported to the owner; any changed design needs a new protocol amendment and approval."
   },
   "phase_B_main": {
-    "sigma": [0.25, 0.1],
-    "seeds": [37400, 37401, 37402, 37403, 37404, 37405],
-    "arms": ["random", "align_grad", "random512"],
+    "sigma": [
+      0.25,
+      0.1
+    ],
+    "seeds": [
+      37400,
+      37401,
+      37402,
+      37403,
+      37404,
+      37405
+    ],
+    "arms": [
+      "random",
+      "align_grad",
+      "random512"
+    ],
     "policies": {
       "random": "Each step trains on a pool chunk drawn uniformly with replacement.",
       "align_grad": "As stage 73: at the seed's initial adapter, probe gradient of the 120 dev items; per-example LoRA gradients of all 2048 chunks (batch 16); keep the 512 highest dot products (ties to the lower index); train on kept chunks with the filter schedule. Full scoring time charged.",
@@ -48,5 +62,16 @@
   "resumption": "Append-only JSON-lines journals outside the repository; completed entries skipped; samples, pools and schedule digests re-verified; outcomes not read before the run finishes; interim journal snapshots to branch colab/stage74-journal, not main.",
   "audit": "tools/audit_llm_qa_mix.py: journal digests, summary recomputation, gate recomputation, file hashes, decontamination (no pool chunk or used QA item shares a banned 8-gram), item samples (pilot and target disjoint from each other and from the stage-73 target), pools, schedules, kept sets from journaled scores, QA shares, random512 subsets, budget. On the same GPU: recompute align_grad scores of seed 37400 on both pools and replay the first 50 random steps of seed 37400 at sigma 0.25 to its adapter digest.",
   "licenses": "FineWeb-2 ODC-By 1.0 (and Common Crawl terms); Aya Apache-2.0; ArabicMMLU CC BY-NC 4.0 (non-commercial research use); Qwen2.5 Apache-2.0. Taken from Hugging Face dataset cards. No dataset text is committed; journals hold indices, scores and digests only.",
-  "scope": "One model, LoRA, one budget, one kept fraction (0.25), one in-format source (Aya), one downstream task scored by answer loss, two QA shares."
+  "scope": "One model, LoRA, one budget, one kept fraction (0.25), one in-format source (Aya), one downstream task scored by answer loss, two QA shares. After amendment 1 the in-format source is ArabicMMLU itself (disjoint, decontaminated items), so the outcome concerns finding in-distribution data in noise, not general model improvement.",
+  "phase_A_first_outcome": "Phase A with Aya as the QA source (commit d56f84b): pilot answer loss rose from 3.868 to 4.058 (sigma 1.0) and 4.062 (sigma 0.25) after 2400 updates; gate failed; phase B was not run. Results: results/llm-qa-mix-pilot.json.",
+  "amendment_1": {
+    "date": "2026-11-24",
+    "approved_by_owner": "Option 1 approved on 24 November 2026 with two conditions: strict approximate-match decontamination with counts recorded, and an explicit statement of what the result measures; training items recorded in the exposure ledger.",
+    "qa_source": "Replaces Aya. Training QA items are ArabicMMLU test items outside the stage-73 target, the 256 pilot items and the 512 stage-74 target, written in the target's own cloze template: (Context + newline, if present) + 'سؤال: ' + Question + newline + 'الجواب: ' + correct option + two newlines. Chunking (default_rng(7411) item order, chunks starting at item starts, 65 tokens) and pool construction are unchanged.",
+    "decontamination": "A candidate training item is dropped if, against any evaluation item (512 targets, 120 probe items, 256 pilot items), any of the following holds; the count for each criterion and in total is journaled: (a) identical normalised question text (normalisation removes Arabic diacritics, tatweel, punctuation and whitespace); (b) Jaccard similarity of character 5-gram sets of the normalised question (plus context) of at least 0.5; (c) normalised containment: the shorter normalised question (at least 20 characters) is a substring of the longer; (d) any shared content token 8-gram (Question, Context, correct option, each tokenized alone). Web chunks are decontaminated as before against the content 8-grams of all ArabicMMLU items.",
+    "phase_A": "Rerun with the new QA source, same pilot items, seed, sigma values and gate, separate journal (pilot2). The gate decides phase B exactly as before.",
+    "prediction": "Unchanged for phase B. For phase A: random training at sigma 0.25 lowers the pilot loss (gate passes).",
+    "what_the_result_measures": "The training QA items come from the same benchmark, distribution and template as the target. A win therefore measures the filter's ability to find target-distribution data hidden in a mostly web pool at equal cost, not a general improvement of the model, not Arabic ability in general, and not performance on an independent task. Any gain in ArabicMMLU loss or accuracy is expected from in-distribution training and must not be reported as a capability gain.",
+    "exposure": "All ArabicMMLU test items that enter a training pool (their IDs journaled) are recorded in data/evaluation_status.json as used for training in stage 74."
+  }
 }
