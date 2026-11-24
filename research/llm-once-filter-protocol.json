@@ -1,7 +1,7 @@
 {
   "stage": 75,
   "date": "2026-11-24",
-  "status": "Draft awaiting the owner's approval; no stage-75 run before approval.",
+  "status": "Approved by the owner on 24 November 2026 as drafted in commit e103949 (60 runs: one new kept size N, without-replacement order for the two once arms only, fresh 512-item target with criterion (e), all arms to 2400 updates).",
   "reference_commit": "ba4425f",
   "question": "On the stage-74 pools, does the one-pass gradient-alignment filter beat random sampling at equal cost (full scoring charged) when its kept set is large enough that each kept chunk is seen about once within the filter's update budget, and does the stage-74 result at kept fraction 0.25 replicate on fresh seeds and fresh target items?",
   "motivation": "Stage 74: the filter found the in-format QA chunks (93% of kept vs 25% of pool) and beat a repetition-matched random subset at equal repetition (-0.257 at sigma 0.25), but keeping 512 of 2048 chunks forced about 2.8 views per chunk by step N, and repetition cost more (+0.344) than selection gained, so it lost to random at equal cost (+0.063 [+0.035, +0.091]).",
@@ -22,8 +22,18 @@
     "target": "512 items: default_rng(7522).choice over the eligible rows (in row order), sorted. Never evaluated before; exposed after this stage."
   },
   "design": {
-    "sigma": [0.25, 0.1],
-    "seeds": [37500, 37501, 37502, 37503, 37504, 37505],
+    "sigma": [
+      0.25,
+      0.1
+    ],
+    "seeds": [
+      37500,
+      37501,
+      37502,
+      37503,
+      37504,
+      37505
+    ],
     "budget": "B = 2400 random-step costs. Calibration before any target evaluation, seed 75999 on the sigma 0.25 pool: c_r = median of steps 5-24 of 24 random steps; S = wall-clock of complete align_grad scoring of all 2048 chunks (probe gradient included). N = floor(B - S / c_r + 1e-9), shared by both filter arms (expected about 1500). Full scoring charged to every filter arm.",
     "kept_sizes": "K_q = 512 (stage-74 fraction 0.25, replication). K_1 = N (fraction N/2048, about 0.73): with one pass without replacement, every kept chunk is seen exactly once by step N.",
     "arms": {
