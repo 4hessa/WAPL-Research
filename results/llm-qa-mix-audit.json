@@ -1,5 +1,5 @@
 {
-  "status": "passed",
+  "status": "passed_with_findings",
   "stage": 74,
   "journal_sha256": "ebfe0f44e5909c82a6c48e5e41a69cdbb2fbc92cd19ddc001851c856be12f269",
   "pilot_journal_sha256": "c6430ac39476865344c01ed1805c85c60b93eb62652d238d51da736f8eef16fd",
@@ -49,6 +49,274 @@
       "0.1": 1,
       "1.0": 9
     },
+    "templated_item_overlap": [
+      {
+        "training_id": 333,
+        "eval_set": "target",
+        "eval_id": 3958,
+        "eval_field": "Question",
+        "ngram": " جعفر بن أبي طالب"
+      },
+      {
+        "training_id": 514,
+        "eval_set": "target",
+        "eval_id": 3958,
+        "eval_field": "Question",
+        "ngram": " جعفر بن أبي طالب"
+      },
+      {
+        "training_id": 1786,
+        "eval_set": "target",
+        "eval_id": 1463,
+        "eval_field": "Question",
+        "ngram": " للقادم من الطريق الرئي"
+      },
+      {
+        "training_id": 1786,
+        "eval_set": "target",
+        "eval_id": 1463,
+        "eval_field": "Question",
+        "ngram": "قادم من الطريق الرئيسي"
+      },
+      {
+        "training_id": 2453,
+        "eval_set": "pilot",
+        "eval_id": 11875,
+        "eval_field": "Context",
+        "ngram": " معاوية بن أبي سفيان"
+      },
+      {
+        "training_id": 2453,
+        "eval_set": "target",
+        "eval_id": 11870,
+        "eval_field": "Context",
+        "ngram": " معاوية بن أبي سفيان"
+      },
+      {
+        "training_id": 3932,
+        "eval_set": "target",
+        "eval_id": 3958,
+        "eval_field": "Question",
+        "ngram": " جعفر بن أبي طالب"
+      },
+      {
+        "training_id": 5463,
+        "eval_set": "dev",
+        "eval_id": 14530,
+        "eval_field": "Question",
+        "ngram": " ١٩٤�"
+      },
+      {
+        "training_id": 5470,
+        "eval_set": "target",
+        "eval_id": 5459,
+        "eval_field": "answer",
+        "ngram": " ١٩٥�"
+      },
+      {
+        "training_id": 5920,
+        "eval_set": "target",
+        "eval_id": 2605,
+        "eval_field": "Question",
+        "ngram": " ديوان النظر في المظالم"
+      },
+      {
+        "training_id": 6252,
+        "eval_set": "target",
+        "eval_id": 6276,
+        "eval_field": "Question",
+        "ngram": " الكلمة التي تحتوي على حرف"
+      },
+      {
+        "training_id": 6566,
+        "eval_set": "target",
+        "eval_id": 6556,
+        "eval_field": "Question",
+        "ngram": " حدد الضرب الذي جاء عليه الخبر"
+      },
+      {
+        "training_id": 6568,
+        "eval_set": "target",
+        "eval_id": 6556,
+        "eval_field": "Question",
+        "ngram": " حدد الضرب الذي جاء عليه الخبر"
+      },
+      {
+        "training_id": 6579,
+        "eval_set": "target",
+        "eval_id": 6556,
+        "eval_field": "Question",
+        "ngram": " حدد الضرب الذي جاء عليه الخبر"
+      },
+      {
+        "training_id": 7085,
+        "eval_set": "target",
+        "eval_id": 7081,
+        "eval_field": "answer",
+        "ngram": " الحرب العالمیة الثانیة"
+      },
+      {
+        "training_id": 8864,
+        "eval_set": "dev",
+        "eval_id": 7840,
+        "eval_field": "Question",
+        "ngram": "متد بين دائرتي عرض"
+      },
+      {
+        "training_id": 8864,
+        "eval_set": "dev",
+        "eval_id": 7840,
+        "eval_field": "Question",
+        "ngram": " يمتد بين دائرتي ع"
+      },
+      {
+        "training_id": 8865,
+        "eval_set": "dev",
+        "eval_id": 7840,
+        "eval_field": "Question",
+        "ngram": "متد بين دائرتي عرض"
+      },
+      {
+        "training_id": 8865,
+        "eval_set": "dev",
+        "eval_id": 7840,
+        "eval_field": "Question",
+        "ngram": " يمتد بين دائرتي ع"
+      },
+      {
+        "training_id": 8866,
+        "eval_set": "dev",
+        "eval_id": 7840,
+        "eval_field": "Question",
+        "ngram": "متد بين دائرتي عرض"
+      },
+      {
+        "training_id": 8866,
+        "eval_set": "dev",
+        "eval_id": 7840,
+        "eval_field": "Question",
+        "ngram": " يمتد بين دائرتي ع"
+      },
+      {
+        "training_id": 8923,
+        "eval_set": "target",
+        "eval_id": 8206,
+        "eval_field": "Question",
+        "ngram": " من اشكال التكاثف"
+      },
+      {
+        "training_id": 9030,
+        "eval_set": "pilot",
+        "eval_id": 9015,
+        "eval_field": "Question",
+        "ngram": " واحدة من اآلتية ليست من"
+      },
+      {
+        "training_id": 9758,
+        "eval_set": "target",
+        "eval_id": 9759,
+        "eval_field": "Question",
+        "ngram": " الخلية المئوية الثانوية"
+      },
+      {
+        "training_id": 9896,
+        "eval_set": "target",
+        "eval_id": 9992,
+        "eval_field": "Question",
+        "ngram": " عدد جزيئات NADH"
+      },
+      {
+        "training_id": 12840,
+        "eval_set": "pilot",
+        "eval_id": 12219,
+        "eval_field": "Context",
+        "ngram": " والضُّحَى،"
+      },
+      {
+        "training_id": 12840,
+        "eval_set": "target",
+        "eval_id": 12206,
+        "eval_field": "Context",
+        "ngram": " والضُّحَى،"
+      },
+      {
+        "training_id": 13023,
+        "eval_set": "pilot",
+        "eval_id": 575,
+        "eval_field": "Question",
+        "ngram": " كم مكث سيدنا"
+      },
+      {
+        "training_id": 13152,
+        "eval_set": "target",
+        "eval_id": 3958,
+        "eval_field": "Question",
+        "ngram": " جعفر بن أبي طالب"
+      },
+      {
+        "training_id": 13654,
+        "eval_set": "target",
+        "eval_id": 610,
+        "eval_field": "Question",
+        "ngram": " عدد آيات سورة الكوثر"
+      },
+      {
+        "training_id": 14159,
+        "eval_set": "pilot",
+        "eval_id": 11875,
+        "eval_field": "Context",
+        "ngram": " معاوية بن أبي سفيان"
+      },
+      {
+        "training_id": 14159,
+        "eval_set": "target",
+        "eval_id": 11870,
+        "eval_field": "Context",
+        "ngram": " معاوية بن أبي سفيان"
+      },
+      {
+        "training_id": 14161,
+        "eval_set": "pilot",
+        "eval_id": 11875,
+        "eval_field": "Context",
+        "ngram": " معاوية بن أبي سفيان"
+      },
+      {
+        "training_id": 14161,
+        "eval_set": "target",
+        "eval_id": 11870,
+        "eval_field": "Context",
+        "ngram": " معاوية بن أبي سفيان"
+      },
+      {
+        "training_id": 14528,
+        "eval_set": "target",
+        "eval_id": 14545,
+        "eval_field": "answer",
+        "ngram": " ٤-جميع ما ذكر"
+      },
+      {
+        "training_id": 14534,
+        "eval_set": "target",
+        "eval_id": 14545,
+        "eval_field": "answer",
+        "ngram": " ٤-جميع ما ذكر"
+      },
+      {
+        "training_id": 14548,
+        "eval_set": "target",
+        "eval_id": 14545,
+        "eval_field": "answer",
+        "ngram": " ٤-جميع ما ذكر"
+      },
+      {
+        "training_id": 14553,
+        "eval_set": "target",
+        "eval_id": 14545,
+        "eval_field": "answer",
+        "ngram": " ٤-جميع ما ذكر"
+      }
+    ],
     "qa_chunk_note": "Informational. Decontamination is defined per item on fields tokenized alone (amendment 1); chunk-level 8-grams span template tokens and item boundaries, so they are reported, not required."
   },
   "costs_by_session": {
@@ -102,12 +370,12 @@
       "0.25": {
         "max_rel_diff": 0.0,
         "identical_kept_set": true,
-        "audit_scoring_seconds": 103.76376424699993
+        "audit_scoring_seconds": 103.39700525400076
       },
       "0.1": {
         "max_rel_diff": 0.0,
         "identical_kept_set": true,
-        "audit_scoring_seconds": 104.36943903000065
+        "audit_scoring_seconds": 104.49703742299971
       }
     },
     "random_replay_step50": {
@@ -121,6 +389,8 @@
       }
     }
   },
-  "findings": [],
+  "findings": [
+    "Deviation 2 (post-run audit finding): 30 pooled training item(s) [333, 514, 1786, 2453, 3932, 5463, 5470, 5920, 6252, 6566, 6568, 6579, 7085, 8864, 8865, 8866, 8923, 9030, 9758, 9896, 12840, 13023, 13152, 13654, 14159, 14161, 14528, 14534, 14548, 14553] share 38 token 8-gram match(es) with evaluation items when tokenized in the trained template, which criterion (d) of amendment 1 (fields tokenized alone) did not test; see data.templated_item_overlap and research/llm-qa-mix-deviations.md section 2."
+  ],
   "notes": "CPU: digests, summary and gate recomputation, environments, budget, resumption reconciliation, grid order, schedules, checkpoints, kept sets, QA shares, random512 subsets, data hashes, samples, pools, decontamination and ID disjointness. GPU: align_grad scores of seed 37400 on both pools and the first 50 random steps of seed 37400 on both pools. Full trajectories were not replayed."
 }

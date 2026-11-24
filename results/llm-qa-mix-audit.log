@@ -1,5 +1,5 @@
 {
-  "status": "passed",
+  "status": "passed_with_findings",
   "resumption": {
     "snapshot_commit": "e42a7db",
     "snapshot_journal_sha256": "c32a83bdc0d7e3f4ed8d6ff3462b896ac9e0ef5de2d1d7152c709a3cb87faba2",
@@ -31,12 +31,12 @@
       "0.25": {
         "max_rel_diff": 0.0,
         "identical_kept_set": true,
-        "audit_scoring_seconds": 103.76376424699993
+        "audit_scoring_seconds": 103.39700525400076
       },
       "0.1": {
         "max_rel_diff": 0.0,
         "identical_kept_set": true,
-        "audit_scoring_seconds": 104.36943903000065
+        "audit_scoring_seconds": 104.49703742299971
       }
     },
     "random_replay_step50": {
@@ -50,5 +50,7 @@
       }
     }
   },
-  "findings": []
+  "findings": [
+    "Deviation 2 (post-run audit finding): 30 pooled training item(s) [333, 514, 1786, 2453, 3932, 5463, 5470, 5920, 6252, 6566, 6568, 6579, 7085, 8864, 8865, 8866, 8923, 9030, 9758, 9896, 12840, 13023, 13152, 13654, 14159, 14161, 14528, 14534, 14548, 14553] share 38 token 8-gram match(es) with evaluation items when tokenized in the trained template, which criterion (d) of amendment 1 (fields tokenized alone) did not test; see data.templated_item_overlap and research/llm-qa-mix-deviations.md section 2."
+  ]
 }
