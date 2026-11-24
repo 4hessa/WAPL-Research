@@ -107,6 +107,14 @@ Synthesis of stages 68–70: on pretrained LLMs adapted with LoRA, the selection
 
 Qwen2.5-1.5B on an L4, Arabic Wikipedia candidates and target, English contamination ρ ∈ {0, .25, .5, .75, .9}, six seeds, r = 1.95. Alignment minus random: +0.025, +0.009, −0.018, −0.038, −0.093; selection term −0.005, −0.026, −0.056, −0.116, −0.230; throughput term +0.030 to +0.137. Pre-registered crossover estimate ρ* = 0.34, 95% CI [0.29, 0.52]; the prediction (crossover in [0, 0.5]) held. Exploratory: the same seeds and schedules on a Tesla T4 (r = 3.24, outside the protocol) gave ρ* ≈ 0.72 [0.43, 0.80], so a 1.7-fold higher decision cost roughly doubled the contamination needed for alignment to pay.
 
+![Figure 1: alignment minus random at equal cost against the off-target fraction, L4 and T4](figures/stage71_crossover.png)
+
+*Figure 1. Alignment minus random at equal cost on Qwen2.5-1.5B (stage 71), with paired seed-bootstrap 95% intervals. Dotted lines mark the estimated crossovers: 0.34 on the L4 (r = 1.95, primary) and about 0.72 on the T4 (r = 3.24, exploratory run outside the protocol).*
+
+![Figure 2: selection gain and throughput cost against the off-target fraction](figures/stage71_decomposition.png)
+
+*Figure 2. The two terms of the exact decomposition on the L4. Alignment wins where its selection gain exceeds the loss forgone by its fewer updates.*
+
 ### 4.9 Same-language contamination (stage 72; `results/llm-gpu-noise.json`)
 
 Qwen2.5-1.5B on an L4, r = 1.96, six seeds; clean Arabic Wikipedia candidates mixed at ρ ∈ {0.5, 0.9} with Arabic news (PADT), garbled Arabic Wikipedia (token-permuted chunks) or English. Primary (garbled, ρ 0.5): −0.0049 [−0.021, +0.017], inconclusive. At ρ 0.9: garbled −0.242 [−0.269, −0.217], news −0.091 [−0.143, −0.034], English −0.063 [−0.119, −0.012]. At ρ 0.5 alignment chose 14–16% contaminant chunks against about 50% for random for every type, but its selection term roughly equalled the throughput cost, as expected near the stage-71 crossover. The filtering effect is therefore not specific to a second language.
