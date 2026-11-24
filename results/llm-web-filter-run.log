@@ -1,0 +1,29 @@
+qwen2.5-1.5b NVIDIA L4 costs {'random': 0.10839839999994183, 'align_grad': 104.33548028799987, 'align_fd': 113.2452495360003} updates {'align_grad': 1437}
+1/24 runs complete
+2/24 runs complete
+3/24 runs complete
+4/24 runs complete
+5/24 runs complete
+6/24 runs complete
+7/24 runs complete
+8/24 runs complete
+Traceback (most recent call last):
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.50 GiB. GPU 0 has a total capacity of 22.03 GiB of which 2.39 GiB is free. Including non-PyTorch memory, this process has 19.64 GiB memory in use. Of the allocated memory 10.21 GiB is allocated by PyTorch, and 9.16 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+qwen2.5-1.5b NVIDIA L4 costs {'random': 0.10839839999994183, 'align_grad': 104.33548028799987, 'align_fd': 113.2452495360003} updates {'align_grad': 1437}
+9/24 runs complete
+10/24 runs complete
+11/24 runs complete
+12/24 runs complete
+13/24 runs complete
+14/24 runs complete
+15/24 runs complete
+16/24 runs complete
+17/24 runs complete
+18/24 runs complete
+19/24 runs complete
+20/24 runs complete
+21/24 runs complete
+22/24 runs complete
+23/24 runs complete
+24/24 runs complete
+summary written to results/llm-web-filter.json
