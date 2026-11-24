@@ -1,0 +1,69 @@
+{
+  "stage": 74,
+  "phase": "A (amendment 1)",
+  "journal_sha256": "c6430ac39476865344c01ed1805c85c60b93eb62652d238d51da736f8eef16fd",
+  "environments": [
+    {
+      "kind": "environment",
+      "time": "2026-11-24T04:33:59Z",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "device": "NVIDIA L4",
+      "phase": "A",
+      "resumed_runs": 0
+    }
+  ],
+  "data_counts": {
+    "banned_ngrams": 250728,
+    "qa_source": "ArabicMMLU test items outside all evaluation sets",
+    "qa_candidates": 13175,
+    "qa_decontamination": {
+      "identical": 83,
+      "jaccard": 782,
+      "containment": 98,
+      "ngram8": 1751,
+      "dropped_total": 1883
+    },
+    "qa_items": 11292,
+    "qa_chunks": 4680,
+    "kept_decontaminated": 637,
+    "removed_decontaminated": 356,
+    "pool_sha256": {
+      "0.25": "bf12ca51827e6924e6df086a9e18c9161e30ef419a64ac439ca84d066d210775",
+      "0.1": "dba2e7898ff8622371131ff1c861418fccebf881bca46ed2f2c54d5f901fd29d",
+      "1.0": "12b3a1f89b0b1c6a15eb67222ea3be6b6c39aed0c1604979373d85c20d44c24d"
+    }
+  },
+  "pilot": [
+    {
+      "sigma": 1.0,
+      "seed": 74900,
+      "losses": {
+        "0": 3.8684099873062223,
+        "2400": 3.0198323528456967
+      },
+      "accuracy": {
+        "0": 0.328125,
+        "2400": 0.421875
+      },
+      "loss_change": -0.8485776344605256
+    },
+    {
+      "sigma": 0.25,
+      "seed": 74900,
+      "losses": {
+        "0": 3.8684099873062223,
+        "2400": 3.268959256736707
+      },
+      "accuracy": {
+        "0": 0.328125,
+        "2400": 0.390625
+      },
+      "loss_change": -0.5994507305695151
+    }
+  ],
+  "gate_passed": true,
+  "decision": "Gate passed; phase B runs as specified."
+}
