@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "stage": 73,
+  "journal_sha256": "2a4921e442edaeb1696728f825557fe273c2ca823174b74c2c6ed73dc08337a0",
+  "result_sha256": "a7f2bc01869ec951c93295c4ab5af147a1bb427545e927568af3b6b71e09ba0d",
+  "checks": {
+    "runs": 24,
+    "schedules": 12,
+    "kept_sets": 12
+  },
+  "device": "NVIDIA L4",
+  "gpu": {
+    "score_recomputation": {
+      "kept": {
+        "max_rel_diff_sample": 0.0,
+        "max_rel_diff_all": 0.0,
+        "identical_kept_set": true
+      },
+      "raw": {
+        "max_rel_diff_sample": 0.0,
+        "max_rel_diff_all": 0.0,
+        "identical_kept_set": true
+      }
+    },
+    "random_replay_step50": "identical adapter digest"
+  },
+  "notes": "Journal, summary, budget, data hashes, decontamination, samples and pools, schedules, kept sets, removed shares and calibration agreement on CPU; alignment scores of seed 37300 recomputed and the first 50 random steps of seed 37300 (raw pool) replayed on the GPU. Full trajectories were not replayed."
+}

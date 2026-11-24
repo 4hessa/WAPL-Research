@@ -1,0 +1,22 @@
+{
+  "checks": {
+    "runs": 24,
+    "schedules": 12,
+    "kept_sets": 12
+  },
+  "gpu": {
+    "score_recomputation": {
+      "kept": {
+        "max_rel_diff_sample": 0.0,
+        "max_rel_diff_all": 0.0,
+        "identical_kept_set": true
+      },
+      "raw": {
+        "max_rel_diff_sample": 0.0,
+        "max_rel_diff_all": 0.0,
+        "identical_kept_set": true
+      }
+    },
+    "random_replay_step50": "identical adapter digest"
+  }
+}
