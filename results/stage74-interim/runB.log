@@ -7,3 +7,5 @@ I0000 00:00:1795495706.880539   90987 port.cc:153] oneDNN custom operations are 
 I0000 00:00:1795495706.881080   90987 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
 qwen2.5-1.5b NVIDIA L4 costs {'random': 0.10678201750124572, 'align_grad': 105.3983020600026} updates 1412
 1/36 runs complete
+2/36 runs complete
+3/36 runs complete
