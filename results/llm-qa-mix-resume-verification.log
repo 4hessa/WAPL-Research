@@ -1,0 +1,37 @@
+PASS model.safetensors SHA-256
+PASS exactly one calibration entry
+PASS calibration device NVIDIA L4 equals this device NVIDIA L4
+PASS data file hashes (kept, removed, dev, test)
+PASS population.banned_ngrams equals calibration
+PASS population.kept_decontaminated equals calibration
+PASS population.kept_documents equals calibration
+PASS population.pilot_items equals calibration
+PASS population.pool_sha256 equals calibration
+PASS population.qa_candidates equals calibration
+PASS population.qa_chunks equals calibration
+PASS population.qa_decontamination equals calibration
+PASS population.qa_item_ids_in_pools equals calibration
+PASS population.qa_items equals calibration
+PASS population.qa_source equals calibration
+PASS population.removed_decontaminated equals calibration
+PASS population.removed_documents equals calibration
+PASS population.target_items equals calibration
+PASS pilot journal complete on the same population
+PASS 14 finished runs are unique
+PASS finished runs are the protocol order prefix (no selective rerun)
+PASS run sigma=0.25 seed=37400 arm=random: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37400 arm=align_grad: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37400 arm=random512: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37401 arm=align_grad: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37401 arm=random512: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37401 arm=random: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37402 arm=random512: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37402 arm=random: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37402 arm=align_grad: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37403 arm=random: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37403 arm=align_grad: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37403 arm=random512: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37404 arm=align_grad: schedule digest, device, subset/kept digests
+PASS run sigma=0.25 seed=37404 arm=random512: schedule digest, device, subset/kept digests
+finished 14, remaining 22; next (0.25, 37404, 'random')
+ALL CHECKS PASSED
