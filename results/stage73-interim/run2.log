@@ -1,0 +1,16 @@
+qwen2.5-1.5b NVIDIA L4 costs {'random': 0.10839839999994183, 'align_grad': 104.33548028799987, 'align_fd': 113.2452495360003} updates {'align_grad': 1437}
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795483149.377952   31289 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795483149.440563   31289 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795483151.664061   31289 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795483151.664642   31289 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+9/24 runs complete
+10/24 runs complete
+11/24 runs complete
+12/24 runs complete
+13/24 runs complete
+14/24 runs complete
+15/24 runs complete
+16/24 runs complete

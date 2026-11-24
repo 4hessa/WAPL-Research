@@ -1,0 +1,57 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795479209.619795   13557 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795479209.684323   13557 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795479211.908049   13557 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795479211.908605   13557 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+qwen2.5-1.5b NVIDIA L4 costs {'random': 0.10839839999994183, 'align_grad': 104.33548028799987, 'align_fd': 113.2452495360003} updates {'align_grad': 1437}
+[W1124 00:17:49.333544153 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1109393408 bytes (free: 261226496, total: 23659151360).
+[W1124 00:17:55.187554510 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3753902080 bytes (free: 1817313280, total: 23659151360).
+1/24 runs complete
+[W1124 00:25:50.102104516 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3753902080 bytes (free: 942800896, total: 23659151360).
+2/24 runs complete
+[W1124 00:33:48.272950315 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3753902080 bytes (free: 2851209216, total: 23659151360).
+3/24 runs complete
+4/24 runs complete
+5/24 runs complete
+6/24 runs complete
+7/24 runs complete
+8/24 runs complete
+[W1124 01:14:27.183922918 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3753902080 bytes (free: 2511470592, total: 23659151360).
+[W1124 01:14:29.052930361 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3753902080 bytes (free: 2561802240, total: 23659151360).
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/content/WAPL-Research/experiments/llm_web_filter.py", line 476, in <module>
+    main()
+    ~~~~^^
+  File "/content/WAPL-Research/experiments/llm_web_filter.py", line 459, in main
+    row = train(model, data, order, BUDGET, checkpoints, evaluator, device)
+  File "/content/WAPL-Research/experiments/llm_web_filter.py", line 266, in train
+    losses['0'], accs['0'] = evaluator(model)
+                             ~~~~~~~~~^^^^^^^
+  File "/content/WAPL-Research/experiments/llm_web_filter.py", line 405, in <lambda>
+    evaluator = lambda m: evaluate(m, target_items, device)
+                          ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/content/WAPL-Research/experiments/llm_web_filter.py", line 174, in evaluate
+    for s, v in zip(part, continuation_nll(model, part, device).tolist()):
+                          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/content/WAPL-Research/experiments/llm_web_filter.py", line 162, in continuation_nll
+    tok = nn.functional.cross_entropy(logits.reshape(-1, logits.shape[-1]), ids[:, 1:].reshape(-1),
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                      reduction='none').reshape(mask.shape)
+                                      ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/functional.py", line 3561, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        input,
+        ^^^^^^
+    ...<5 lines>...
+        label_smoothing,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.50 GiB. GPU 0 has a total capacity of 22.03 GiB of which 2.39 GiB is free. Including non-PyTorch memory, this process has 19.64 GiB memory in use. Of the allocated memory 10.21 GiB is allocated by PyTorch, and 9.16 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
