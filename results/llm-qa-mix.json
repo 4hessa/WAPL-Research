@@ -1,0 +1,461 @@
+{
+  "stage": 74,
+  "protocol": {
+    "stage": 74,
+    "date": "2026-11-24",
+    "reference_commit": "2c3aeff",
+    "question": "When a real Arabic web pool also contains in-format Arabic question-answer data that helps the target, does one-pass gradient-alignment filtering toward ArabicMMLU beat random sampling at equal cost (scoring fully charged), and how much of any difference is selection rather than data repetition?",
+    "motivation": "Stage 73 failed because no part of the pool helped the target: all training raised the ArabicMMLU answer loss. Its filter also repeated each kept chunk about 4.7 times against 1.2 for random, an unseparated confound.",
+    "smoke_test_before_protocol": "Cost and data only, no target item evaluated (24 November 2026): EXAMS Arabic (mhardalov/exams, 562 questions) has 534 stems identical to ArabicMMLU questions after normalisation and 533 matched by content 8-grams, so it is excluded. Aya Standard Arabic: 527 of 4995 items matched by content 8-grams; about 4468 remain. Random step 0.112 s; align_grad scoring of 2048 chunks about 100 s (about 900 random steps).",
+    "hardware": "The Colab NVIDIA L4 of this session; device journaled with the calibration; resuming on a different device type aborts.",
+    "model": "As stage 73: Qwen2.5-1.5B (revision and SHA-256 as research/llm-gpu-scale-protocol.json), float32, deterministic algorithms, TF32 off, LoRA rank 8 alpha 16 on q_proj and v_proj, AdamW lr 5e-4 weight decay 0, one 65-token chunk per update. transformers 4.46.3, tokenizers 0.20.3, huggingface_hub 0.26.2.",
+    "data": {
+      "qa_source": "CohereLabs/aya_dataset, revision f9ea04583f02a8f86404ff6c58bf75fe637df8a2, data/train-00000-of-00001.parquet (SHA-256 51baa85043b569ba117f41516b32d1b0e4e2647fb203a08933f98a556fb1fb06), license Apache-2.0; rows with language 'Standard Arabic' only.",
+      "qa_format": "Item text = '\u0633\u0624\u0627\u0644: ' + inputs.strip() + newline + '\u0627\u0644\u062c\u0648\u0627\u0628: ' + targets.strip() + two newlines, the same template as the target prompts.",
+      "web_source": "As stage 73 (FineWeb-2 revision af9c133, the same kept and removed files and hashes; first 20 row groups of the removed file); first 65 tokens of each document with at least 65 tokens.",
+      "decontamination": "Content 8-grams: the token 8-grams of the Question, Context (if present) and correct option of every ArabicMMLU dev and test item (14,575 items), each field tokenized alone without template. An Aya item is dropped if its inputs or targets (each tokenized alone) shares any such 8-gram; a web chunk is dropped if it shares any. Counts journaled.",
+      "qa_chunks": "Surviving Aya items in the order default_rng(7411).permutation; each chunk starts at an item start: take the item's tokens, append following items while shorter than 65 tokens, cut at 65 tokens, discard the remainder; the next chunk starts at the next unused item. Chunk order for pools: default_rng(7412).permutation of all chunks; the first 2048 form the ordered QA list.",
+      "web_chunks": "Ordered kept list = default_rng(7413).choice(eligible kept, 1843, replace=False); ordered removed list = default_rng(7414).choice(eligible removed, 922, replace=False).",
+      "pools": "For QA share sigma and M = 2048: n_qa = round(sigma M), n_web = M - n_qa, n_removed = n_web // 2, n_kept = n_web - n_removed; pool = first n_qa QA chunks, then first n_kept kept chunks, then first n_removed removed chunks (pools nested by prefixes). sigma 0.25: 512 QA, 768 kept, 768 removed. sigma 0.1: 205 QA, 922 kept, 921 removed. Pilot sigma 1.0: 2048 QA."
+    },
+    "task": {
+      "source": "MBZUAI/ArabicMMLU revision 7aa530e, All/dev.csv and All/test.csv with the stage-73 hashes; cloze format, item loss and accuracy exactly as stage 73.",
+      "probe": "All 120 dev items (as stage 73).",
+      "excluded": "The 512 stage-73 target items (experiments.llm_web_filter.sample_target).",
+      "pilot_items": "256 test items: default_rng(7421).choice over the remaining test indices.",
+      "target": "512 test items: default_rng(7422).choice over the test indices remaining after the stage-73 target and the pilot items."
+    },
+    "phase_A_pilot": {
+      "purpose": "Feasibility gate for the requirement that random training lowers the target loss; it uses its own items, never the stage-74 target.",
+      "design": "Arm random only, seed 74900, sigma 1.0 and 0.25, 2400 updates; pilot-item loss and accuracy at 0 and 2400. Separate journal.",
+      "gate": "Phase B runs as specified if and only if the sigma 0.25 pilot loss at 2400 is below its loss at 0. Otherwise phase B is not run and the outcome is reported to the owner; any changed design needs a new protocol amendment and approval."
+    },
+    "phase_B_main": {
+      "sigma": [
+        0.25,
+        0.1
+      ],
+      "seeds": [
+        37400,
+        37401,
+        37402,
+        37403,
+        37404,
+        37405
+      ],
+      "arms": [
+        "random",
+        "align_grad",
+        "random512"
+      ],
+      "policies": {
+        "random": "Each step trains on a pool chunk drawn uniformly with replacement.",
+        "align_grad": "As stage 73: at the seed's initial adapter, probe gradient of the 120 dev items; per-example LoRA gradients of all 2048 chunks (batch 16); keep the 512 highest dot products (ties to the lower index); train on kept chunks with the filter schedule. Full scoring time charged.",
+        "random512": "Repetition control: a uniformly random 512-chunk subset of the pool, trained with the same filter schedule, so it repeats data exactly as often as align_grad. No scoring and no charge."
+      },
+      "schedule": "Per sigma index k (0.25 -> 0, 0.1 -> 1) and seed: rng = default_rng(seed + 1000 k); random indices = rng.integers(2048, size=2400); filter indices = rng.integers(512, size=2400); random512 subset = sort(rng.choice(2048, 512, replace=False)).",
+      "budget": "Before any target evaluation: calibration seed 74999 on the sigma 0.25 pool; c_r = median of steps 5-24 of 24 random steps; S = wall-clock of complete align_grad scoring (probe gradient included). B = 2400 random-step costs; N = floor(B - S / c_r + 1e-9).",
+      "measurement": "All arms train 2400 updates; target loss and accuracy at 0, N and 2400. Per align_grad run: all scores, kept indices, QA share among kept, scoring seconds. Per random512 run: the subset and its QA share. Random arms: adapter digest at step 50.",
+      "primary": "sigma 0.25: align_grad loss at N minus random at 2400 (cost charged), mean over six seeds, paired seed-bootstrap 95% interval (seed 7403, 10000 resamples). Negative favours the filter.",
+      "secondary": "Per sigma: charged contrast; selection with matched repetition (align_grad at N minus random512 at N); repetition effect (random512 at N minus random at N); selection term (align_grad at N minus random at N) and throughput term; amortized contrasts at 2400; random minus no update; accuracy contrasts; QA share among align_grad's kept chunks and among random512 subsets. Paired seed-bootstrap intervals; no multiplicity adjustment; no pooling across sigma.",
+      "prediction": "Written before running: at sigma 0.25 the QA share among align_grad's kept chunks exceeds 0.5, the primary contrast is negative and the matched-repetition selection contrast is negative. At sigma 0.1 the QA share among kept chunks exceeds 0.2 (twice the pool share); the sign of the charged contrast is open.",
+      "coverage": "2 sigma x 6 seeds x 3 arms = 36 runs plus one calibration; about 4.5 hours on an L4."
+    },
+    "resumption": "Append-only JSON-lines journals outside the repository; completed entries skipped; samples, pools and schedule digests re-verified; outcomes not read before the run finishes; interim journal snapshots to branch colab/stage74-journal, not main.",
+    "audit": "tools/audit_llm_qa_mix.py: journal digests, summary recomputation, gate recomputation, file hashes, decontamination (no pool chunk or used QA item shares a banned 8-gram), item samples (pilot and target disjoint from each other and from the stage-73 target), pools, schedules, kept sets from journaled scores, QA shares, random512 subsets, budget. On the same GPU: recompute align_grad scores of seed 37400 on both pools and replay the first 50 random steps of seed 37400 at sigma 0.25 to its adapter digest.",
+    "licenses": "FineWeb-2 ODC-By 1.0 (and Common Crawl terms); Aya Apache-2.0; ArabicMMLU CC BY-NC 4.0 (non-commercial research use); Qwen2.5 Apache-2.0. Taken from Hugging Face dataset cards. No dataset text is committed; journals hold indices, scores and digests only.",
+    "scope": "One model, LoRA, one budget, one kept fraction (0.25), one in-format source (Aya), one downstream task scored by answer loss, two QA shares. After amendment 1 the in-format source is ArabicMMLU itself (disjoint, decontaminated items), so the outcome concerns finding in-distribution data in noise, not general model improvement.",
+    "phase_A_first_outcome": "Phase A with Aya as the QA source (commit d56f84b): pilot answer loss rose from 3.868 to 4.058 (sigma 1.0) and 4.062 (sigma 0.25) after 2400 updates; gate failed; phase B was not run. Results: results/llm-qa-mix-pilot.json.",
+    "amendment_1": {
+      "date": "2026-11-24",
+      "approved_by_owner": "Option 1 approved on 24 November 2026 with two conditions: strict approximate-match decontamination with counts recorded, and an explicit statement of what the result measures; training items recorded in the exposure ledger.",
+      "qa_source": "Replaces Aya. Training QA items are ArabicMMLU test items outside the stage-73 target, the 256 pilot items and the 512 stage-74 target, written in the target's own cloze template: (Context + newline, if present) + '\u0633\u0624\u0627\u0644: ' + Question + newline + '\u0627\u0644\u062c\u0648\u0627\u0628: ' + correct option + two newlines. Chunking (default_rng(7411) item order, chunks starting at item starts, 65 tokens) and pool construction are unchanged.",
+      "decontamination": "A candidate training item is dropped if, against any evaluation item (512 targets, 120 probe items, 256 pilot items), any of the following holds; the count for each criterion and in total is journaled: (a) identical normalised question text (normalisation removes Arabic diacritics, tatweel, punctuation and whitespace); (b) Jaccard similarity of character 5-gram sets of the normalised question (plus context) of at least 0.5; (c) normalised containment: the shorter normalised question (at least 20 characters) is a substring of the longer; (d) any shared content token 8-gram (Question, Context, correct option, each tokenized alone). Web chunks are decontaminated as before against the content 8-grams of all ArabicMMLU items.",
+      "phase_A": "Rerun with the new QA source, same pilot items, seed, sigma values and gate, separate journal (pilot2). The gate decides phase B exactly as before.",
+      "prediction": "Unchanged for phase B. For phase A: random training at sigma 0.25 lowers the pilot loss (gate passes).",
+      "what_the_result_measures": "The training QA items come from the same benchmark, distribution and template as the target. A win therefore measures the filter's ability to find target-distribution data hidden in a mostly web pool at equal cost, not a general improvement of the model, not Arabic ability in general, and not performance on an independent task. Any gain in ArabicMMLU loss or accuracy is expected from in-distribution training and must not be reported as a capability gain.",
+      "exposure": "All ArabicMMLU test items that enter a training pool (their IDs journaled) are recorded in data/evaluation_status.json as used for training in stage 74."
+    }
+  },
+  "journal_sha256": "ebfe0f44e5909c82a6c48e5e41a69cdbb2fbc92cd19ddc001851c856be12f269",
+  "pilot_journal_sha256": "c6430ac39476865344c01ed1805c85c60b93eb62652d238d51da736f8eef16fd",
+  "environments": [
+    {
+      "kind": "environment",
+      "time": "2026-11-24T04:48:23Z",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "device": "NVIDIA L4",
+      "phase": "B",
+      "resumed_runs": 0
+    },
+    {
+      "kind": "environment",
+      "time": "2026-11-24T10:29:43Z",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "device": "NVIDIA L4",
+      "phase": "B",
+      "resumed_runs": 14
+    },
+    {
+      "kind": "environment",
+      "time": "2026-11-24T04:33:59Z",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "device": "NVIDIA L4",
+      "phase": "A",
+      "resumed_runs": 0
+    }
+  ],
+  "pilot": [
+    {
+      "sigma": 1.0,
+      "seed": 74900,
+      "losses": {
+        "0": 3.8684099873062223,
+        "2400": 3.0198323528456967
+      },
+      "accuracy": {
+        "0": 0.328125,
+        "2400": 0.421875
+      }
+    },
+    {
+      "sigma": 0.25,
+      "seed": 74900,
+      "losses": {
+        "0": 3.8684099873062223,
+        "2400": 3.268959256736707
+      },
+      "accuracy": {
+        "0": 0.328125,
+        "2400": 0.390625
+      }
+    }
+  ],
+  "gate_passed": true,
+  "calibration": {
+    "kind": "calibration",
+    "model": "qwen2.5-1.5b",
+    "device": "NVIDIA L4",
+    "costs": {
+      "random": 0.10678201750124572,
+      "align_grad": 105.3983020600026
+    },
+    "updates": 1412
+  },
+  "summary": {
+    "primary": {
+      "sigma": 0.25,
+      "contrast": "align_grad at N minus random at 2400",
+      "mean": 0.062840547164645,
+      "ci95": [
+        0.0354034913173867,
+        0.09137037000618875
+      ]
+    },
+    "prediction_holds": {
+      "sigma0.25 qa share > 0.5": true,
+      "sigma0.25 primary negative": false,
+      "sigma0.25 matched selection negative": true,
+      "sigma0.1 qa share > 0.2": true
+    },
+    "costs": {
+      "random": 0.10678201750124572,
+      "align_grad": 105.3983020600026
+    },
+    "updates": 1412,
+    "device": "NVIDIA L4",
+    "scoring_in_random_steps": 987.0416810468395,
+    "sigmas": {
+      "0.25": {
+        "loss0": 3.734867587016197,
+        "accuracy0": 0.33984375,
+        "means": {
+          "random": {
+            "0": 3.734867587016197,
+            "1412": 3.0453774025487896,
+            "2400": 3.0698881145241708
+          },
+          "align_grad": {
+            "0": 3.734867587016197,
+            "1412": 3.132728661688816,
+            "2400": 3.5363154106935326
+          },
+          "random512": {
+            "0": 3.734867587016197,
+            "1412": 3.389756497905182,
+            "2400": 3.66895842573255
+          }
+        },
+        "random_minus_no_update": -0.664979472492026,
+        "random512_minus_no_update": -0.34511108911101473,
+        "charged": {
+          "mean": 0.062840547164645,
+          "ci95": [
+            0.0354034913173867,
+            0.09137037000618875
+          ],
+          "per_seed": [
+            0.09330889686680166,
+            0.036699684569612145,
+            0.05433937553243595,
+            0.06477303121937439,
+            0.11796770879300311,
+            0.009954586006642785
+          ],
+          "seeds_negative": 0
+        },
+        "matched_selection": {
+          "mean": -0.25702783621636627,
+          "ci95": [
+            -0.2978209975626669,
+            -0.2126964463556457
+          ],
+          "per_seed": [
+            -0.22254331630392699,
+            -0.2725994085412822,
+            -0.2956031947142037,
+            -0.2513700374547625,
+            -0.16417598530824762,
+            -0.3358750749757746
+          ],
+          "seeds_negative": 6
+        },
+        "repetition": {
+          "mean": 0.3443790953563924,
+          "ci95": [
+            0.2965214780512421,
+            0.39492886329389876
+          ],
+          "per_seed": [
+            0.3925899790119729,
+            0.3630621695483569,
+            0.2681463291592081,
+            0.3204467581672361,
+            0.2796636411367217,
+            0.4423656951148587
+          ],
+          "seeds_negative": 0
+        },
+        "selection_term": 0.08735125914002613,
+        "throughput_term": -0.024510711975381128,
+        "amortized": {
+          "mean": 0.4664272961693617,
+          "ci95": [
+            0.24432667091089874,
+            0.8382782042705974
+          ],
+          "per_seed": [
+            1.3547823319895542,
+            0.21976543392520398,
+            0.3644977657022537,
+            0.41068350404384546,
+            0.23573809079789498,
+            0.2130966505574179
+          ],
+          "seeds_negative": 0
+        },
+        "amortized_vs_random512": {
+          "mean": -0.13264301503901757,
+          "ci95": [
+            -0.37443336921296577,
+            0.2566503638951569
+          ],
+          "per_seed": [
+            0.8078991668626259,
+            -0.32339540257453336,
+            -0.4399237351244665,
+            -0.1764266733534896,
+            -0.3965665373052616,
+            -0.2674449087389803
+          ],
+          "seeds_negative": 5
+        },
+        "accuracy_charged": {
+          "mean": 0.005533854166666667,
+          "ci95": [
+            -0.0068359375,
+            0.017578125
+          ],
+          "per_seed": [
+            0.005859375,
+            0.013671875,
+            0.029296875,
+            0.013671875,
+            -0.013671875,
+            -0.015625
+          ],
+          "seeds_negative": 2
+        },
+        "accuracy_matched": {
+          "mean": 0.009114583333333334,
+          "ci95": [
+            -0.004557291666666667,
+            0.0224609375
+          ],
+          "per_seed": [
+            0.009765625,
+            0.0234375,
+            0.025390625,
+            0.025390625,
+            -0.015625,
+            -0.013671875
+          ],
+          "seeds_negative": 2
+        },
+        "qa_share_align": 0.9309895833333334,
+        "qa_share_random512": 0.2421875,
+        "scoring_seconds": 105.84596612549929
+      },
+      "0.1": {
+        "loss0": 3.734867587016197,
+        "accuracy0": 0.33984375,
+        "means": {
+          "random": {
+            "0": 3.734867587016197,
+            "1412": 3.27339638348955,
+            "2400": 3.2993091600892512
+          },
+          "align_grad": {
+            "0": 3.734867587016197,
+            "1412": 3.3229950548695038,
+            "2400": 3.5917446151511285
+          },
+          "random512": {
+            "0": 3.734867587016197,
+            "1412": 3.670619838693407,
+            "2400": 3.927904645327241
+          }
+        },
+        "random_minus_no_update": -0.4355584269269457,
+        "random512_minus_no_update": -0.06424774832278975,
+        "charged": {
+          "mean": 0.023685894780252664,
+          "ci95": [
+            -0.05789554291853468,
+            0.08733029012819316
+          ],
+          "per_seed": [
+            0.07450313701338018,
+            0.011101682717708172,
+            0.02334146933935699,
+            0.13524722284546442,
+            -0.16544996700395131,
+            0.06337182376955752
+          ],
+          "seeds_negative": 1
+        },
+        "matched_selection": {
+          "mean": -0.34762478382390327,
+          "ci95": [
+            -0.3957304239426473,
+            -0.2802607013504712
+          ],
+          "per_seed": [
+            -0.3284887485388026,
+            -0.18976683042637887,
+            -0.4034163035430538,
+            -0.40744674671896064,
+            -0.3763282215659274,
+            -0.3803018521502963
+          ],
+          "seeds_negative": 6
+        },
+        "repetition": {
+          "mean": 0.39722345520385716,
+          "ci95": [
+            0.3266082666123111,
+            0.46775421023570135
+          ],
+          "per_seed": [
+            0.42269363459490705,
+            0.26490155191277154,
+            0.45950626279227436,
+            0.5288964884457528,
+            0.3003166691341903,
+            0.4070261243432469
+          ],
+          "seeds_negative": 0
+        },
+        "selection_term": 0.049598671379953885,
+        "throughput_term": -0.02591277659970122,
+        "amortized": {
+          "mean": 0.2924354550618773,
+          "ci95": [
+            0.18198649216841054,
+            0.40676054345491747
+          ],
+          "per_seed": [
+            0.2649847596330801,
+            0.11899572666516178,
+            0.2836662591453205,
+            0.4043492409064129,
+            0.14765123569304706,
+            0.5349655083282414
+          ],
+          "seeds_negative": 0
+        },
+        "amortized_vs_random512": {
+          "mean": -0.33616003017611246,
+          "ci95": [
+            -0.39002587112903103,
+            -0.27808589022151864
+          ],
+          "per_seed": [
+            -0.4084201052901335,
+            -0.30429092176200356,
+            -0.30254980462450476,
+            -0.4214579905901701,
+            -0.363070227951539,
+            -0.21717113083832373
+          ],
+          "seeds_negative": 6
+        },
+        "accuracy_charged": {
+          "mean": 0.012044270833333334,
+          "ci95": [
+            -0.0009765625,
+            0.024739583333333332
+          ],
+          "per_seed": [
+            0.01953125,
+            0.03515625,
+            0.013671875,
+            0.0234375,
+            -0.0078125,
+            -0.01171875
+          ],
+          "seeds_negative": 2
+        },
+        "accuracy_matched": {
+          "mean": 0.020833333333333332,
+          "ci95": [
+            0.010416666666666666,
+            0.03125
+          ],
+          "per_seed": [
+            0.013671875,
+            0.037109375,
+            0.037109375,
+            0.025390625,
+            0.00390625,
+            0.0078125
+          ],
+          "seeds_negative": 0
+        },
+        "qa_share_align": 0.3876953125,
+        "qa_share_random512": 0.091796875,
+        "scoring_seconds": 104.50983314083335
+      }
+    }
+  },
+  "runs": 36
+}
