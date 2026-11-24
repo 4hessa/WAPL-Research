@@ -5,6 +5,7 @@ those of stages 69-72 (experiments.llm_gpu); the filter scores the pool once at 
 seed's initial adapter and charges the full scoring time to the run.
 """
 import argparse
+import gc
 import hashlib
 import json
 import math
@@ -379,6 +380,7 @@ def load_inputs(args, tokenizer):
 
 
 def main():
+    os.environ.setdefault('PYTORCH_CUDA_ALLOC_CONF', 'expandable_segments:True')  # before CUDA initialises
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--journal', type=Path, required=True)
     parser.add_argument('--models-dir', type=Path, default=Path('models'))
@@ -461,6 +463,10 @@ def main():
                                schedule_sha256=digest)
                     log(row)
                     done.add((pool, seed, arm))
+                    del model  # capture hooks form a reference cycle; free GPU memory before the next run
+                    gc.collect()
+                    if device.type == 'cuda':
+                        torch.cuda.empty_cache()
                     print(f'{len(done)}/{total} runs complete', flush=True)  # outcomes are not printed
     journal = s69.read_journal(args.journal)
     rows = [r for r in journal if r.get('kind') == 'run']

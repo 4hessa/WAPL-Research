@@ -2,7 +2,7 @@
 
 ## 1. Design amended before any outcome measurement (24 November 2026)
 
-The protocol committed in 1f4a666 fixed a pool of 4096 web chunks, a kept set of 1024, a budget of 1600 random-step costs, 1024 target items and three arms (random, align_grad, align_fd). Before writing the run, a smoke test measured costs on training candidates and the 120 ArabicMMLU dev items only. No test item was evaluated and no training outcome was computed.
+The protocol committed in 2a21c3c fixed a pool of 4096 web chunks, a kept set of 1024, a budget of 1600 random-step costs, 1024 target items and three arms (random, align_grad, align_fd). Before writing the run, a smoke test measured costs on training candidates and the 120 ArabicMMLU dev items only. No test item was evaluated and no training outcome was computed.
 
 Measured on the NVIDIA L4 of this session (float32, deterministic algorithms, TF32 off):
 
@@ -27,3 +27,7 @@ Changes (all values in `research/llm-web-filter-protocol.json`, field `amendment
 - align_fd batch 64 -> 16.
 
 Unchanged: model, numerics, LoRA, optimizer, data files and hashes, decontamination rule, pool construction rule and seeds, task format, six seeds, primary contrast (raw pool, align_grad charged minus random), prediction for align_grad.
+
+## 2. Out-of-memory interruption and resumption (24 November 2026)
+
+The first run session stopped after 8 of 24 runs (all on the kept pool, seeds 37300-37303, both arms) with a CUDA out-of-memory error inside a target evaluation: 9.2 GiB were reserved but unallocated (fragmentation), and models of finished runs were not freed promptly because the per-example gradient hooks form a reference cycle. No outcome was read before resuming. Fix (commit after this note): delete the model, run the garbage collector and empty the CUDA cache after each run, and set `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`. Batch sizes, numerics and the run order are unchanged. As the protocol provides, the restarted process reused the journaled calibration, re-verified the samples and skipped the 8 completed runs; the interrupted run (kept pool, seed 37304) was restarted from its beginning. The interruption is visible in the journal as a second environment entry.
