@@ -2,13 +2,14 @@
 
 Read this before doing anything. The project owner writes in Arabic; answer in Arabic, plainly and without flattery, separating verified facts, inference and speculation. In Arabic text, put every English word or technical term on its own line.
 
-## Where the project stands (stage 73, 24 November 2026)
+## Where the project stands (stage 74, 24 November 2026)
 
 - The original WAPLV hypothesis (weight-sample features) was not supported (stages 18-55).
-- Current line of work: cost-charged evaluation of online data selection for LLM adaptation. Read `research/paper/draft.md` (sections 4-7) and the latest reports in `reports/` (64-73) before planning.
+- Current line of work: cost-charged evaluation of online data selection for LLM adaptation. Read `research/paper/draft.md` (sections 4-7) and the latest reports in `reports/` (64-74) before planning.
 - Main finding (stages 68-72): batched gradient-alignment selection on Qwen2.5 with LoRA beats random selection when much of the candidate pool is unsuitable for the target (English, garbled Arabic, off-domain Arabic news), and loses on in-domain pools. Crossover about 34% contamination on an L4 (r = 1.95); about 72% on a T4 (r = 3.24).
 - Stage 73 (offline filtering of FineWeb-2 Arabic toward ArabicMMLU, L4): negative. Scoring the pool once cost 40% of the budget; all training raised the task loss; filter minus random +0.070 [+0.006, +0.131] on the raw pool. The rule above needs a pool with data useful to the target. Filter repetition (4.7x vs 1.2x) is an unseparated confound.
-- Open items: replay audits of stages 66 and 68 (`tools/audit_llm_selection.py`, `tools/audit_llm_budget.py`, resumable via `results/*-audit-progress.jsonl`). No stage 74 is specified yet.
+- Stage 74 (web pool mixed with in-format ArabicMMLU QA items outside all evaluation sets, plus a random512 repetition control, L4): negative primary. The filter found the QA data (93% of kept vs 25% of pool) and beat random512 at equal repetition in all 12 seeds (-0.257 at sigma 0.25, -0.348 at 0.1), but repetition of a 512-chunk set cost more (+0.344, +0.397), so filter minus random at equal cost was +0.063 [+0.035, +0.091] at sigma 0.25; +0.024 [-0.058, +0.087] at 0.1. For offline filtering, the repetition implied by the kept fraction is part of the cost. Deviations: lost machine after 14 runs (resumed, audited); criterion (d) missed templated-token overlap (3 trained chunks; decontaminate on the trained tokenization in future stages).
+- Open items: replay audits of stages 66 and 68 (`tools/audit_llm_selection.py`, `tools/audit_llm_budget.py`, resumable via `results/*-audit-progress.jsonl`). No stage 75 is specified yet. 4,946 ArabicMMLU test items are now training data (`data/evaluation_status.json`).
 
 ## Method rules (do not skip)
 
