@@ -1,0 +1,60 @@
+{
+ "kind": "smoke",
+ "stage": 75,
+ "time": "2026-11-24T21:13:29Z",
+ "pools_equal_stage74": {
+  "0.25": true,
+  "0.1": true
+ },
+ "population_equal_stage74": true,
+ "trained_ids": 4946,
+ "excluded_evaluated_rows": 1280,
+ "target_pool": {
+  "candidates": 8229,
+  "decontamination": {
+   "identical": 210,
+   "jaccard": 717,
+   "containment": 237,
+   "ngram8": 1406,
+   "dropped_total": 1535,
+   "trained_tokenization_8gram_after_a_to_d": 3493
+  },
+  "eligible": 3201
+ },
+ "data_seconds": 254.680096972
+}
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795554843.233001    4303 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795554843.301194    4303 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795554845.904429    4303 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795554845.905098    4303 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+[W1124 21:16:24.655544424 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1090519040 bytes (free: 11665408, total: 23659151360).
+[W1124 21:16:30.770810316 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3753902080 bytes (free: 3673292800, total: 23659151360).
+{
+ "kind": "smoke",
+ "stage": 75,
+ "time": "2026-11-24T21:13:29Z",
+ "pools_equal_stage74": {
+  "0.25": true,
+  "0.1": true
+ },
+ "population_equal_stage74": true,
+ "trained_ids": 4946,
+ "excluded_evaluated_rows": 1280,
+ "data_seconds": 254.680096972,
+ "device": "NVIDIA L4",
+ "torch": "2.14.1+cu130",
+ "transformers": "4.46.3",
+ "python": "3.13.16",
+ "random_step_seconds": 0.11280009399990831,
+ "scoring_seconds": 101.84889198200017,
+ "scoring_in_random_steps": 902.9149566318886,
+ "implied_N": 1497,
+ "kept_once": 1497,
+ "kept_fraction_once": 0.73095703125,
+ "eval_seconds_512": 32.60687957299979,
+ "est_run_seconds": 368.5408643187793,
+ "est_hours_60_runs": 6.4818440452529895
+}

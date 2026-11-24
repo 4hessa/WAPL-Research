@@ -1,0 +1,38 @@
+{
+  "kind": "smoke",
+  "stage": 75,
+  "time": "2026-11-24T21:20:56Z",
+  "pools_equal_stage74": {
+    "0.25": true,
+    "0.1": true
+  },
+  "population_equal_stage74": true,
+  "trained_ids": 4946,
+  "excluded_evaluated_rows": 1280,
+  "target_pool": {
+    "candidates": 8229,
+    "decontamination": {
+      "identical": 210,
+      "jaccard": 717,
+      "containment": 237,
+      "ngram8": 1406,
+      "dropped_total": 1535,
+      "trained_tokenization_8gram_after_a_to_d": 334
+    },
+    "eligible": 6360
+  },
+  "data_seconds": 257.31675799100003,
+  "device": "NVIDIA L4",
+  "torch": "2.14.1+cu130",
+  "transformers": "4.46.3",
+  "python": "3.13.16",
+  "random_step_seconds": 0.114641851999977,
+  "scoring_seconds": 101.88520472100004,
+  "scoring_in_random_steps": 888.7260886279164,
+  "implied_N": 1511,
+  "kept_once": 1511,
+  "kept_fraction_once": 0.73779296875,
+  "eval_seconds_512": 32.58250358100008,
+  "est_run_seconds": 372.88795554294506,
+  "est_hours_60_runs": 6.554416608119085
+}
