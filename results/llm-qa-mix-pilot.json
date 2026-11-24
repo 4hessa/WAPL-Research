@@ -1,0 +1,58 @@
+{
+  "stage": 74,
+  "phase": "A",
+  "protocol_sha256": "4635b46909fdde59c62c2f562e589ecbbc70c7addcf869304db915a0041c648a",
+  "journal_sha256": "f9ebf666a2a57ed63b4991f7db54b1e78df7f395ca0a89a37610dccbcad326c8",
+  "environments": [
+    {
+      "kind": "environment",
+      "time": "2026-11-24T03:56:39Z",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "device": "NVIDIA L4",
+      "phase": "A",
+      "resumed_runs": 0
+    }
+  ],
+  "data_counts": {
+    "banned_ngrams": 250728,
+    "aya_standard_arabic": 4995,
+    "aya_dropped": 527,
+    "aya_items": 4468,
+    "qa_chunks": 3273,
+    "kept_decontaminated": 637,
+    "removed_decontaminated": 356
+  },
+  "pilot": [
+    {
+      "sigma": 1.0,
+      "seed": 74900,
+      "losses": {
+        "0": 3.8684099873062223,
+        "2400": 4.0575310660060495
+      },
+      "accuracy": {
+        "0": 0.328125,
+        "2400": 0.34765625
+      },
+      "loss_change": 0.1891210786998272
+    },
+    {
+      "sigma": 0.25,
+      "seed": 74900,
+      "losses": {
+        "0": 3.8684099873062223,
+        "2400": 4.061819876078516
+      },
+      "accuracy": {
+        "0": 0.328125,
+        "2400": 0.34375
+      },
+      "loss_change": 0.19340988877229393
+    }
+  ],
+  "gate_passed": false,
+  "decision": "Gate failed (sigma 0.25 pilot loss at 2400 not below its loss at 0). Phase B not run, as the protocol specifies; any changed design needs a new amendment and the owner's approval."
+}
