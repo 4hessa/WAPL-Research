@@ -1,4 +1,4 @@
-"""Stage 74: web pool mixed with in-format Aya QA; offline alignment filter vs random and a
+"""Stage 74: web pool mixed with in-format QA (amendment 1: ArabicMMLU items outside every evaluation set); offline alignment filter vs random and a
 repetition control (random512); phase A is a feasibility pilot on separate items.
 
 Implements research/llm-qa-mix-protocol.json with the stage-73 building blocks.
@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 from statistics import mean, median
 import time
 
@@ -58,23 +59,88 @@ def clean_qa(pairs, tokenizer, banned):
     return kept, dropped
 
 
-def pack(items, order, length=CHUNK):
-    """Chunks that each start at an item start; short items absorb the following ones; remainders discarded."""
-    chunks, buf = [], []
+def pack(items, order, length=CHUNK, members=None):
+    """Chunks that each start at an item start; short items absorb the following ones; remainders discarded.
+    If `members` is a list, the item indices of each chunk are appended to it."""
+    chunks, buf, used = [], [], []
     for i in order:
         buf = buf + list(items[i])
+        used.append(int(i))
         if len(buf) >= length:
             chunks.append(buf[:length])
-            buf = []
+            if members is not None:
+                members.append(used)
+            buf, used = [], []
     return chunks
 
 
 def qa_list(items):
-    chunks = pack(items, np.random.default_rng(7411).permutation(len(items)))
+    members = []
+    chunks = pack(items, np.random.default_rng(7411).permutation(len(items)), members=members)
     if len(chunks) < POOL_SIZE:
         raise ValueError('Not enough QA chunks')
     order = np.random.default_rng(7412).permutation(len(chunks))[:POOL_SIZE]
-    return torch.tensor([chunks[i] for i in order], dtype=torch.long), len(chunks)
+    return torch.tensor([chunks[i] for i in order], dtype=torch.long), len(chunks), [members[i] for i in order]
+
+
+# ---------------------------------------------------------------- amendment 1: ArabicMMLU training items
+
+_STRIP = re.compile(r'[\u064B-\u0652\u0670\u0640]|[^\w]|_')
+
+
+def normalise(text):
+    return _STRIP.sub('', str(text))
+
+
+def shingles(text, n=5):
+    return {text[i:i + n] for i in range(max(len(text) - n + 1, 1))} if text else set()
+
+
+def question_text(r):
+    return normalise((str(r['Context']) if s73._present(r.get('Context')) else '') + str(r['Question']))
+
+
+def mmlu_qa_text(r):
+    ctx = str(r['Context']) + '\n' if s73._present(r.get('Context')) else ''
+    answer = r[f'Option {s73.LETTERS.index(str(r["Answer Key"]).strip()) + 1}']
+    return ctx + qa_text(r['Question'], answer)
+
+
+def near_duplicates(candidates, evals, tokenizer, jaccard=0.5, contain=20):
+    """Indices of candidate records to keep, and drop counts per criterion (a)-(d) of amendment 1."""
+    eq = [normalise(r['Question']) for r in evals]
+    eq_set = set(eq)
+    et = [question_text(r) for r in evals]
+    esh = [shingles(t) for t in et]
+    index = {}
+    for j, sh in enumerate(esh):
+        for g in sh:
+            index.setdefault(g, []).append(j)
+    banned = content_banned(evals, tokenizer)
+    counts = dict(identical=0, jaccard=0, containment=0, ngram8=0)
+    keep = []
+    for i, r in enumerate(candidates):
+        hits = []
+        if normalise(r['Question']) in eq_set:
+            hits.append('identical')
+        t, sh = question_text(r), shingles(question_text(r))
+        shared = {}
+        for g in sh:
+            for j in index.get(g, ()):
+                shared[j] = shared.get(j, 0) + 1
+        if any(c / (len(sh) + len(esh[j]) - c) >= jaccard for j, c in shared.items()):
+            hits.append('jaccard')
+        if any((len(t) >= contain and t in e) or (len(e) >= contain and e in t) for e in et if min(len(t), len(e)) >= contain):
+            hits.append('containment')
+        if content_banned([r], tokenizer) & banned:
+            hits.append('ngram8')
+        for h in hits:
+            counts[h] += 1
+        if hits:
+            continue
+        keep.append(i)
+    counts['dropped_total'] = len(candidates) - len(keep)
+    return keep, counts
 
 
 def web_lists(kept_chunks, removed_chunks):
@@ -174,7 +240,7 @@ def summarize(rows, calibration, plan):
 def load_inputs(args, tokenizer):
     import pandas as pd
     import pyarrow.parquet as pq
-    for path, digest in ((args.kept, s73.KEPT_SHA256), (args.removed, s73.REMOVED_SHA256), (args.aya, AYA_SHA256),
+    for path, digest in ((args.kept, s73.KEPT_SHA256), (args.removed, s73.REMOVED_SHA256),
                          (args.mmlu / 'dev.csv', s73.DEV_SHA256), (args.mmlu / 'test.csv', s73.TEST_SHA256)):
         if s69.sha256(path) != digest:
             raise ValueError(f'{path} differs from the protocol')
@@ -185,10 +251,14 @@ def load_inputs(args, tokenizer):
     probe = s73.build_items(dev, tokenizer)
     pilot = s73.build_items([test[i] for i in pilot_rows], tokenizer)
     target = s73.build_items([test[i] for i in target_rows], tokenizer)
-    aya = pd.read_parquet(args.aya, columns=['inputs', 'targets', 'language'])
-    aya = aya[aya.language == 'Standard Arabic']
-    items, qa_dropped = clean_qa(list(zip(aya.inputs, aya.targets)), tokenizer, banned)
-    qa, n_qa_chunks = qa_list(items)
+    excluded = set(s73.sample_target(len(test)).tolist()) | set(pilot_rows.tolist()) | set(target_rows.tolist())
+    cand_rows = [i for i in range(len(test)) if i not in excluded]
+    evals = dev + [test[i] for i in pilot_rows] + [test[i] for i in target_rows]
+    keep, decon = near_duplicates([test[i] for i in cand_rows], evals, tokenizer)
+    train_rows = [cand_rows[k] for k in keep]
+    items = [tokenizer(mmlu_qa_text(test[i]), add_special_tokens=False)['input_ids'] for i in train_rows]
+    qa, n_qa_chunks, members = qa_list(items)
+    used_ids = sorted({int(test[train_rows[m]]['ID']) for chunk in members for m in chunk})
     kept_texts = pq.read_table(args.kept, columns=['text'])['text'].to_pylist()
     removed_texts = pq.ParquetFile(args.removed).read_row_groups(list(range(s73.REMOVED_ROW_GROUPS)),
                                                                   columns=['text'])['text'].to_pylist()
@@ -196,8 +266,9 @@ def load_inputs(args, tokenizer):
     rr, rc, r_drop = s73.decontaminate(*s73.first_tokens(removed_texts, tokenizer), banned)
     kept, removed, k_idx, r_idx = web_lists(kc, rc)
     pools = {s: build_pool(qa, kept, removed, s) for s in SIGMAS + PILOT_SIGMAS}
-    population = dict(banned_ngrams=len(banned), aya_standard_arabic=len(aya), aya_dropped=qa_dropped,
-                      aya_items=len(items), qa_chunks=n_qa_chunks, kept_decontaminated=k_drop,
+    population = dict(banned_ngrams=len(banned), qa_source='ArabicMMLU test items outside all evaluation sets',
+                      qa_candidates=len(cand_rows), qa_decontamination=decon, qa_items=len(items),
+                      qa_chunks=n_qa_chunks, qa_item_ids_in_pools=used_ids, kept_decontaminated=k_drop,
                       removed_decontaminated=r_drop, kept_documents=[int(kr[i]) for i in k_idx],
                       removed_documents=[int(rr[i]) for i in r_idx],
                       pilot_items=[it['id'] for it in pilot], target_items=[it['id'] for it in target],
@@ -214,7 +285,6 @@ def main():
     parser.add_argument('--models-dir', type=Path, default=Path('models'))
     parser.add_argument('--kept', type=Path, required=True)
     parser.add_argument('--removed', type=Path, required=True)
-    parser.add_argument('--aya', type=Path, required=True)
     parser.add_argument('--mmlu', type=Path, required=True)
     parser.add_argument('--summary', type=Path, default=Path('results/llm-qa-mix.json'))
     args = parser.parse_args()

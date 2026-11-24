@@ -31,6 +31,23 @@ class QAMixTests(unittest.TestCase):
         self.assertEqual(chunks[1], [2] * 30 + [3] * 35)
         self.assertEqual(len(chunks), 2)  # the short last item is discarded
 
+    def test_near_duplicate_criteria_and_members(self):
+        evals = [mmlu_row(1, 'ما هي عاصمة المملكة العربية السعودية'), mmlu_row(2, 'كم عدد سور القرآن الكريم في المصحف')]
+        cands = [mmlu_row(10, 'ما هِيَ عاصمة المملكة العربية السعودية؟'),          # identical after normalisation
+                 mmlu_row(11, 'ما هي عاصمة المملكة العربية السعودية حاليا'),      # high Jaccard / containment
+                 mmlu_row(12, 'كم عدد سور القرآن الكريم'),                        # contained in an eval question
+                 mmlu_row(13, 'اشرح دورة الماء في الطبيعة بالتفصيل', opts=('مطر', 'ثلج'))]
+        keep, counts = stage.near_duplicates(cands, evals, self.tok)
+        self.assertEqual(keep, [3])
+        self.assertEqual(counts['dropped_total'], 3)
+        self.assertGreaterEqual(counts['identical'], 1)
+        self.assertGreaterEqual(counts['containment'], 1)
+        members = []
+        chunks = stage.pack([[1] * 70, [2] * 30, [3] * 40], [0, 1, 2], length=65, members=members)
+        self.assertEqual((len(chunks), members), (2, [[0], [1, 2]]))
+        text = stage.mmlu_qa_text(mmlu_row(5, 'سؤال قصير', answer='B', opts=('خطأ', 'صواب')))
+        self.assertTrue(text.startswith('سؤال: سؤال قصير\nالجواب: صواب'))
+
     def test_composition_and_nested_pools(self):
         self.assertEqual(stage.composition(0.25), (512, 768, 768))
         self.assertEqual(stage.composition(0.1), (205, 922, 921))
