@@ -25,6 +25,18 @@
       "stage": 65,
       "status": "512 previously unscored dev chunks per language (seed 6501, excluding stage-49 and stage-63 samples) evaluated as stage-65 target; exposed",
       "protocol": "research/ud-cost-frontier-protocol.json"
+    },
+    "ArabicMMLU": {
+      "stage": 73,
+      "status": "All 120 All/dev items used as probe; 512 All/test items (default_rng(7302).choice(14455, 512)) evaluated as stage-73 target; exposed. Remaining test items unscored in this project.",
+      "revision": "7aa530e2893ac420352b3f5c1a1310c010e9758b",
+      "protocol": "research/llm-web-filter-protocol.json"
+    },
+    "FineWeb2_arb_Arab": {
+      "stage": 73,
+      "status": "arb_Arab/test/000_00000.parquet (all) and arb_Arab_removed/train/000_00000.parquet (first 20 row groups) used as training pools; 2048 kept and 1024 removed chunks sampled.",
+      "revision": "af9c13333eb981300149d5ca60a8e9d659b276b9",
+      "protocol": "research/llm-web-filter-protocol.json"
     }
   }
 }

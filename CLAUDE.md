@@ -2,12 +2,13 @@
 
 Read this before doing anything. The project owner writes in Arabic; answer in Arabic, plainly and without flattery, separating verified facts, inference and speculation. In Arabic text, put every English word or technical term on its own line.
 
-## Where the project stands (stage 72, 24 November 2026)
+## Where the project stands (stage 73, 24 November 2026)
 
 - The original WAPLV hypothesis (weight-sample features) was not supported (stages 18-55).
-- Current line of work: cost-charged evaluation of online data selection for LLM adaptation. Read `research/paper/draft.md` (sections 4-7) and the latest reports in `reports/` (64-72) before planning.
+- Current line of work: cost-charged evaluation of online data selection for LLM adaptation. Read `research/paper/draft.md` (sections 4-7) and the latest reports in `reports/` (64-73) before planning.
 - Main finding (stages 68-72): batched gradient-alignment selection on Qwen2.5 with LoRA beats random selection when much of the candidate pool is unsuitable for the target (English, garbled Arabic, off-domain Arabic news), and loses on in-domain pools. Crossover about 34% contamination on an L4 (r = 1.95); about 72% on a T4 (r = 3.24).
-- Open items: replay audits of stages 66 and 68 (`tools/audit_llm_selection.py`, `tools/audit_llm_budget.py`, resumable via `results/*-audit-progress.jsonl`). Proposed next stage 73: one-pass (offline) alignment filtering on real Arabic web data with a downstream Arabic task, larger model if an A100 is available.
+- Stage 73 (offline filtering of FineWeb-2 Arabic toward ArabicMMLU, L4): negative. Scoring the pool once cost 40% of the budget; all training raised the task loss; filter minus random +0.070 [+0.006, +0.131] on the raw pool. The rule above needs a pool with data useful to the target. Filter repetition (4.7x vs 1.2x) is an unseparated confound.
+- Open items: replay audits of stages 66 and 68 (`tools/audit_llm_selection.py`, `tools/audit_llm_budget.py`, resumable via `results/*-audit-progress.jsonl`). No stage 74 is specified yet.
 
 ## Method rules (do not skip)
 
