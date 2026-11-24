@@ -1,0 +1,52 @@
+{
+  "stage": 74,
+  "date": "2026-11-24",
+  "reference_commit": "2c3aeff",
+  "question": "When a real Arabic web pool also contains in-format Arabic question-answer data that helps the target, does one-pass gradient-alignment filtering toward ArabicMMLU beat random sampling at equal cost (scoring fully charged), and how much of any difference is selection rather than data repetition?",
+  "motivation": "Stage 73 failed because no part of the pool helped the target: all training raised the ArabicMMLU answer loss. Its filter also repeated each kept chunk about 4.7 times against 1.2 for random, an unseparated confound.",
+  "smoke_test_before_protocol": "Cost and data only, no target item evaluated (24 November 2026): EXAMS Arabic (mhardalov/exams, 562 questions) has 534 stems identical to ArabicMMLU questions after normalisation and 533 matched by content 8-grams, so it is excluded. Aya Standard Arabic: 527 of 4995 items matched by content 8-grams; about 4468 remain. Random step 0.112 s; align_grad scoring of 2048 chunks about 100 s (about 900 random steps).",
+  "hardware": "The Colab NVIDIA L4 of this session; device journaled with the calibration; resuming on a different device type aborts.",
+  "model": "As stage 73: Qwen2.5-1.5B (revision and SHA-256 as research/llm-gpu-scale-protocol.json), float32, deterministic algorithms, TF32 off, LoRA rank 8 alpha 16 on q_proj and v_proj, AdamW lr 5e-4 weight decay 0, one 65-token chunk per update. transformers 4.46.3, tokenizers 0.20.3, huggingface_hub 0.26.2.",
+  "data": {
+    "qa_source": "CohereLabs/aya_dataset, revision f9ea04583f02a8f86404ff6c58bf75fe637df8a2, data/train-00000-of-00001.parquet (SHA-256 51baa85043b569ba117f41516b32d1b0e4e2647fb203a08933f98a556fb1fb06), license Apache-2.0; rows with language 'Standard Arabic' only.",
+    "qa_format": "Item text = 'سؤال: ' + inputs.strip() + newline + 'الجواب: ' + targets.strip() + two newlines, the same template as the target prompts.",
+    "web_source": "As stage 73 (FineWeb-2 revision af9c133, the same kept and removed files and hashes; first 20 row groups of the removed file); first 65 tokens of each document with at least 65 tokens.",
+    "decontamination": "Content 8-grams: the token 8-grams of the Question, Context (if present) and correct option of every ArabicMMLU dev and test item (14,575 items), each field tokenized alone without template. An Aya item is dropped if its inputs or targets (each tokenized alone) shares any such 8-gram; a web chunk is dropped if it shares any. Counts journaled.",
+    "qa_chunks": "Surviving Aya items in the order default_rng(7411).permutation; each chunk starts at an item start: take the item's tokens, append following items while shorter than 65 tokens, cut at 65 tokens, discard the remainder; the next chunk starts at the next unused item. Chunk order for pools: default_rng(7412).permutation of all chunks; the first 2048 form the ordered QA list.",
+    "web_chunks": "Ordered kept list = default_rng(7413).choice(eligible kept, 1843, replace=False); ordered removed list = default_rng(7414).choice(eligible removed, 922, replace=False).",
+    "pools": "For QA share sigma and M = 2048: n_qa = round(sigma M), n_web = M - n_qa, n_removed = n_web // 2, n_kept = n_web - n_removed; pool = first n_qa QA chunks, then first n_kept kept chunks, then first n_removed removed chunks (pools nested by prefixes). sigma 0.25: 512 QA, 768 kept, 768 removed. sigma 0.1: 205 QA, 922 kept, 921 removed. Pilot sigma 1.0: 2048 QA."
+  },
+  "task": {
+    "source": "MBZUAI/ArabicMMLU revision 7aa530e, All/dev.csv and All/test.csv with the stage-73 hashes; cloze format, item loss and accuracy exactly as stage 73.",
+    "probe": "All 120 dev items (as stage 73).",
+    "excluded": "The 512 stage-73 target items (experiments.llm_web_filter.sample_target).",
+    "pilot_items": "256 test items: default_rng(7421).choice over the remaining test indices.",
+    "target": "512 test items: default_rng(7422).choice over the test indices remaining after the stage-73 target and the pilot items."
+  },
+  "phase_A_pilot": {
+    "purpose": "Feasibility gate for the requirement that random training lowers the target loss; it uses its own items, never the stage-74 target.",
+    "design": "Arm random only, seed 74900, sigma 1.0 and 0.25, 2400 updates; pilot-item loss and accuracy at 0 and 2400. Separate journal.",
+    "gate": "Phase B runs as specified if and only if the sigma 0.25 pilot loss at 2400 is below its loss at 0. Otherwise phase B is not run and the outcome is reported to the owner; any changed design needs a new protocol amendment and approval."
+  },
+  "phase_B_main": {
+    "sigma": [0.25, 0.1],
+    "seeds": [37400, 37401, 37402, 37403, 37404, 37405],
+    "arms": ["random", "align_grad", "random512"],
+    "policies": {
+      "random": "Each step trains on a pool chunk drawn uniformly with replacement.",
+      "align_grad": "As stage 73: at the seed's initial adapter, probe gradient of the 120 dev items; per-example LoRA gradients of all 2048 chunks (batch 16); keep the 512 highest dot products (ties to the lower index); train on kept chunks with the filter schedule. Full scoring time charged.",
+      "random512": "Repetition control: a uniformly random 512-chunk subset of the pool, trained with the same filter schedule, so it repeats data exactly as often as align_grad. No scoring and no charge."
+    },
+    "schedule": "Per sigma index k (0.25 -> 0, 0.1 -> 1) and seed: rng = default_rng(seed + 1000 k); random indices = rng.integers(2048, size=2400); filter indices = rng.integers(512, size=2400); random512 subset = sort(rng.choice(2048, 512, replace=False)).",
+    "budget": "Before any target evaluation: calibration seed 74999 on the sigma 0.25 pool; c_r = median of steps 5-24 of 24 random steps; S = wall-clock of complete align_grad scoring (probe gradient included). B = 2400 random-step costs; N = floor(B - S / c_r + 1e-9).",
+    "measurement": "All arms train 2400 updates; target loss and accuracy at 0, N and 2400. Per align_grad run: all scores, kept indices, QA share among kept, scoring seconds. Per random512 run: the subset and its QA share. Random arms: adapter digest at step 50.",
+    "primary": "sigma 0.25: align_grad loss at N minus random at 2400 (cost charged), mean over six seeds, paired seed-bootstrap 95% interval (seed 7403, 10000 resamples). Negative favours the filter.",
+    "secondary": "Per sigma: charged contrast; selection with matched repetition (align_grad at N minus random512 at N); repetition effect (random512 at N minus random at N); selection term (align_grad at N minus random at N) and throughput term; amortized contrasts at 2400; random minus no update; accuracy contrasts; QA share among align_grad's kept chunks and among random512 subsets. Paired seed-bootstrap intervals; no multiplicity adjustment; no pooling across sigma.",
+    "prediction": "Written before running: at sigma 0.25 the QA share among align_grad's kept chunks exceeds 0.5, the primary contrast is negative and the matched-repetition selection contrast is negative. At sigma 0.1 the QA share among kept chunks exceeds 0.2 (twice the pool share); the sign of the charged contrast is open.",
+    "coverage": "2 sigma x 6 seeds x 3 arms = 36 runs plus one calibration; about 4.5 hours on an L4."
+  },
+  "resumption": "Append-only JSON-lines journals outside the repository; completed entries skipped; samples, pools and schedule digests re-verified; outcomes not read before the run finishes; interim journal snapshots to branch colab/stage74-journal, not main.",
+  "audit": "tools/audit_llm_qa_mix.py: journal digests, summary recomputation, gate recomputation, file hashes, decontamination (no pool chunk or used QA item shares a banned 8-gram), item samples (pilot and target disjoint from each other and from the stage-73 target), pools, schedules, kept sets from journaled scores, QA shares, random512 subsets, budget. On the same GPU: recompute align_grad scores of seed 37400 on both pools and replay the first 50 random steps of seed 37400 at sigma 0.25 to its adapter digest.",
+  "licenses": "FineWeb-2 ODC-By 1.0 (and Common Crawl terms); Aya Apache-2.0; ArabicMMLU CC BY-NC 4.0 (non-commercial research use); Qwen2.5 Apache-2.0. Taken from Hugging Face dataset cards. No dataset text is committed; journals hold indices, scores and digests only.",
+  "scope": "One model, LoRA, one budget, one kept fraction (0.25), one in-format source (Aya), one downstream task scored by answer loss, two QA shares."
+}
