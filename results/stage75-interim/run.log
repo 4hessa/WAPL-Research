@@ -52,3 +52,5 @@ backup pushed: 21 finished runs
 22/30 runs complete
 backup pushed: 22 finished runs
 23/30 runs complete
+BACKUP FAILED: CalledProcessError
+24/30 runs complete
