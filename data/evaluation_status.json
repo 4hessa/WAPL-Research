@@ -27,12 +27,13 @@
       "protocol": "research/ud-cost-frontier-protocol.json"
     },
     "ArabicMMLU": {
-      "stage": 74,
-      "status": "Exposure accumulated over stages 73 and 74; see stage_73 and stage_74. Test items in none of the lists below remain unscored and untrained in this project.",
+      "stage": 75,
+      "status": "Exposure accumulated over stages 73-75; see stage_73, stage_74 and stage_75. Test items in none of the lists below remain unscored and untrained in this project.",
       "revision": "7aa530e2893ac420352b3f5c1a1310c010e9758b",
       "protocol": [
         "research/llm-web-filter-protocol.json",
-        "research/llm-qa-mix-protocol.json"
+        "research/llm-qa-mix-protocol.json",
+        "research/llm-once-filter-protocol.json"
       ],
       "stage_73": {
         "status": "All 120 All/dev items used as probe; 512 All/test items (default_rng(7302).choice(14455, 512)) evaluated as stage-73 target; exposed.",
@@ -50,6 +51,12 @@
           "note": "IDs of the items packed into the 2048-chunk QA list (the sigma-1.0 phase-A pool); phase-B pools use prefixes of this list (512 chunks at sigma 0.25, 205 at sigma 0.1). Decontaminated against probe, pilot and target by amendment-1 criteria (a)-(d); the post-run audit found 30 of these items sharing a token 8-gram with an evaluation item in the trained (templated) tokenization (research/llm-qa-mix-deviations.md, section 2)."
         },
         "decontaminated_out": "1,883 of 13,175 candidate test items were dropped as near-duplicates of evaluation items and never trained on; of the 11,292 survivors, 6,346 fell into QA chunks outside the 2048 used and were never trained on."
+      },
+      "stage_75": {
+        "protocol": "research/llm-once-filter-protocol.json (amendment 1)",
+        "probe": "All 120 All/dev items, used again as the alignment probe.",
+        "target": "512 All/test items (default_rng(7522) over 6,360 items that were unscored, untrained and clean under criteria (a)-(e) against the stage-74 training items and pools) evaluated as the stage-75 target; exposed. IDs: results/llm-once-filter-journal.jsonl, calibration.population.target_items.",
+        "used_for_training": "None new: stage 75 trained on the stage-74 sigma 0.25 pool only."
       }
     },
     "FineWeb2_arb_Arab": {
