@@ -1,0 +1,97 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795607376.852466   11931 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795607376.914310   11931 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795607379.402003   11931 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795607379.402559   11931 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+full 37500 {"seconds": 100.53350482299993, "steps_per_chunk": 0.44400763689034867, "agreement": {"spearman": 1.0, "top512_overlap": 1.0, "qa_share_top512": 0.9296875, "qa_share_top256": 0.99609375, "qa_auc": 0.9558448791503906}, "max_rel_diff_vs_journal": 0.0}
+full 37501 {"seconds": 104.64525043399999, "steps_per_chunk": 0.46216721916541853, "agreement": {"spearman": 1.0, "top512_overlap": 1.0, "qa_share_top512": 0.935546875, "qa_share_top256": 1.0, "qa_auc": 0.9613482157389323}, "max_rel_diff_vs_journal": 0.0}
+full_dB 37500 {"seconds": 104.33578360799993, "steps_per_chunk": 0.46080045457932195, "agreement": {"spearman": 1.0, "top512_overlap": 1.0, "qa_share_top512": 0.9296875, "qa_share_top256": 0.99609375, "qa_auc": 0.9558448791503906}, "max_rel_diff_vs_journal": 1.500044401314279e-07}
+full_dB 37501 {"seconds": 104.39433468200014, "steps_per_chunk": 0.4610590462204867, "agreement": {"spearman": 1.0, "top512_overlap": 1.0, "qa_share_top512": 0.935546875, "qa_share_top256": 1.0, "qa_auc": 0.9613482157389323}, "max_rel_diff_vs_journal": 1.7308792581036088e-07}
+1.5b_last8_b64 37500 {"seconds": 77.42302941100024, "steps_per_chunk": 0.3419398974520342, "agreement": {"spearman": -0.014204749033242235, "top512_overlap": 0.3203125, "qa_share_top512": 0.3203125, "qa_share_top256": 0.390625, "qa_auc": 0.5264879862467448}, "max_rel_diff_vs_journal": 0.9998469329448011}
+1.5b_last8_b64 37501 {"seconds": 77.34820354200019, "steps_per_chunk": 0.34160942795003607, "agreement": {"spearman": 0.048115915914694295, "top512_overlap": 0.3046875, "qa_share_top512": 0.30859375, "qa_share_top256": 0.328125, "qa_auc": 0.5226796468098959}, "max_rel_diff_vs_journal": 0.9996638047632889}
+1.5b_last4_b64 37500 {"seconds": 71.07500832799997, "steps_per_chunk": 0.3139037731275569, "agreement": {"spearman": 0.16081039064327257, "top512_overlap": 0.232421875, "qa_share_top512": 0.240234375, "qa_share_top256": 0.28125, "qa_auc": 0.5200576782226562}, "max_rel_diff_vs_journal": 0.999921707698417}
+1.5b_last4_b64 37501 {"seconds": 71.2346245460003, "steps_per_chunk": 0.31460872039750915, "agreement": {"spearman": 0.01568625356599774, "top512_overlap": 0.22265625, "qa_share_top512": 0.220703125, "qa_share_top256": 0.20703125, "qa_auc": 0.45781834920247394}, "max_rel_diff_vs_journal": 0.9999626157864749}
+1.5b_last1_b64 37500 {"seconds": 66.20663471699982, "steps_per_chunk": 0.29240253265727556, "agreement": {"spearman": 0.10773314543039093, "top512_overlap": 0.240234375, "qa_share_top512": 0.232421875, "qa_share_top256": 0.23828125, "qa_auc": 0.4783681233723958}, "max_rel_diff_vs_journal": 0.9999802577133579}
+1.5b_last1_b64 37501 {"seconds": 66.17545955599962, "steps_per_chunk": 0.2922648471206006, "agreement": {"spearman": -0.06010017114285735, "top512_overlap": 0.189453125, "qa_share_top512": 0.18359375, "qa_share_top256": 0.17578125, "qa_auc": 0.4268786112467448}, "max_rel_diff_vs_journal": 0.9999654177317896}
+0.5b_dB 37500 {"seconds": 40.9527555640002, "steps_per_chunk": 0.18086842047468182, "agreement": {"spearman": 0.6449494735403595, "top512_overlap": 0.869140625, "qa_share_top512": 0.896484375, "qa_share_top256": 1.0, "qa_auc": 0.9675331115722656}, "max_rel_diff_vs_journal": 0.7727064158599094}
+0.5b_dB 37501 {"seconds": 41.06664016800005, "steps_per_chunk": 0.18137139342871536, "agreement": {"spearman": 0.6531486587655327, "top512_overlap": 0.87890625, "qa_share_top512": 0.912109375, "qa_share_top256": 1.0, "qa_auc": 0.9732449849446615}, "max_rel_diff_vs_journal": 0.697112767908737}
+0.5b_dB_b64 37500 {"seconds": 42.44672570600005, "steps_per_chunk": 0.1874665606022141, "agreement": {"spearman": 0.6449489650381125, "top512_overlap": 0.869140625, "qa_share_top512": 0.896484375, "qa_share_top256": 1.0, "qa_auc": 0.9675331115722656}, "max_rel_diff_vs_journal": 0.7727042157947875}
+0.5b_dB_b64 37501 {"seconds": 42.4940849489999, "steps_per_chunk": 0.18767572336448224, "agreement": {"spearman": 0.6531487956699839, "top512_overlap": 0.87890625, "qa_share_top512": 0.912109375, "qa_share_top256": 1.0, "qa_auc": 0.9732449849446615}, "max_rel_diff_vs_journal": 0.6971133088085051}
+0.5b_last4_b64 37500 {"seconds": 29.434598881000056, "steps_per_chunk": 0.12999831961471797, "agreement": {"spearman": -0.03685835929190738, "top512_overlap": 0.259765625, "qa_share_top512": 0.251953125, "qa_share_top256": 0.234375, "qa_auc": 0.49118296305338544}, "max_rel_diff_vs_journal": 0.9989205529116474}
+0.5b_last4_b64 37501 {"seconds": 29.49195837299976, "steps_per_chunk": 0.1302516486172317, "agreement": {"spearman": -0.07675959183876918, "top512_overlap": 0.2578125, "qa_share_top512": 0.255859375, "qa_share_top256": 0.25, "qa_auc": 0.4744885762532552}, "max_rel_diff_vs_journal": 1.0015609256774185}
+{
+ "full": {
+  "steps_per_chunk": 0.46216721916541853,
+  "speedup": 1.0,
+  "spearman": 1.0,
+  "top512_overlap": 1.0,
+  "qa_share_top512": 0.9296875,
+  "qa_share_top256": 0.99609375,
+  "qa_auc": 0.9558448791503906
+ },
+ "full_dB": {
+  "steps_per_chunk": 0.4610590462204867,
+  "speedup": 1.002403538015393,
+  "spearman": 1.0,
+  "top512_overlap": 1.0,
+  "qa_share_top512": 0.9296875,
+  "qa_share_top256": 0.99609375,
+  "qa_auc": 0.9558448791503906
+ },
+ "1.5b_last8_b64": {
+  "steps_per_chunk": 0.3419398974520342,
+  "speedup": 1.3516036666363254,
+  "spearman": -0.014204749033242235,
+  "top512_overlap": 0.3203125,
+  "qa_share_top512": 0.3203125,
+  "qa_share_top256": 0.390625,
+  "qa_auc": 0.5264879862467448
+ },
+ "1.5b_last4_b64": {
+  "steps_per_chunk": 0.31460872039750915,
+  "speedup": 1.4690222781538564,
+  "spearman": 0.16081039064327257,
+  "top512_overlap": 0.232421875,
+  "qa_share_top512": 0.240234375,
+  "qa_share_top256": 0.28125,
+  "qa_auc": 0.5200576782226562
+ },
+ "1.5b_last1_b64": {
+  "steps_per_chunk": 0.29240253265727556,
+  "speedup": 1.5805855543225538,
+  "spearman": 0.10773314543039093,
+  "top512_overlap": 0.240234375,
+  "qa_share_top512": 0.232421875,
+  "qa_share_top256": 0.23828125,
+  "qa_auc": 0.4783681233723958
+ },
+ "0.5b_dB": {
+  "steps_per_chunk": 0.18137139342871536,
+  "speedup": 2.548181443768114,
+  "spearman": 0.6449494735403595,
+  "top512_overlap": 0.869140625,
+  "qa_share_top512": 0.896484375,
+  "qa_share_top256": 1.0,
+  "qa_auc": 0.9675331115722656
+ },
+ "0.5b_dB_b64": {
+  "steps_per_chunk": 0.18767572336448224,
+  "speedup": 2.4625839233764424,
+  "spearman": 0.6449489650381125,
+  "top512_overlap": 0.869140625,
+  "qa_share_top512": 0.896484375,
+  "qa_share_top256": 1.0,
+  "qa_auc": 0.9675331115722656
+ },
+ "0.5b_last4_b64": {
+  "steps_per_chunk": 0.1302516486172317,
+  "speedup": 3.5482638728326688,
+  "spearman": -0.03685835929190738,
+  "top512_overlap": 0.259765625,
+  "qa_share_top512": 0.251953125,
+  "qa_share_top256": 0.234375,
+  "qa_auc": 0.49118296305338544
+ }
+}
