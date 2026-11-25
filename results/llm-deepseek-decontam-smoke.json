@@ -1,0 +1,120 @@
+{
+  "stage": "77 smoke 3 (data only, before amendment 1)",
+  "chunk_tokens": 147,
+  "required_per_kind": 2988,
+  "web_documents_with_147_tokens": [
+    42080,
+    19117
+  ],
+  "qa_chunks": 1992,
+  "excluded_evaluated_rows": 2304,
+  "alternatives": {
+    "current": {
+      "tokenizer": "LlamaTokenizerFast",
+      "n": 8,
+      "web_eligible": [
+        562,
+        1596
+      ],
+      "web_dropped": [
+        41518,
+        17521
+      ],
+      "web_eligible_share": [
+        0.013355513307984792,
+        0.0834859025997803
+      ],
+      "seconds": 8.773436650999429
+    },
+    "ds18": {
+      "tokenizer": "LlamaTokenizerFast",
+      "n": 18,
+      "web_eligible": [
+        40188,
+        18355
+      ],
+      "web_dropped": [
+        1892,
+        762
+      ],
+      "web_eligible_share": [
+        0.9550380228136882,
+        0.9601401893602552
+      ],
+      "target_pool": {
+        "candidates": 7205,
+        "decontamination": {
+          "identical": 210,
+          "jaccard": 717,
+          "containment": 237,
+          "ngram8": 1741,
+          "dropped_total": 1852,
+          "trained_tokenization_8gram_after_a_to_d": 264
+        },
+        "eligible": 5089
+      },
+      "target_feasible": true,
+      "seconds": 38.52316094100024
+    },
+    "qwen8": {
+      "tokenizer": "Qwen2TokenizerFast",
+      "n": 8,
+      "web_eligible": [
+        41418,
+        18697
+      ],
+      "web_dropped": [
+        662,
+        420
+      ],
+      "web_eligible_share": [
+        0.9842680608365019,
+        0.9780300256316368
+      ],
+      "target_pool": {
+        "candidates": 7205,
+        "decontamination": {
+          "identical": 210,
+          "jaccard": 717,
+          "containment": 237,
+          "ngram8": 1406,
+          "dropped_total": 1535,
+          "trained_tokenization_8gram_after_a_to_d": 333
+        },
+        "eligible": 5337
+      },
+      "target_feasible": true,
+      "seconds": 49.80494229800024
+    },
+    "char20": {
+      "tokenizer": "CharTokenizer",
+      "n": 20,
+      "web_eligible": [
+        38972,
+        17999
+      ],
+      "web_dropped": [
+        3108,
+        1118
+      ],
+      "web_eligible_share": [
+        0.9261406844106463,
+        0.9415180206099283
+      ],
+      "target_pool": {
+        "candidates": 7205,
+        "decontamination": {
+          "identical": 210,
+          "jaccard": 717,
+          "containment": 237,
+          "ngram8": 2425,
+          "dropped_total": 2505,
+          "trained_tokenization_8gram_after_a_to_d": 304
+        },
+        "eligible": 4396
+      },
+      "target_feasible": true,
+      "seconds": 26.96969713300132
+    }
+  }
+}
