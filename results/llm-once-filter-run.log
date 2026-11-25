@@ -1,0 +1,70 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795558567.459383   21697 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795558567.521876   21697 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795558570.005544   21697 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795558570.006099   21697 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+backup pushed: 0 finished runs
+qwen2.5-1.5b NVIDIA L4 updates 1484
+1/30 runs complete
+backup pushed: 1 finished runs
+2/30 runs complete
+backup pushed: 2 finished runs
+3/30 runs complete
+backup pushed: 3 finished runs
+4/30 runs complete
+backup pushed: 4 finished runs
+5/30 runs complete
+backup pushed: 5 finished runs
+6/30 runs complete
+backup pushed: 6 finished runs
+7/30 runs complete
+backup pushed: 7 finished runs
+8/30 runs complete
+backup pushed: 8 finished runs
+9/30 runs complete
+backup pushed: 9 finished runs
+10/30 runs complete
+backup pushed: 10 finished runs
+11/30 runs complete
+backup pushed: 11 finished runs
+12/30 runs complete
+backup pushed: 12 finished runs
+13/30 runs complete
+backup pushed: 13 finished runs
+14/30 runs complete
+backup pushed: 14 finished runs
+15/30 runs complete
+backup pushed: 15 finished runs
+16/30 runs complete
+backup pushed: 16 finished runs
+17/30 runs complete
+backup pushed: 17 finished runs
+18/30 runs complete
+backup pushed: 18 finished runs
+19/30 runs complete
+backup pushed: 19 finished runs
+20/30 runs complete
+backup pushed: 20 finished runs
+21/30 runs complete
+backup pushed: 21 finished runs
+22/30 runs complete
+backup pushed: 22 finished runs
+23/30 runs complete
+BACKUP FAILED: CalledProcessError
+24/30 runs complete
+backup pushed: 24 finished runs
+25/30 runs complete
+backup pushed: 25 finished runs
+26/30 runs complete
+backup pushed: 26 finished runs
+27/30 runs complete
+backup pushed: 27 finished runs
+28/30 runs complete
+backup pushed: 28 finished runs
+29/30 runs complete
+backup pushed: 29 finished runs
+30/30 runs complete
+backup pushed: 30 finished runs
+summary written to results/llm-once-filter.json
