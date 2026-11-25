@@ -8,3 +8,5 @@ I0000 00:00:1795610285.154692   26080 cudart_stub.cc:31] Could not find cuda dri
 backup pushed: 0 finished runs
 qwen2.5-1.5b qwen2.5-0.5b NVIDIA L4 updates 1633
 1/24 runs complete
+backup pushed: 1 finished runs
+2/24 runs complete
