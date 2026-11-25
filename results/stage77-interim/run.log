@@ -17,3 +17,6 @@ I0000 00:00:1795645394.143983   88173 cudart_stub.cc:31] Could not find cuda dri
 deepseek-llm-7b-base NVIDIA L4 updates 1992 uncapped 2044 scoring batch 8
 Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  2.30it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.40it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.39it/s]
 1/12 runs complete
+backup pushed: 1 finished runs
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  2.42it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.53it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.52it/s]
+2/12 runs complete
