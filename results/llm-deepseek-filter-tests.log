@@ -1,0 +1,29 @@
+test_decon_tokenizer_is_pinned (tests.test_llm_deepseek_filter.AmendmentOneTests.test_decon_tokenizer_is_pinned) ... ok
+test_protocol_records_amendment_1 (tests.test_llm_deepseek_filter.AmendmentOneTests.test_protocol_records_amendment_1) ... ok
+test_view_and_decontamination_use_the_qwen_tokens (tests.test_llm_deepseek_filter.AmendmentOneTests.test_view_and_decontamination_use_the_qwen_tokens) ... ok
+test_excluded_rows_cover_stage_75_and_76_targets (tests.test_llm_deepseek_filter.DataTests.test_excluded_rows_cover_stage_75_and_76_targets) ... ok
+test_qa_chunks_count_is_enforced (tests.test_llm_deepseek_filter.DataTests.test_qa_chunks_count_is_enforced) ... ok
+test_add_lora_initialisation_matches_stage_76 (tests.test_llm_deepseek_filter.NumericsTests.test_add_lora_initialisation_matches_stage_76) ... WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795638672.313516   58061 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795638675.092024   58061 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795638675.092606   58061 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+ok
+test_bfloat16_model_has_float32_adapters_and_logits (tests.test_llm_deepseek_filter.NumericsTests.test_bfloat16_model_has_float32_adapters_and_logits) ... ok
+test_evaluate_matches_stage_73 (tests.test_llm_deepseek_filter.NumericsTests.test_evaluate_matches_stage_73) ... ok
+test_mixed_lora_equals_original_for_float32 (tests.test_llm_deepseek_filter.NumericsTests.test_mixed_lora_equals_original_for_float32) ... ok
+test_score_matches_stage_73_in_float32 (tests.test_llm_deepseek_filter.NumericsTests.test_score_matches_stage_73_in_float32) ... ok
+test_score_runs_in_bfloat16 (tests.test_llm_deepseek_filter.NumericsTests.test_score_runs_in_bfloat16) ... ok
+test_arm_rotation (tests.test_llm_deepseek_filter.ProtocolAndScheduleTests.test_arm_rotation) ... ok
+test_backup_retries_push_and_logs_stderr (tests.test_llm_deepseek_filter.ProtocolAndScheduleTests.test_backup_retries_push_and_logs_stderr) ... ok
+test_orders_views_and_shares (tests.test_llm_deepseek_filter.ProtocolAndScheduleTests.test_orders_views_and_shares) ... ok
+test_protocol_matches_implementation (tests.test_llm_deepseek_filter.ProtocolAndScheduleTests.test_protocol_matches_implementation) ... ok
+test_schedule (tests.test_llm_deepseek_filter.ProtocolAndScheduleTests.test_schedule) ... ok
+test_summary (tests.test_llm_deepseek_filter.ProtocolAndScheduleTests.test_summary) ... ok
+test_updates (tests.test_llm_deepseek_filter.ProtocolAndScheduleTests.test_updates) ... ok
+test_web_draws (tests.test_llm_deepseek_filter.ProtocolAndScheduleTests.test_web_draws) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 8.015s
+
+OK
