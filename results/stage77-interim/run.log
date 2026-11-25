@@ -6,3 +6,14 @@ I0000 00:00:1795640090.087367   63870 port.cc:153] oneDNN custom operations are 
 I0000 00:00:1795640090.087954   63870 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
 Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  2.44it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.54it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.52it/s]
 Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  2.41it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.52it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.50it/s]
+backup pushed: 0 finished runs
+N = 2044 outside [1000, 1992]: design infeasible
+Token indices sequence length is longer than the specified maximum sequence length for this model (4187 > 4096). Running this sequence through the model will result in indexing errors
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795645391.224313   88173 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795645394.143338   88173 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795645394.143983   88173 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+deepseek-llm-7b-base NVIDIA L4 updates 1992 uncapped 2044 scoring batch 8
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  2.30it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.40it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.39it/s]
+1/12 runs complete
