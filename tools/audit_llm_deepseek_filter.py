@@ -1,6 +1,7 @@
 """Audit stage 77 (research/llm-deepseek-filter-protocol.json, audit field, with amendment 1).
 
-CPU: journal digest, summary recomputation, environments, calibration (N, scoring batch), run grid and order,
+CPU: journal digest, summary recomputation, environments, calibration (N_uncapped, N capped by amendment 2,
+scoring batch), run grid and order,
 schedules, update counts, checkpoints, kept sets from journaled scores, subset digests, QA shares, random-arm QA draws,
 views per chunk, model weight hashes, DeepSeek and Qwen tokenizer hashes, QA chunks (1,992) and pool rebuilt with their
 digests, web eligibility and decontamination counts (Qwen 8-grams, amendment 1), target eligibility and sample
@@ -32,9 +33,10 @@ ENV_KEYS = ('device', 'torch', 'transformers', 'cuda', 'python')
 
 def check_calibration(cal):
     require(cal['model'] == stage.MODEL and cal['revision'] == stage.REVISION, 'calibration model')
-    n = cal['updates']
-    require(n == stage.updates(cal['costs']), 'N = floor(B - S / c_r)')
-    require(stage.N_RANGE[0] <= n <= stage.N_RANGE[1], 'N in range')
+    require(cal['updates'] == stage.uncapped_updates(cal['costs']), 'N_uncapped = floor(B - S / c_r)')
+    require(cal['updates'] >= stage.N_MIN, 'N_uncapped not below the minimum')
+    n = stage.updates(cal['costs'])
+    require(n == min(cal['updates'], stage.N_QA), 'N = min(N_uncapped, 1992) (amendment 2)')
     batch, oom = cal['scoring_batch'], cal['scoring_oom_batches']
     require(batch in stage.SCORE_BATCHES, 'scoring batch is a protocol batch')
     require(oom == list(stage.SCORE_BATCHES[:stage.SCORE_BATCHES.index(batch)]), 'scoring batch fallback order')

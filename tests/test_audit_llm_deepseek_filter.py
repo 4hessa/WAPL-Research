@@ -67,8 +67,10 @@ class AuditDeepseekFilterTests(unittest.TestCase):
                    updates=1812, scoring_batch=8, scoring_oom_batches=[])
         self.assertEqual(audit.check_calibration(cal), (1812, 8))
         self.assertEqual(audit.check_calibration(dict(cal, scoring_batch=4, scoring_oom_batches=[8])), (1812, 4))
-        for bad in (dict(cal, updates=1813), dict(cal, scoring_batch=4), dict(cal, scoring_batch=2),
-                    dict(cal, costs=dict(random=.1, self_align_grad=100.), updates=6400), dict(cal, revision='x')):
+        real = dict(cal, costs=dict(random=0.16287156099951972, self_align_grad=872.3100562769996), updates=2044)
+        self.assertEqual(audit.check_calibration(real), (1992, 8))  # amendment 2: capped at the QA supply
+        for bad in (dict(cal, updates=1813), dict(cal, scoring_batch=4), dict(cal, scoring_batch=2), dict(real, updates=1992),
+                    dict(cal, costs=dict(random=.1, self_align_grad=700.), updates=400), dict(cal, revision='x')):
             with self.assertRaises(ValueError):
                 audit.check_calibration(bad)
 

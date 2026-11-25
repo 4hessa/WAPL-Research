@@ -50,7 +50,8 @@ class ProtocolAndScheduleTests(unittest.TestCase):
         self.assertEqual(plan['design']['seeds'], [37700, 37701, 37702, 37703])
         self.assertEqual(len(stage.run_grid(plan['design']['seeds'])), 12)
         self.assertIn('B = 7400', plan['design']['budget'])
-        self.assertIn('1000 <= N <= 1992', plan['design']['budget'])
+        self.assertIn('N = min(N_uncapped, 1992)', plan['design']['budget'])
+        self.assertIn('N = min(N_uncapped, 1992) = 1992', plan['amendment_2']['changes'][0])
         self.assertEqual((stage.BUDGET, stage.POOL_SIZE, stage.N_QA, stage.CHUNK), (7400, 7968, 1992, 147))
         self.assertIn(stage.REVISION, plan['model']['trained_and_scorer'])
         for name, digest in stage.WEIGHTS_SHA256.items():
@@ -104,6 +105,8 @@ class ProtocolAndScheduleTests(unittest.TestCase):
     def test_updates(self):
         self.assertEqual(stage.updates(dict(random=.1617, self_align_grad=903.5)), 1812)
         self.assertEqual(stage.updates(dict(random=.1, self_align_grad=640.)), 1000)
+        cal = dict(random=0.16287156099951972, self_align_grad=872.3100562769996)  # the journaled calibration
+        self.assertEqual((stage.uncapped_updates(cal), stage.updates(cal)), (2044, 1992))  # amendment 2
 
     def test_summary(self):
         plan = dict(design=dict(seeds=[1, 2]))
@@ -135,9 +138,29 @@ class ProtocolAndScheduleTests(unittest.TestCase):
         self.assertTrue(all(out['prediction_holds'].values()))
         with self.assertRaises(ValueError):
             stage.summarize(rows[:-1], cal, plan)
+        with self.assertRaises(ValueError):  # journaled N_uncapped must match the costs
+            stage.summarize(rows, dict(cal, updates=1801), plan)
         rows[1]['losses']['0'] = 3.1
         with self.assertRaises(ValueError):
             stage.summarize(rows, cal, plan)
+
+    def test_summary_uses_capped_n(self):
+        plan = dict(design=dict(seeds=[1]))
+        rows = []
+        for arm, ln in dict(random=2.8, align_once=2.5, random_once=2.75).items():
+            r = dict(seed=1, arm=arm, losses={'0': 3., '1992': ln, '7400': 2.7}, accuracy={'0': .3, '1992': .3, '7400': .3})
+            if arm == 'random':
+                r['random_qa'] = {k: dict(drawn=1, distinct=1) for k in ('1992', '7400')}
+            else:
+                r['qa_share'] = 1. if arm == 'align_once' else .25
+            if arm == 'align_once':
+                r['scoring_seconds'] = 872.
+            rows.append(r)
+        cal = dict(costs=dict(random=0.16287156099951972, self_align_grad=872.3100562769996), updates=2044,
+                   device='L4', scoring_batch=8)
+        out = stage.summarize(rows, cal, plan)
+        self.assertEqual((out['updates'], out['updates_uncapped'], out['unused_charged_steps']), (1992, 2044, 52))
+        self.assertAlmostEqual(out['primary']['mean'], -.2)
 
     def test_backup_retries_push_and_logs_stderr(self):
         with tempfile.TemporaryDirectory() as d:

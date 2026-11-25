@@ -4,7 +4,8 @@ Implements research/llm-deepseek-filter-protocol.json (with amendment 1) with th
 Differences from stage 76: bfloat16 base weights with float32 LoRA factors, logits and per-example capture; 147-token
 chunks in DeepSeek tokenization; the trained model scores the pool itself; M = 7968 (1,992 QA chunks), B = 7400, four
 seeds, three arms. Amendment 1: decontamination (web chunks, target criteria (d) and (e)) uses the Qwen2.5-1.5B
-tokenizer with token 8-grams on the decoded text, the stage 74-76 rule; no Qwen model is run.
+tokenizer with token 8-grams on the decoded text, the stage 74-76 rule; no Qwen model is run. Amendment 2:
+N = min(N_uncapped, 1992); the calibration journals N_uncapped and N is recomputed from the journaled costs.
 """
 import argparse
 import gc
@@ -44,7 +45,7 @@ CHUNK, BUDGET, N_QA, N_WEB = 147, 7400, 1992, 2988
 POOL_SIZE = N_QA + 2 * N_WEB  # 7968
 CAL_SEED, TARGET_SEED, TARGET_ITEMS, BOOT_SEED = 77999, 7722, 512, 7703
 QA_ORDER_SEED, WEB_SEEDS = 7411, (7711, 7712)
-N_RANGE = (1000, N_QA)
+N_MIN = 1000  # amendment 2: abort only if N_uncapped < 1000; N is capped at N_QA
 PROBE_BATCH, SCORE_BATCHES, EVAL_BATCH = 2, (8, 4), 8
 STAGE75_JOURNAL = Path('results/llm-once-filter-journal.jsonl')
 STAGE76_JOURNAL = Path('results/llm-cheap-filter-journal.jsonl')
@@ -280,8 +281,13 @@ def random_qa(rand, steps):
     return dict(drawn=int((first < N_QA).sum()), distinct=int(len(set(first[first < N_QA].tolist()))))
 
 
-def updates(costs):
+def uncapped_updates(costs):
     return int(np.floor(BUDGET - costs['self_align_grad'] / costs['random'] + 1e-9))
+
+
+def updates(costs):
+    """Amendment 2: N = min(N_uncapped, 1992), the QA supply."""
+    return min(uncapped_updates(costs), N_QA)
 
 
 # ---------------------------------------------------------------- summary
@@ -296,7 +302,9 @@ def contrast(values):
 
 
 def summarize(rows, calibration, plan):
-    n, B = str(calibration['updates']), str(BUDGET)
+    if calibration['updates'] != uncapped_updates(calibration['costs']):
+        raise ValueError('Journaled N_uncapped differs from the costs')
+    n, B = str(updates(calibration['costs'])), str(BUDGET)
     seeds = plan['design']['seeds']
     g = {arm: sorted([r for r in rows if r['arm'] == arm], key=lambda r: r['seed']) for arm in ARMS}
     for arm in ARMS:
@@ -324,7 +332,8 @@ def summarize(rows, calibration, plan):
                 prediction_holds={'qa share of align_once kept > 0.85': out['qa_share']['align_once'] > .85,
                                   'primary negative': out['charged']['mean'] < 0,
                                   'align_once minus random_once at N negative': out['matched']['mean'] < 0},
-                costs=calibration['costs'], updates=calibration['updates'], device=calibration['device'],
+                costs=calibration['costs'], updates=int(n), updates_uncapped=calibration['updates'],
+                unused_charged_steps=calibration['updates'] - int(n), device=calibration['device'],
                 scoring_batch=calibration['scoring_batch'],
                 scoring_in_random_steps=calibration['costs']['self_align_grad'] / calibration['costs']['random'],
                 arms=out)
@@ -440,16 +449,19 @@ def main():
         if calibration is None:
             costs, batch, oom = calibrate(model_dir, pool, probe, device, free)
             calibration = dict(kind='calibration', model=MODEL, revision=REVISION, device=device_name, costs=costs,
-                               scoring_batch=batch, scoring_oom_batches=oom, updates=updates(costs),
+                               scoring_batch=batch, scoring_oom_batches=oom, updates=uncapped_updates(costs),
                                population=population)
             log(calibration)
             backup(args.journal, args.run_log, args.backup_worktree, args.backup_branch)
         elif calibration['device'] != device_name or calibration['population'] != population:
             raise ValueError('Resumed on another device type or with different samples')
-        n, batch = calibration['updates'], calibration['scoring_batch']
-        if not N_RANGE[0] <= n <= N_RANGE[1]:
-            raise SystemExit(f'N = {n} outside [{N_RANGE[0]}, {N_RANGE[1]}]: design infeasible')
-        print(MODEL, device_name, 'updates', n, 'scoring batch', batch, flush=True)  # costs only; no outcome
+        if calibration['updates'] != uncapped_updates(calibration['costs']):
+            raise ValueError('Journaled N_uncapped differs from the costs')
+        if calibration['updates'] < N_MIN:
+            raise SystemExit(f"N_uncapped = {calibration['updates']} below {N_MIN}: design infeasible")
+        n, batch = updates(calibration['costs']), calibration['scoring_batch']
+        print(MODEL, device_name, 'updates', n, 'uncapped', calibration['updates'], 'scoring batch', batch,
+              flush=True)  # costs only; no outcome
         ev = lambda m: evaluate(m, target, device)
         grid = run_grid(seeds)
         for seed, arm in grid:
