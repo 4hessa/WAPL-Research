@@ -1,0 +1,8 @@
+test_check_calibration (tests.test_audit_llm_deepseek_filter.AuditDeepseekFilterTests.test_check_calibration) ... ok
+test_check_run_accepts_consistent_and_rejects_tampered_rows (tests.test_audit_llm_deepseek_filter.AuditDeepseekFilterTests.test_check_run_accepts_consistent_and_rejects_tampered_rows) ... ok
+test_exposed_ids_cover_all_earlier_sets (tests.test_audit_llm_deepseek_filter.AuditDeepseekFilterTests.test_exposed_ids_cover_all_earlier_sets) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.760s
+
+OK
