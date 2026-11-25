@@ -1,0 +1,40 @@
+PASS qwen2.5-1.5b model.safetensors SHA-256
+PASS qwen2.5-0.5b model.safetensors SHA-256
+PASS proxy tokenizer.json equals model tokenizer.json
+PASS proxy vocab.json equals model vocab.json
+PASS proxy merges.txt equals model merges.txt
+PASS exactly one calibration entry
+PASS calibration device NVIDIA L4 equals this device NVIDIA L4
+PASS N = 1633 equals floor(B - S / c_r)
+PASS N within the protocol range
+PASS data file hashes (kept, removed, dev, test) and QA pool digest
+PASS population.excluded_evaluated_rows equals calibration
+PASS population.kept_documents equals calibration
+PASS population.pool_sha256 equals calibration
+PASS population.qa_item_ids equals calibration
+PASS population.qa_pool_sha256 equals calibration
+PASS population.removed_documents equals calibration
+PASS population.target_items equals calibration
+PASS population.target_pool equals calibration
+PASS population.trained_ids equals calibration
+PASS population.web_decontaminated equals calibration
+PASS population.web_eligible equals calibration
+PASS 15 finished runs are unique
+PASS finished runs are the protocol order prefix (no selective rerun)
+PASS run seed=37600 arm=random: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37600 arm=align05_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37600 arm=random_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37600 arm=qa_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37601 arm=align05_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37601 arm=random_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37601 arm=qa_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37601 arm=random: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37602 arm=random_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37602 arm=qa_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37602 arm=random: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37602 arm=align05_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37603 arm=qa_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37603 arm=random: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37603 arm=align05_once: schedule, kept/subset digests, QA share, views, checkpoints
+finished 15, remaining 9; next (37603, 'random_once')
+ALL CHECKS PASSED

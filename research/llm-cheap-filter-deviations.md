@@ -1,0 +1,20 @@
+# Stage 76 deviations from the protocol
+
+## 1. Lost machine during the run; resumed on a new Colab machine (25 November 2026)
+
+**What happened.** The Colab machine running stage 76 was lost mid-run. Its last journal snapshot on branch `colab/stage76-journal` is commit `bbc4269` (20261125T144557Z). Anything the machine wrote after that snapshot is lost.
+
+**How many runs had finished.** The snapshot journal holds 17 lines: one environment entry, one calibration entry (NVIDIA L4, N = 1633) and **15 finished runs**. That matches the commit message (only entries of kind `run` are counted, stage-75 deviation 1) and the last line of `results/stage76-interim/run.log` ("15/24 runs complete"). The finished runs are seeds 37600-37602 (all four arms) and seed 37603 (qa_once, random, align05_once), in the protocol's run order. The next run in that order, seed 37603 random_once, was in progress or had not started when the machine was lost. It is restarted from step 0, as in stage 73 deviation 2 and stage 74 deviation 1. If it or any later run finished on the old machine but was never snapshotted, its result is lost and the run is repeated with the same seed and schedule. Whether a run is repeated depends only on what the snapshot journal contains, never on outcomes.
+
+**What was re-established on the new machine, before any outcome was read.**
+
+- Device: NVIDIA L4 (the calibration's device type; the runner refuses any other type), driver 580.82.07. This may be a different physical GPU from the one that produced the calibration.
+- Software: torch 2.14.1+cu130, CUDA 13.0, Python 3.13.16, the same as the journaled environment. The new image came with transformers 5.22.1, tokenizers 0.23.3 and huggingface_hub 1.33.0, so the protocol's pins (4.46.3, 0.20.3, 0.26.2) were reinstalled before any code ran.
+- Downloads at the pinned revisions: Qwen/Qwen2.5-1.5B `8faed76`, Qwen/Qwen2.5-0.5B `060db64`, FineWeb-2 `af9c133` (kept and removed files), ArabicMMLU `7aa530e` (All/dev.csv, All/test.csv). All six SHA-256 values match the protocols, and the proxy tokenizer files are byte-identical to the model's.
+- `tools/verify_llm_cheap_filter_resume.py` (log: `results/llm-cheap-filter-resume-verification.log`) recomputed the full population and found it equal to the journaled calibration: QA pool digest and QA item count, web eligibility and decontamination counts, web document indices, pool digest, target eligibility counts and the 512 target items. It also confirmed that N = floor(B − S / c_r) as journaled. For the 15 finished runs it found them unique and a prefix of the protocol's run order, and each one's schedule digest, align05_once kept set (recomputed from the journaled scores) and its digest, random_once and qa_once subset digests, QA shares, random-arm QA draw counts, views per chunk and checkpoint keys matched. The tool prints pass/fail only; no loss, accuracy or score was read.
+
+**What was not changed.** The calibration (c_r = 0.1099 s, S = 150.1 s, N = 1633) is reused from the journal, as the protocol's resumption rule requires; it is not recalibrated on the new machine. Design, run order, seeds, schedules, evaluation and code are unchanged. The restarted process appends a second environment entry to the journal (with `resumed_runs` 15), which marks the restart.
+
+**Possible effects.** Per-step and scoring times on the new machine may differ from the calibration; they are journaled per run and reported, but N stays as calibrated. Bitwise equality of training across two physical L4 GPUs is not guaranteed. The planned audit replays seed 37600's first 50 steps (random and align05_once) and recomputes seed 37600's proxy scores, all produced on the old machine, so on the new machine these replays also test cross-machine reproducibility. Their outcome will be reported either way.
+
+**Snapshot procedure from here on.** Unchanged: the working journal is kept outside the repository (`/content/stage76-journal/journal.jsonl`, restored from the snapshot), and after every finished run the runner copies it and the run log to `colab/stage76-journal` (`results/stage76-interim/`), commits and pushes.
