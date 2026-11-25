@@ -1,7 +1,7 @@
 {
  "stage": 77,
  "date": "2026-11-25",
- "status": "Written at the owner's instruction on 25 November 2026 (deepseek-llm-7b-base, option A: self-scoring; 147-token chunks; 1,992 QA chunks and M = 7968 at QA share 0.25 with no new ArabicMMLU item; B = 7400; four seeds; three arms, the label oracle dropped); committed and pushed before any stage-77 code or run. Amendment 1 (decontamination in Qwen2.5 tokenization, the stage-76 rule) chosen by the owner after a data-only dry run, before any code is committed or any model is run.",
+ "status": "Written at the owner's instruction on 25 November 2026 (deepseek-llm-7b-base, option A: self-scoring; 147-token chunks; 1,992 QA chunks and M = 7968 at QA share 0.25 with no new ArabicMMLU item; B = 7400; four seeds; three arms, the label oracle dropped); committed and pushed before any stage-77 code or run. Amendment 1 (decontamination in Qwen2.5 tokenization, the stage-76 rule) chosen by the owner after a data-only dry run, before any code is committed or any model is run. Amendment 2 (N capped at the QA supply, 1,992) chosen by the owner after the calibration triggered the N range abort and before any training run or evaluation.",
  "reference_commits": {
   "stage_76_results": "c4a3ded",
   "smoke_1": "d2ff893",
@@ -51,7 +51,7 @@
    37702,
    37703
   ],
-  "budget": "B = 7400 random-step costs. Calibration before any target evaluation, seed 77999 on the stage-77 pool: c_r = median of steps 5-24 of 24 random steps; S = wall-clock of complete self-scoring of all 7968 chunks at the seed's initial adapter (probe gradient included). N = floor(B - S / c_r + 1e-9). Expected from smoke 2: S about 903 s = 5,590 random steps (75% of B) and N about 1,810. Abort unless 1000 <= N <= 1992 (one pass over the kept set must fit within the QA supply).",
+  "budget": "B = 7400 random-step costs. Calibration before any target evaluation, seed 77999 on the stage-77 pool: c_r = median of steps 5-24 of 24 random steps; S = wall-clock of complete self-scoring of all 7968 chunks at the seed's initial adapter (probe gradient included). N_uncapped = floor(B - S / c_r + 1e-9), journaled as the calibration's 'updates'. Amendment 2: N = min(N_uncapped, 1992); abort unless N_uncapped >= 1000. When N_uncapped > 1992 the filter is still charged the full scoring time, so N_uncapped - 1992 charged steps are left unused (a cost disadvantage for the filter). Expected from smoke 2: S about 903 s = 5,590 random steps (75% of B) and N about 1,810; calibration: N_uncapped = 2044, N = 1992.",
   "arms": {
    "random": "Each step a pool chunk drawn uniformly with replacement; 7400 updates.",
    "align_once": "Score all 7968 chunks with the trained model at the seed's initial adapter; keep the N highest scores (ties to the lower index; experiments.llm_web_filter.keep_top); train on the kept chunks in a random order without replacement (one pass by step N; further passes freshly permuted up to 7400). The full scoring time is charged.",
@@ -91,5 +91,17 @@
    "The population record adds the Qwen tokenizer SHA-256 and keeps all other fields."
   ],
   "unchanged": "Training data and tokenization (DeepSeek, 147 tokens), QA chunks, pool composition and draws, target draw seed, design, arms, seeds, budget rule, primary and secondary endpoints, prediction, audit plan (which recomputes eligibility under this rule), exposure and licences."
+ },
+ "amendment_2": {
+  "date": "2026-11-25",
+  "approved_by_owner": "Chosen by the owner on 25 November 2026 (option 2 of three), after the calibration stopped the run at the protocol's N range check and before any training run or evaluation (the journal holds one environment entry and the calibration).",
+  "reason": "Calibration (NVIDIA L4, seed 77999): c_r = 0.16287 s, S = 872.31 s (scoring batch 8, no out-of-memory), S / c_r = 5,355.8 random steps (72% of B), N_uncapped = 2044, above the protocol's upper bound 1,992 (the QA supply). The smoke-2 extrapolation from 2048 chunks had overestimated S by 3.5% (903.5 s), more than the margin left when B = 7400 was chosen. With N = 2044 at least 52 kept chunks would be web (QA share at most 0.975); the owner chose to avoid this dilution rather than raise the bound or lower B.",
+  "changes": [
+   "N = min(N_uncapped, 1992) = 1992; QA margin 1992 - N = 0, so one pass over a kept set that is entirely QA is possible (kept QA share at most 1.0).",
+   "The filter is charged S = 5,355.8 random steps plus N = 1,992 updates = 7,347.8 of B = 7400; 52 charged steps (0.7% of B) are not used. random keeps 7400 updates. The equal-cost contrast is therefore slightly conservative against the filter; the size of this disadvantage is not measured.",
+   "Checkpoints, schedules, views and summaries use N = 1992. The journaled calibration (updates = 2044, the uncapped value) is kept unchanged; the code recomputes N from the journaled costs.",
+   "The abort rule becomes N_uncapped < 1000 only."
+  ],
+  "unchanged": "Calibration and its journal entry (not repeated), pool, target, arms, seeds, B, primary and secondary endpoints, prediction, audit plan (which checks both N_uncapped and N), exposure and licences."
  }
 }
