@@ -1,0 +1,55 @@
+{
+  "stage": 75,
+  "status": "passed",
+  "journal_sha256": "5dbb40b8f1c639b73a70e5a24d5f27c523c892f756c79dcd67332897bdb7041e",
+  "runs": 30,
+  "updates": 1484,
+  "environments": 1,
+  "summary_recomputed": true,
+  "score_identity_align_q_vs_once": {
+    "37500": 0.0,
+    "37501": 0.0,
+    "37502": 0.0,
+    "37503": 0.0,
+    "37504": 0.0,
+    "37505": 0.0
+  },
+  "target": {
+    "items": 512,
+    "disjoint_from_exposed": 6226,
+    "eligibility": {
+      "candidates": 8229,
+      "decontamination": {
+        "identical": 210,
+        "jaccard": 717,
+        "containment": 237,
+        "ngram8": 1406,
+        "dropped_total": 1535,
+        "trained_tokenization_8gram_after_a_to_d": 334
+      },
+      "eligible": 6360
+    }
+  },
+  "step_seconds_median": {
+    "random": 0.11146502424981009,
+    "align_q": 0.112798221250614,
+    "random512": 0.11169668074944639,
+    "align_once": 0.11351405275013349,
+    "random_once": 0.11209556524954678
+  },
+  "gpu": {
+    "score_recomputation": {
+      "max_rel_diff": 0.0,
+      "audit_scoring_seconds": 105.21304724199945,
+      "identical_kept_set": true
+    },
+    "replay_step50": {
+      "random": {
+        "identical_adapter_digest": true
+      },
+      "align_once": {
+        "identical_adapter_digest": true
+      }
+    }
+  }
+}
