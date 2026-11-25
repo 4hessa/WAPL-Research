@@ -1,0 +1,11 @@
+== llm-7b
+Token indices sequence length is longer than the specified maximum sequence length for this model (7349 > 4096). Running this sequence through the model will result in indexing errors
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795631429.762229   21931 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795631432.521826   21931 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795631432.522425   21931 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  1.83it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.96it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.94it/s]
+llm-7b cost 0.1376 scoring 0.398 auc 0.885 loss0 2.035 acc0 0.301
+llm-7b random {'0': 2.035, '1000': 2.079, '3000': 1.784} {'0': 0.301, '1000': 0.352, '3000': 0.357}
+written results/llm-deepseek-smoke.json

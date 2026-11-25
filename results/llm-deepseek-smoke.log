@@ -1,0 +1,66 @@
+== coder-1.3b
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795630029.722443   15418 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795630032.495219   15418 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795630032.495806   15418 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+[W1125 18:09:15.816877860 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 339738624 bytes (free: 229769216, total: 23659151360).
+[W1125 18:09:38.762026150 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 509607936 bytes (free: 363986944, total: 23659151360).
+[W1125 18:09:58.765295945 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 805306368 bytes (free: 756154368, total: 23659151360).
+coder-1.3b cost 0.0925 scoring 0.51 auc 0.71 loss0 1.689 acc0 0.311
+coder-1.3b random {'0': 1.689, '1000': 1.557, '3000': 1.535} {'0': 0.311, '1000': 0.305, '3000': 0.291}
+== vl-1.3b-lm
+You are using the default legacy behaviour of the <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>. This is expected, and simply means that the `legacy` (previous) behavior will be used so nothing changes for you. If you want to use the new behaviour, set `legacy=False`. This should only be set if you understand what it means, and thoroughly read the reason why this was added as explained in https://github.com/huggingface/transformers/pull/24565 - if you loaded a llama tokenizer from a GGUF file you can ignore this message.
+[W1125 18:20:16.450793075 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 748683264 bytes (free: 57802752, total: 23659151360).
+[W1125 18:20:24.401646690 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 905969664 bytes (free: 332529664, total: 23659151360).
+[W1125 18:20:31.932228837 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1063256064 bytes (free: 343015424, total: 23659151360).
+[W1125 18:20:38.431537723 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1205862400 bytes (free: 1204944896, total: 23659151360).
+[W1125 18:20:45.052166759 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1468006400 bytes (free: 1070727168, total: 23659151360).
+[W1125 18:20:51.894643243 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1782579200 bytes (free: 1177681920, total: 23659151360).
+[W1125 18:20:59.663645499 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2569011200 bytes (free: 106037248, total: 23659151360).
+[W1125 18:21:04.535119943 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2648702976 bytes (free: 1911685120, total: 23659151360).
+vl-1.3b-lm cost 0.0974 scoring 0.562 auc 0.425 loss0 2.295 acc0 0.281
+vl-1.3b-lm random {'0': 2.295, '1000': 2.169, '3000': 2.106} {'0': 0.281, '1000': 0.289, '3000': 0.301}
+== llm-7b
+Token indices sequence length is longer than the specified maximum sequence length for this model (7349 > 4096). Running this sequence through the model will result in indexing errors
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  1.49it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.64it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.62it/s]
+[W1125 18:29:16.263954525 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 450887680 bytes (free: 171048960, total: 23659151360).
+[W1125 18:29:17.050850997 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 492830720 bytes (free: 322043904, total: 23659151360).
+[W1125 18:29:18.821198745 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 29360128 bytes (free: 5373952, total: 23659151360).
+[W1125 18:29:18.177178509 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 685768704 bytes (free: 242352128, total: 23659151360).
+[W1125 18:29:18.288188863 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 685768704 bytes (free: 309460992, total: 23659151360).
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/content/WAPL-Research/tools/smoke_llm_deepseek.py", line 219, in <module>
+    main()
+    ~~~~^^
+  File "/content/WAPL-Research/tools/smoke_llm_deepseek.py", line 187, in main
+    scores, secs = s73.score(model, 'align_grad', sub, probe, device)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/WAPL-Research/experiments/llm_web_filter.py", line 250, in score
+    g = probe_gradient(model, probe_items, device)
+  File "/content/WAPL-Research/experiments/llm_web_filter.py", line 195, in probe_gradient
+    (continuation_nll(model, part, device).sum() / len(seqs)).backward()
+     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/content/WAPL-Research/experiments/llm_web_filter.py", line 162, in continuation_nll
+    logits = model(input_ids=ids[:, :-1]).logits
+             ~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.13/dist-packages/transformers/models/llama/modeling_llama.py", line 1210, in forward
+    logits = self.lm_head(hidden_states[:, -num_logits_to_keep:, :])
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1889, in _call_impl
+    return inner()
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1850, in inner
+    hook_result = hook(self, args, result)
+  File "/content/WAPL-Research/tools/smoke_llm_deepseek.py", line 81, in <lambda>
+    model.lm_head.register_forward_hook(lambda m, i, o: o.float())
+                                                        ~~~~~~~^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 654.00 MiB. GPU 0 has a total capacity of 22.03 GiB of which 295.12 MiB is free. Including non-PyTorch memory, this process has 21.74 GiB memory in use. Of the allocated memory 21.10 GiB is allocated by PyTorch, and 359.79 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
