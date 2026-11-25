@@ -1,0 +1,54 @@
+{
+  "stage": "77 smoke 2 (before protocol)",
+  "model": "deepseek-ai/deepseek-llm-7b-base",
+  "revision": "7683fea62db869066ddaff6a41d032262c490d4f",
+  "dtype": "bfloat16",
+  "chunk_tokens": 147,
+  "torch": "2.14.1+cu130",
+  "transformers": "4.46.3",
+  "cuda": "13.0",
+  "python": "3.13.16",
+  "device": "NVIDIA L4",
+  "data": "exposed only; no ArabicMMLU item evaluated",
+  "qa": {
+    "items": 4946,
+    "chunks_available": 1992,
+    "items_longer_than_chunk": 0.04306510311362717
+  },
+  "web": {
+    "kept_documents": 42080,
+    "removed_documents": 20000,
+    "kept_with_147_tokens": 42080,
+    "removed_with_147_tokens": 19117,
+    "stage76_kept_with_147": 3072,
+    "stage76_removed_with_147": 3058,
+    "tokenize_seconds": 191.95562798599985
+  },
+  "c_r_147_calibration_rule": 0.16171088600049188,
+  "c_r_147_200_steps": 0.16344475699952454,
+  "scoring": {
+    "chunks": 2048,
+    "batch": 8,
+    "probe_batch": 2,
+    "seconds": 232.22415088300022,
+    "random_steps_per_chunk": 0.7011939732554248,
+    "auc_qa_vs_web": 0.9398078918457031,
+    "top256_qa": 0.984375,
+    "peak_memory_gb": 21.410173952
+  },
+  "replay_50_identical": true,
+  "estimate": {
+    "B": 5000,
+    "M": 8192,
+    "scoring_seconds": 928.8966035320009,
+    "scoring_random_steps": 5744.18102890844,
+    "scoring_share": 1.1488362057816879,
+    "N": -745,
+    "qa_supply_ok": false,
+    "eval_seconds": 54.236050667999734,
+    "run_seconds": 994.118098903622,
+    "total_hours": 8.799589602165257,
+    "per_seed_hours": 1.366543100291247,
+    "note": "total = 24 runs + 6 scorings + calibration + 20 min data, target eligibility and loading; eval time from smoke 1 (512 items, batch 8), not re-measured"
+  }
+}
