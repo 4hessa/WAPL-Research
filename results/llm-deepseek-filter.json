@@ -1,0 +1,322 @@
+{
+  "stage": 77,
+  "protocol": {
+    "stage": 77,
+    "date": "2026-11-25",
+    "status": "Written at the owner's instruction on 25 November 2026 (deepseek-llm-7b-base, option A: self-scoring; 147-token chunks; 1,992 QA chunks and M = 7968 at QA share 0.25 with no new ArabicMMLU item; B = 7400; four seeds; three arms, the label oracle dropped); committed and pushed before any stage-77 code or run. Amendment 1 (decontamination in Qwen2.5 tokenization, the stage-76 rule) chosen by the owner after a data-only dry run, before any code is committed or any model is run. Amendment 2 (N capped at the QA supply, 1,992) chosen by the owner after the calibration triggered the N range abort and before any training run or evaluation.",
+    "reference_commits": {
+      "stage_76_results": "c4a3ded",
+      "smoke_1": "d2ff893",
+      "smoke_2": "d71a656",
+      "smoke_3": "14e4e54"
+    },
+    "question": "Does the stage-76 result generalize to a different model family? With DeepSeek-LLM-7B-base (pretrained from scratch by DeepSeek; not a Qwen- or Llama-initialised distill) as the trained model and its own gradient alignment as the filter, on a pool at QA share 0.25 in which the useful data can fill the update budget, does a one-pass offline filter that keeps N chunks beat random sampling at equal cost, with the full scoring time charged?",
+    "motivation": "Stage 76 (Qwen2.5-1.5B trained, Qwen2.5-0.5B proxy, M = 8192, B = 3000, N = 1633): align05_once at N minus random at 3000 -0.198 [-0.250, -0.138], 6/6 seeds; kept sets 99.4% QA; throughput term -0.013. All conditions came from one model family. Smoke 1 (d2ff893, exposed data only): among DeepSeek models that fit the L4, only deepseek-llm-7b-base both separates QA from web (AUC 0.885 at 65 tokens) and improves under random training (stage-75 target loss 2.035 -> 1.784, accuracy 30.1% -> 35.7% after 3000 random steps, one seed); deepseek-coder-1.3b-base (AUC 0.71, accuracy flat) and the deepseek-vl-1.3b-base language model (AUC 0.43) were weak; no smaller DeepSeek model with the 7B's tokenization separates QA from web, so the 7B scores itself. DeepSeek tokenizers carry 1.13 Arabic characters per token against 2.56 for Qwen, so chunks are 147 tokens (about the text of a 65-token Qwen chunk). Smoke 2 (d71a656): at 147 tokens c_r 0.162 s, scoring 0.70 random steps per chunk (AUC 0.940, top-256 98% QA), 50-step bf16 replays identical; packing the 4,946 trained items gives 1,992 QA chunks.",
+    "smoke_tests_before_protocol": {
+      "smoke_1": "commit d2ff893, tools/smoke_llm_deepseek.py, results/llm-deepseek-smoke.json: memory, chars per token, costs, AUC and random training for deepseek-coder-1.3b-base, the deepseek-vl-1.3b-base language model and deepseek-llm-7b-base (bf16) at 65 tokens; evaluated items: the 512 stage-75 target items (exposed). The first 7B attempt ran out of memory in the probe gradient (batch 8) and was rerun with probe batch 2 and scoring batch 8 (results/llm-deepseek-smoke-7b.log).",
+      "smoke_2": "commit d71a656, tools/smoke_llm_deepseek_long.py, results/llm-deepseek-long-smoke.json: deepseek-llm-7b-base at 147 tokens; supply (1,992 QA chunks; 4.3% of items longer than a chunk; 42,080 kept and 19,117 removed documents with >= 147 tokens before decontamination), c_r 0.1617 s (24-step rule) and 0.1634 s (200 steps), scoring 232.2 s for 2048 chunks (batch 8, probe batch 2, peak 21.4 GB of 22.0 GB), AUC 0.940, 50-step replays identical. No ArabicMMLU item evaluated.",
+      "excluded_models": "R1-Distill-Qwen-1.5B/7B/14B/32B and DeepSeek-R1-0528-Qwen3-8B (Qwen bases), R1-Distill-Llama-8B/70B (Llama 3 bases): not a different family from their bases. deepseek-moe-16b-base (32.8 GB bf16) and DeepSeek-V2-Lite (31.4 GB): do not fit the L4 without quantization. 67B, V2, V2.5, V3, V3.x, V4.x: far larger. Janus and DeepSeek-VL/VL2: multimodal; the measured VL language model did not separate QA from web. deepseek-coder-*, deepseek-math-*, Prover: code or math continuations of DeepSeek bases."
+    },
+    "hardware": "The Colab NVIDIA L4 of this session; device journaled with the calibration; resuming on a different device type aborts; resuming on another L4 is allowed with the journaled calibration (no recalibration), as stages 74-76.",
+    "model": {
+      "trained_and_scorer": "deepseek-ai/deepseek-llm-7b-base, revision 7683fea62db869066ddaff6a41d032262c490d4f (30 layers, hidden 4096, 32 heads, vocabulary 102400; trained from scratch on 2T English and Chinese tokens per its model card). Weight files and SHA-256: pytorch_model-00001-of-00002.bin 950392f338e46bc0807acfedd86dc7da12745b8835b78e704e98d7e26d2e618d, pytorch_model-00002-of-00002.bin 9883470e0517cadf59a6f163e0c58e0854de662de0f7a68a1b28d95e209de34c; tokenizer.json SHA-256 journaled with the calibration. The repository has pickle (.bin) weights only; transformers loads them with torch.load(weights_only=True).",
+      "numerics": "Base weights bfloat16 (float32 weights, 27.6 GB, do not fit the L4). LoRA rank 8, alpha 16, on q_proj and v_proj of all 30 layers, factors in float32: the adapter path computes (x in float32) @ A^T @ B^T * scale and is cast back to bfloat16 before the residual add; logits cast to float32 at the lm_head output (training loss, evaluation and probe gradient in float32); per-example capture of layer inputs and output gradients cast to float32. Deterministic algorithms, TF32 off. AdamW lr 5e-4, weight decay 0, one 147-token chunk per update. This differs from the float32 numerics of stages 64-76 and is part of the design.",
+      "scorer": "Self-scoring: experiments.llm_web_filter.score 'align_grad' with the trained model at the seed's initial adapter, probe = the 120 All/dev items, probe batch 2, scoring batch 8. If the calibration's scoring runs out of memory at batch 8, batch 4 is used for the calibration and all runs (journaled); the scoring time is charged as measured either way.",
+      "software": "transformers 4.46.3, tokenizers 0.20.3, huggingface_hub 0.26.2; torch 2.14.1+cu130, CUDA 13.0, Python 3.13.16; versions journaled."
+    },
+    "licenses": {
+      "model": {
+        "name": "DEEPSEEK LICENSE AGREEMENT, Version 1.0, 23 October 2023 (the 'Model License' that the deepseek-llm-7b-base model card names; the card states that DeepSeek LLM supports commercial use; code is MIT).",
+        "text": "https://github.com/deepseek-ai/DeepSeek-LLM/blob/f8b3d77beb4449d77932eccc6abe08826ad3c608/LICENSE-MODEL (last commit to the file, 2023-11-29), SHA-256 09b2b4b4614509ff8baccd3c220e9d9b99e55152925b501f0d5f8b5e36eea982; identical up to trailing whitespace to the LICENSE file of deepseek-ai/deepseek-coder-1.3b-base.",
+        "grants": "Perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright licence to reproduce, prepare, display, perform, sublicense and distribute the model, derivatives and complementary material; patent licence on the same terms (terminated for anyone who brings patent litigation over the model). Use explicitly includes fine-tuning, training, evaluating and reparametrizing the model.",
+        "conditions": "Lawful use only and not for the use-based restrictions of Attachment A (paragraph 5). Anyone distributing the model or a derivative must include the Attachment A restrictions as an enforceable provision, give recipients a copy of the licence, mark modified files and keep the notices (paragraph 4). DeepSeek claims no rights in outputs; the user is accountable for them (paragraph 6). DeepSeek may restrict usage that violates the licence (paragraph 7). No trademark rights (paragraph 8). No warranty and limitation of liability (paragraphs 10-11). Governed by PRC law; exclusive jurisdiction of the courts at the domicile of Hangzhou DeepSeek Artificial Intelligence Fundamental Technology Research Co., Ltd. (paragraph 14).",
+        "attachment_a": "Not to use the model or derivatives: in violation of applicable law or third-party rights; for military use; to exploit or harm minors; to generate or disseminate verifiably false information to harm others; to generate or disseminate inappropriate content subject to regulatory requirements; to generate or disseminate personal identifiable information without authorization; to defame, disparage or harass; for fully automated decision making that adversely affects legal rights or binding obligations; for discrimination or harm based on social behaviour or personal characteristics; to exploit vulnerabilities of groups by age, social, physical or mental characteristics causing harm; for discrimination based on legally protected characteristics.",
+        "this_stage": "Research use: LoRA fine-tuning and evaluation on ArabicMMLU loss. No weights, adapters or generated text are distributed or committed (journals hold indices, scores, losses and digests only), so the redistribution conditions of paragraph 4 are not triggered; if an adapter were ever released, it would be a derivative and must carry the licence and the Attachment A restrictions. The use is outside every Attachment A category."
+      },
+      "data": "As stages 74-76: FineWeb-2 ODC-By 1.0; ArabicMMLU CC BY-NC 4.0 (non-commercial research use). Qwen2.5 (Apache-2.0) is only used to read the stage-76 calibration indices, not run. No dataset text is committed."
+    },
+    "data": {
+      "qa_chunks": "The 4,946 ArabicMMLU All/test items recorded as used for training in stage 74 (data/evaluation_status.json, stage_74.used_for_training.ids), in ascending ID order, each written with experiments.llm_qa_mix.mmlu_qa_text and tokenized by the DeepSeek tokenizer (no special tokens), packed with experiments.llm_qa_mix.pack(items, default_rng(7411).permutation(4946), length=147): exactly 1,992 chunks, else abort. All 1,992 are used, in pack order. No new ArabicMMLU item is trained.",
+      "web_chunks": "Same FineWeb-2 files and hashes as stages 73-76 (arb_Arab/test/000_00000.parquet, all rows; arb_Arab_removed/train/000_00000.parquet, first 20 row groups). Candidates: the first 147 DeepSeek tokens of each document with at least 147 tokens (experiments.llm_web_filter.first_tokens, length 147, in file order). Amendment 1: a candidate is dropped if its decoded text (DeepSeek tokenizer decode), tokenized by the Qwen2.5-1.5B tokenizer, shares a token 8-gram with the content of any All/dev or All/test item tokenized by the same Qwen tokenizer (experiments.llm_qa_mix.content_banned, unchanged; the stage 74-76 rule). Eligible and dropped counts journaled; abort if fewer than 2,988 kept or removed chunks are eligible (smoke 3: 41,418 and 18,697). Draws: default_rng(7711).choice(n_kept, 2988, replace=False) and default_rng(7712).choice(n_removed, 2988, replace=False), in draw order. The trained chunks stay in DeepSeek tokens.",
+      "pool": "M = 7968 chunks of 147 tokens: positions 0-1991 the QA chunks, 1992-4979 the kept web chunks, 4980-7967 the removed web chunks (QA share 0.25; web half kept, half removed, as stages 74-76). Pool SHA-256 journaled with the calibration.",
+      "probe": "All 120 All/dev items (already exposed; alignment target; no claim)."
+    },
+    "task": {
+      "format": "ArabicMMLU cloze, item loss (mean NLL per DeepSeek token of the correct continuation) and accuracy exactly as stages 73-76 (experiments.llm_web_filter.evaluate; prompt truncated to its last 192 tokens, continuations to 64), evaluation batch 8, with the DeepSeek tokenizer. Per-token losses are not comparable with the Qwen stages; only within-stage contrasts are interpreted.",
+      "target_eligibility": "ArabicMMLU All/test rows that are (1) not the stage-73 target, the stage-74 pilot, the stage-74 target, the stage-75 target or the stage-76 target, (2) not one of the 4,946 IDs used for training, and (3) clean under criteria (a)-(e) of stage 75 (experiments.llm_once_filter.target_candidates, unchanged). Amendment 1: the token criteria (d) and (e) use the Qwen2.5-1.5B tokenizer, as in stages 74-76: (d) on item content, (e) against the stage-77 pool as trained (all 7968 chunks, each decoded from DeepSeek tokens and tokenized by Qwen) plus the 4,946 items in the training template tokenized by Qwen. Counts journaled; abort if fewer than 512 rows are eligible (smoke 3: 5,337 of 7,205 candidates).",
+      "target": "512 items: default_rng(7722).choice over the eligible rows (in row order), sorted. Never evaluated before; exposed after this stage."
+    },
+    "design": {
+      "seeds": [
+        37700,
+        37701,
+        37702,
+        37703
+      ],
+      "budget": "B = 7400 random-step costs. Calibration before any target evaluation, seed 77999 on the stage-77 pool: c_r = median of steps 5-24 of 24 random steps; S = wall-clock of complete self-scoring of all 7968 chunks at the seed's initial adapter (probe gradient included). N_uncapped = floor(B - S / c_r + 1e-9), journaled as the calibration's 'updates'. Amendment 2: N = min(N_uncapped, 1992); abort unless N_uncapped >= 1000. When N_uncapped > 1992 the filter is still charged the full scoring time, so N_uncapped - 1992 charged steps are left unused (a cost disadvantage for the filter). Expected from smoke 2: S about 903 s = 5,590 random steps (75% of B) and N about 1,810; calibration: N_uncapped = 2044, N = 1992.",
+      "arms": {
+        "random": "Each step a pool chunk drawn uniformly with replacement; 7400 updates.",
+        "align_once": "Score all 7968 chunks with the trained model at the seed's initial adapter; keep the N highest scores (ties to the lower index; experiments.llm_web_filter.keep_top); train on the kept chunks in a random order without replacement (one pass by step N; further passes freshly permuted up to 7400). The full scoring time is charged.",
+        "random_once": "Repetition-matched control: a uniformly random N-chunk subset of the pool with the align_once order. No scoring, no charge."
+      },
+      "dropped_arm": "The stage-76 label oracle (qa_once) is not run (owner's decision, to keep the run under 7 hours); stage-76 secondary contrasts (2) and (3) have no stage-77 counterpart.",
+      "scoring": "Scores computed once per seed in the align_once run and journaled with the kept indices, their digest, the QA share and the scoring seconds.",
+      "schedule": "Per seed: rng = default_rng(seed); in this order: rand = rng.integers(7968, size=7400); subsetN = sort(rng.choice(7968, N, replace=False)); once = concatenation of ceil(7400 / N) successive rng.permutation(N), truncated to 7400. align_once trains keptN[once], random_once subsetN[once], random rand. Schedule digest journaled per run.",
+      "run_order": "Seeds in order; arms in the order (random, align_once, random_once) rotated left by the seed index mod 3.",
+      "measurement": "Every arm trains 7400 updates; target loss and accuracy at 0, N and 7400. Per align_once run: all 7968 scores, kept indices and digest, QA share, scoring seconds and batch. Per random_once run: subset digest and QA share. Per random run: QA chunks drawn and distinct by N and 7400. Views per training-set chunk at N and 7400 (max and mean) for every arm. Step seconds per update; adapter digest at step 50 for every arm.",
+      "coverage": "4 seeds x 3 arms = 12 runs plus one calibration. Estimate from smoke 2 at B = 7400: about 1,386 s per run (7400 x 0.163 s + three 54 s evaluations + loading), about 917 s of scoring per seed, calibration about 935 s, data, decontamination and target eligibility about 20 min: about 6.2 h on this L4."
+    },
+    "primary": "align_once loss at N minus random loss at 7400 (equal cost, full self-scoring charged), mean over four seeds, paired seed-bootstrap 95% interval (seed 7703, 10000 resamples). Negative favours the filter. With four seeds the bootstrap has only 35 distinct resamples (multisets of four seeds); the interval is coarse and is reported with the per-seed values and the count of negative seeds.",
+    "secondary": "Paired seed-bootstrap intervals, no multiplicity adjustment: (1) selection at matched repetition: align_once at N minus random_once at N; (2) one-view effect: random_once at N minus random at N; (3) selection and throughput terms (align_once at N minus random at N; primary minus that); (4) amortized contrast at 7400 (align_once then in later passes); (5) accuracy versions of the primary and (1); (6) QA share of the align_once kept sets and of the random_once subsets; QA chunks drawn and distinct QA chunks seen by random at N and 7400; (7) random at 7400 minus no update. Descriptive only, no test: the stage-76 values beside the stage-77 ones (different model, tokenizer, chunk length, budget, scoring share, numerics, seeds and target).",
+    "prediction": {
+      "written": "Before any stage-77 code or run, 25 November 2026.",
+      "reasoning": "Self-scoring separated QA from web well in smoke 2 (AUC 0.94, top 256 98% QA at 147 tokens), so the kept sets should be mostly QA, as in stage 76. The cost side is less favourable: scoring takes about 75% of B (46% in stage 76), so random gets about four times as many updates as the filter. In stage 76 random gained nothing after N, but in smoke 1 the 7B's random-training loss was still falling between 1000 and 3000 steps (2.079 -> 1.784, one seed, 65-token chunks), so the throughput term may be large and positive here. The predicted signs follow stage 76; no magnitude is predicted.",
+      "items": [
+        "QA share of the align_once kept sets > 0.85 (pool 0.25).",
+        "Primary: align_once at N minus random at 7400 is negative.",
+        "align_once at N minus random_once at N is negative."
+      ],
+      "what_would_refute": "A primary contrast >= 0 with a kept QA share above 0.85 means that, for this model, the updates given up for self-scoring outweigh the selection gain even when the useful data fill the budget: the stage-76 result would then depend on a cheap scorer or on the model family. A kept QA share near 0.25 would mean the self-score does not find the useful data on this pool."
+    },
+    "resumption": "Append-only JSON-lines journal outside the repository (/content/stage77-journal/journal.jsonl); completed (seed, arm) entries skipped; population, target, pool and schedule digests re-verified on restart; outcomes not printed or read before the run finishes. After every finished run (and after the calibration) the runner copies the journal and run log to branch colab/stage77-journal (results/stage77-interim/), commits and pushes; on a failed push it logs git's stderr and retries once. The commit message counts only entries of kind 'run'. Not on main. On a lost machine: re-download at the pinned revisions, verify hashes, population, N and every finished run's schedule, kept and subset digests against the journal with a verification tool before restarting, as stage-76 deviations 1 and 2.",
+    "audit": "tools/audit_llm_deepseek_filter.py: journal digest; summary recomputation; environments; calibration and N; run grid and order; schedules and subset digests; checkpoints; kept sets recomputed from journaled scores; views per chunk from the schedules; QA shares; random-arm QA draws; data and model hashes (both weight files); QA chunks rebuilt (1,992) and pool rebuilt with its digest; web eligibility and decontamination counts; target eligibility recomputed (criteria (a)-(e) and counts), target disjoint from all exposed and trained IDs. On the same GPU type: recompute the self-scores of seed 37700 (maximum relative difference <= 1e-4 and the same kept set); replay the first 50 steps of seed 37700 for random and align_once to their adapter digests.",
+    "exposure": "After the run, data/evaluation_status.json records the 512 stage-77 target items as evaluated and exposed. No new ArabicMMLU item is trained (the 4,946 stage-74 items are trained again, repacked in DeepSeek tokenization); 5,976 FineWeb-2 chunks are trained, recorded by their document indices.",
+    "scope": "One DeepSeek model (7B, bfloat16 base), self-scoring, LoRA, one budget (7400), one pool (QA share 0.25, M = 7968, 147-token chunks), kept size N, four seeds, one task scored by answer loss. Many factors differ from stage 76 at once (family, size, tokenizer, chunk length, scorer, budget, scoring share, numerics, seeds, target), so stage 77 tests whether the filter wins at equal cost under these conditions on another family, not which factor matters. As in stages 74-76 the QA chunks come from the target's own distribution and template, so a win measures finding target-distribution data hidden in web noise at equal cost, not a general capability gain.",
+    "amendment_1": {
+      "date": "2026-11-25",
+      "approved_by_owner": "Chosen by the owner on 25 November 2026 (option qwen8 of smoke 3), after a data-only dry run of the uncommitted stage-77 code and before any code commit, model run or evaluation.",
+      "reason": "The protocol's rule (token 8-grams in DeepSeek tokenization) left 562 kept and 1,596 removed web chunks, fewer than the 2,988 required, so the run would abort. DeepSeek tokens carry about 1.13 Arabic characters, so 8 tokens span about 9 characters against about 20 for Qwen, and short common strings matched almost every chunk. Smoke 3 (commit 14e4e54, results/llm-deepseek-decontam-smoke.json, data only) measured three alternatives: DeepSeek 18-grams (40,188 / 18,355 web, 5,089 eligible targets), Qwen 8-grams on decoded text (41,418 / 18,697, 5,337) and character 20-grams (38,972 / 17,999, 4,396).",
+      "changes": [
+        "Web decontamination and target criteria (d) and (e) use the Qwen2.5-1.5B tokenizer (models/qwen2.5-1.5b, revision 8faed761d45a263340a0528343f099c05c9a4323; tokenizer.json SHA-256 c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539, journaled) with token 8-grams, exactly the stage 74-76 rule. Pool chunks enter as their DeepSeek decode re-tokenized by Qwen.",
+        "The Qwen model is not loaded or run; only its tokenizer is used, for decontamination.",
+        "A decoded chunk may begin or end with a partial character (a DeepSeek byte token cut at the chunk edge); its Qwen tokenization is used as it is. This affects at most the 8-grams that touch the two edges.",
+        "The population record adds the Qwen tokenizer SHA-256 and keeps all other fields."
+      ],
+      "unchanged": "Training data and tokenization (DeepSeek, 147 tokens), QA chunks, pool composition and draws, target draw seed, design, arms, seeds, budget rule, primary and secondary endpoints, prediction, audit plan (which recomputes eligibility under this rule), exposure and licences."
+    },
+    "amendment_2": {
+      "date": "2026-11-25",
+      "approved_by_owner": "Chosen by the owner on 25 November 2026 (option 2 of three), after the calibration stopped the run at the protocol's N range check and before any training run or evaluation (the journal holds one environment entry and the calibration).",
+      "reason": "Calibration (NVIDIA L4, seed 77999): c_r = 0.16287 s, S = 872.31 s (scoring batch 8, no out-of-memory), S / c_r = 5,355.8 random steps (72% of B), N_uncapped = 2044, above the protocol's upper bound 1,992 (the QA supply). The smoke-2 extrapolation from 2048 chunks had overestimated S by 3.5% (903.5 s), more than the margin left when B = 7400 was chosen. With N = 2044 at least 52 kept chunks would be web (QA share at most 0.975); the owner chose to avoid this dilution rather than raise the bound or lower B.",
+      "changes": [
+        "N = min(N_uncapped, 1992) = 1992; QA margin 1992 - N = 0, so one pass over a kept set that is entirely QA is possible (kept QA share at most 1.0).",
+        "The filter is charged S = 5,355.8 random steps plus N = 1,992 updates = 7,347.8 of B = 7400; 52 charged steps (0.7% of B) are not used. random keeps 7400 updates. The equal-cost contrast is therefore slightly conservative against the filter; the size of this disadvantage is not measured.",
+        "Checkpoints, schedules, views and summaries use N = 1992. The journaled calibration (updates = 2044, the uncapped value) is kept unchanged; the code recomputes N from the journaled costs.",
+        "The abort rule becomes N_uncapped < 1000 only."
+      ],
+      "unchanged": "Calibration and its journal entry (not repeated), pool, target, arms, seeds, B, primary and secondary endpoints, prediction, audit plan (which checks both N_uncapped and N), exposure and licences."
+    }
+  },
+  "journal_sha256": "8ac385263119a0dbd009f91299fc5d1fdfc04e37db46f526ce7a967c38f0dc4a",
+  "environments": [
+    {
+      "kind": "environment",
+      "time": "2026-11-25T20:57:53Z",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "device": "NVIDIA L4",
+      "resumed_runs": 0
+    },
+    {
+      "kind": "environment",
+      "time": "2026-11-25T22:26:22Z",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "device": "NVIDIA L4",
+      "resumed_runs": 0
+    },
+    {
+      "kind": "environment",
+      "time": "2026-11-26T14:08:36Z",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "device": "NVIDIA L4",
+      "resumed_runs": 7
+    }
+  ],
+  "calibration": {
+    "kind": "calibration",
+    "model": "deepseek-llm-7b-base",
+    "revision": "7683fea62db869066ddaff6a41d032262c490d4f",
+    "device": "NVIDIA L4",
+    "costs": {
+      "random": 0.16287156099951972,
+      "self_align_grad": 872.3100562769996
+    },
+    "scoring_batch": 8,
+    "scoring_oom_batches": [],
+    "updates": 2044
+  },
+  "summary": {
+    "primary": {
+      "contrast": "align_once at N minus random at 7400",
+      "mean": -0.0733278052193782,
+      "ci95": [
+        -0.09700444771260663,
+        -0.04642574302124558
+      ]
+    },
+    "prediction_holds": {
+      "qa share of align_once kept > 0.85": false,
+      "primary negative": true,
+      "align_once minus random_once at N negative": true
+    },
+    "costs": {
+      "random": 0.16287156099951972,
+      "self_align_grad": 872.3100562769996
+    },
+    "updates": 1992,
+    "updates_uncapped": 2044,
+    "unused_charged_steps": 52,
+    "device": "NVIDIA L4",
+    "scoring_batch": 8,
+    "scoring_in_random_steps": 5355.8156557458915,
+    "arms": {
+      "loss0": 2.0253698799642734,
+      "accuracy0": 0.294921875,
+      "means": {
+        "random": {
+          "0": 2.0253698799642734,
+          "1992": 1.731304659646412,
+          "7400": 1.714319875682122
+        },
+        "align_once": {
+          "0": 2.0253698799642734,
+          "1992": 1.6409920704627439,
+          "7400": 1.727212767929359
+        },
+        "random_once": {
+          "0": 2.0253698799642734,
+          "1992": 1.734774823222324,
+          "7400": 1.830452446354684
+        }
+      },
+      "accuracy_means": {
+        "random": {
+          "0": 0.294921875,
+          "1992": 0.33544921875,
+          "7400": 0.34814453125
+        },
+        "align_once": {
+          "0": 0.294921875,
+          "1992": 0.34423828125,
+          "7400": 0.353515625
+        },
+        "random_once": {
+          "0": 0.294921875,
+          "1992": 0.3349609375,
+          "7400": 0.34814453125
+        }
+      },
+      "charged": {
+        "mean": -0.0733278052193782,
+        "ci95": [
+          -0.09700444771260663,
+          -0.04642574302124558
+        ],
+        "per_seed": [
+          -0.03428714635083452,
+          -0.1059176246781135,
+          -0.08284153303247876,
+          -0.07026491681608604
+        ],
+        "seeds_negative": 4
+      },
+      "matched": {
+        "mean": -0.09378275275958003,
+        "ci95": [
+          -0.10293062940399977,
+          -0.08342758832986874
+        ],
+        "per_seed": [
+          -0.10063276582513936,
+          -0.10522849298286019,
+          -0.09157722306554206,
+          -0.07769252916477853
+        ],
+        "seeds_negative": 4
+      },
+      "one_view": {
+        "mean": 0.003470163575912011,
+        "ci95": [
+          -0.018397049389022868,
+          0.027042309900934924
+        ],
+        "per_seed": [
+          0.03687843483930919,
+          -0.002466064914187882,
+          0.005996525345835835,
+          -0.026528240967309102
+        ],
+        "seeds_negative": 2
+      },
+      "selection_term": -0.09031258918366802,
+      "throughput_term": 0.016984783964289818,
+      "amortized": {
+        "mean": 0.012892892247236887,
+        "ci95": [
+          -0.007441279211889196,
+          0.028228553712779103
+        ],
+        "per_seed": [
+          0.020427926021511666,
+          0.01535487846012984,
+          0.032519778796995524,
+          -0.016731014289689483
+        ],
+        "seeds_negative": 1
+      },
+      "accuracy_charged": {
+        "mean": -0.00390625,
+        "ci95": [
+          -0.02880859375,
+          0.01953125
+        ],
+        "per_seed": [
+          -0.01171875,
+          0.025390625,
+          -0.04296875,
+          0.013671875
+        ],
+        "seeds_negative": 2
+      },
+      "accuracy_matched": {
+        "mean": 0.00927734375,
+        "ci95": [
+          -0.0107421875,
+          0.03271484375
+        ],
+        "per_seed": [
+          -0.017578125,
+          0.04296875,
+          0.001953125,
+          0.009765625
+        ],
+        "seeds_negative": 1
+      },
+      "qa_share": {
+        "align_once": 0.8411144578313253,
+        "random_once": 0.2543925702811245
+      },
+      "random_qa": {
+        "1992": {
+          "drawn": 498,
+          "distinct": 444
+        },
+        "7400": {
+          "drawn": 1829.25,
+          "distinct": 1191.75
+        }
+      },
+      "random_minus_no_update": -0.31105000428215135,
+      "scoring_seconds": 875.8083661020006
+    }
+  },
+  "runs": 12
+}
