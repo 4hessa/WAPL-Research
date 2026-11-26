@@ -55,3 +55,6 @@ backup pushed: 9 finished runs
 backup pushed: 10 finished runs
 Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  2.41it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.49it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.48it/s]
 11/12 runs complete
+backup pushed: 11 finished runs
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  2.46it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.55it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.53it/s]
+12/12 runs complete
