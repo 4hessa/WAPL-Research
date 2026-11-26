@@ -1,0 +1,38 @@
+PASS pytorch_model-00001-of-00002.bin SHA-256
+PASS pytorch_model-00002-of-00002.bin SHA-256
+PASS Qwen decontamination tokenizer.json SHA-256 (amendment 1)
+PASS exactly one calibration entry
+PASS calibration device NVIDIA L4 equals this device NVIDIA L4
+PASS calibration model deepseek-llm-7b-base at revision 7683fea62db869066ddaff6a41d032262c490d4f
+PASS N_uncapped = 2044 equals floor(B - S / c_r)
+PASS N_uncapped >= 1000
+PASS N = min(N_uncapped, 1992) = 1992 (amendment 2)
+I0000 00:00:1795701534.311161    5400 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+I0000 00:00:1795701536.821561    5400 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+PASS data file hashes (kept, removed, dev, test)
+PASS population.decontamination_tokenizer_sha256 equals calibration
+PASS population.excluded_evaluated_rows equals calibration
+PASS population.kept_documents equals calibration
+PASS population.pool_sha256 equals calibration
+PASS population.qa_chunks equals calibration
+PASS population.qa_items_packed equals calibration
+PASS population.qa_pool_sha256 equals calibration
+PASS population.removed_documents equals calibration
+PASS population.target_items equals calibration
+PASS population.target_pool equals calibration
+PASS population.tokenizer_sha256 equals calibration
+PASS population.trained_ids equals calibration
+PASS population.web_decontaminated equals calibration
+PASS population.web_eligible equals calibration
+PASS 7 finished runs are unique
+PASS finished runs are the protocol order prefix (no selective rerun)
+PASS run seed=37700 arm=random: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37700 arm=align_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37700 arm=random_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37701 arm=align_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37701 arm=random_once: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37701 arm=random: schedule, kept/subset digests, QA share, views, checkpoints
+PASS run seed=37702 arm=random_once: schedule, kept/subset digests, QA share, views, checkpoints
+finished 7, remaining 5; next (37702, 'random')
+ALL CHECKS PASSED
