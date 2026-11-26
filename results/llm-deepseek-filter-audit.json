@@ -1,0 +1,57 @@
+{
+  "stage": 77,
+  "status": "passed",
+  "journal_sha256": "8ac385263119a0dbd009f91299fc5d1fdfc04e37db46f526ce7a967c38f0dc4a",
+  "runs": 12,
+  "updates": 1992,
+  "scoring_batch": 8,
+  "environments": 3,
+  "summary_recomputed": true,
+  "population": {
+    "qa_chunks": 1992,
+    "web_eligible": [
+      41418,
+      18697
+    ],
+    "web_decontaminated": [
+      662,
+      420
+    ]
+  },
+  "target": {
+    "items": 512,
+    "disjoint_from_exposed": 7250,
+    "eligibility": {
+      "candidates": 7205,
+      "decontamination": {
+        "identical": 210,
+        "jaccard": 717,
+        "containment": 237,
+        "ngram8": 1406,
+        "dropped_total": 1535,
+        "trained_tokenization_8gram_after_a_to_d": 333
+      },
+      "eligible": 5337
+    }
+  },
+  "step_seconds_median": {
+    "random": 0.1673734242513092,
+    "align_once": 0.16744119700047122,
+    "random_once": 0.16732254550061043
+  },
+  "gpu": {
+    "score_recomputation": {
+      "max_rel_diff": 0.0,
+      "audit_scoring_seconds": 885.282032763,
+      "identical_kept_set": true
+    },
+    "replay_step50": {
+      "random": {
+        "identical_adapter_digest": true
+      },
+      "align_once": {
+        "identical_adapter_digest": true
+      }
+    }
+  }
+}
