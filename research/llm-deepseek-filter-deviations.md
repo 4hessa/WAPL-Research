@@ -28,3 +28,18 @@ Amendment 1 (decontamination in Qwen2.5 tokenization) was made before any stage-
 **What was not changed.** The calibration is reused from the journal (no recalibration), as the resumption rule requires. Design, run order, seeds, schedules, evaluation and code are unchanged. The restarted process appends a third environment entry (`resumed_runs` 7), which marks the restart. The working journal is restored at `/content/stage77-journal/journal.jsonl` (byte-identical to the snapshot) and the runner keeps copying it and the run log to `colab/stage77-journal` after every finished run.
 
 **Possible effects.** Per-step and scoring times on the new machine may differ from the calibration; they are journaled per run and reported, but N stays 1992. Bitwise equality across two physical L4 GPUs is not guaranteed; the remaining 5 runs (seed 37702 random and align_once, all of seed 37703) run on the new machine. The audit's GPU checks (self-scores and step-50 replays of seed 37700, produced on the old machine) therefore also test cross-machine reproducibility; their outcome will be reported either way.
+
+## 3. Lost machine after all 12 runs, before the audit; audit run on a new Colab machine (26 November 2026)
+
+**What happened.** After the 12th run finished, the journal, run log and summary were committed to `main` (commit `70962eb`; journal byte-identical to snapshot `065c8b8` on `colab/stage77-journal`). The Colab machine was then lost, before the audit was run. No run was in progress, nothing is rerun, and no outcome was read on the lost machine or afterwards before the audit finished.
+
+**What was re-established on the new machine.**
+
+- Device: NVIDIA L4 (the calibration's device type), driver 580.82.07; possibly a third physical GPU.
+- Software: torch 2.14.1+cu130, CUDA 13.0, Python 3.13.16. The image again came with transformers 5.22.1 (tokenizers 0.23.3, huggingface_hub 1.33.0); the protocol's pins (transformers 4.46.3, tokenizers 0.20.3, huggingface_hub 0.26.2) were reinstalled before any repository code ran.
+- Downloads at the pinned revisions, as deviation 2: deepseek-ai/deepseek-llm-7b-base `7683fea` (both weight files), Qwen/Qwen2.5-1.5B `8faed76` (tokenizer files only), FineWeb-2 `af9c133` (`arb_Arab/test/000_00000.parquet`, `arb_Arab_removed/train/000_00000.parquet`), ArabicMMLU `7aa530e` (All/dev.csv, All/test.csv), stored outside the repository (models in `models/`, data in `/content/inputs/`).
+- Hashes checked before the audit: both weight files, the Qwen `tokenizer.json` and the four data files equal the protocol's SHA-256 values; the audit rechecks all of them and the DeepSeek tokenizer hash. 173 tests pass.
+
+**Audit.** `tools/audit_llm_deepseek_filter.py` with its GPU checks ran on the new L4 against the journal on `main` and passed (`results/llm-deepseek-filter-audit.json`, commit `268e7e6`). The GPU checks were produced on the first machine (seed 37700) and recomputed on this one: self-scores identical (max relative difference 0.0, same kept set; audit scoring 885.3 s vs calibration 872.3 s), and the step-50 adapter digests of random and align_once identical. Bitwise reproducibility therefore held across these two L4 machines for these checks; it was not checked for the 5 runs of the second machine, which have no replay in the audit plan.
+
+**Effect.** None on the data or the results: the audit is a check, not part of the run; design, journal, summary and code are unchanged.
