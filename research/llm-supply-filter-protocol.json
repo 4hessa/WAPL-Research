@@ -1,0 +1,65 @@
+{
+  "stage": 78,
+  "date": "2026-11-27",
+  "status": "Written and pushed before any stage-78 code or run; awaiting the owner's approval of the summary and time estimate before code.",
+  "reference_commit": "6de0b95",
+  "question": "With the stage-76 pool size, proxy scorer, budget and number of filter updates held fixed, how does the equal-cost advantage of the one-pass offline filter depend on the number of useful (in-format QA) chunks in the pool, when that number is below, equal to or above the number of filter updates N?",
+  "motivation": "Stages 75 and 76 differed in several factors at once (pool size, useful supply, scorer, budget, target), so the inference that useful supply was decisive (QA share of the kept set 0.33 vs 0.99; primary -0.033 vs -0.198) is untested. Stage 77 kept exactly as many chunks as there were QA chunks (margin 0) and its kept sets were 84% QA. This stage varies only the useful supply Q in {1024, 1633, 2048} at fixed M = 8192, N = 1633 and B = 3000. The owner chose this direction (option 3) after two pre-protocol smokes found no natural non-benchmark useful source the scorer can use (commits 26f973c, 14726f9).",
+  "factor": {
+    "varied": "Q = number of QA chunks in the pool: 1024 (Q < N), 1633 (Q = N, margin 0), 2048 (Q > N, the stage-76 pool).",
+    "fixed": "Pool size M = 8192; trained model Qwen2.5-1.5B and proxy Qwen2.5-0.5B with the stage-76 numerics, LoRA and optimizer; scorer (gradient alignment with the 120 All/dev probe at the seed's initial adapter, experiments.llm_web_filter.score align_grad, batch 16); budget B = 3000 random-step costs; N = 1633 filter updates (the stage-76 calibrated value); chunk length 65 tokens; arms and schedules as stage 76; target items.",
+    "inseparable": "At fixed M the QA share of the pool changes with Q (0.125, 0.199, 0.25) and the number of web chunks changes with it (7168, 6559, 6144). Supply and share are one factor here; the stage does not separate them."
+  },
+  "data": {
+    "qa_chunks": "Only the 2048 QA chunks of stages 74 and 76 (experiments.llm_qa_mix.qa_list, digest 12b3a1f8...), whose items are all among the 4,946 IDs already recorded as trained. Q2048 = all 2048. Q1633 = sort(default_rng(7801).choice(2048, 1633, replace=False)). Q1024 = sort(Q1633[default_rng(7802).choice(1633, 1024, replace=False)]). Nested: Q1024 within Q1633 within Q2048. No new ArabicMMLU item is trained.",
+    "web_chunks": "Q2048 uses exactly the stage-76 web chunks (3072 kept, 3072 removed; draws 7611 and 7612 over the 41,443 and 18,831 eligible chunks; counts must match, else abort). For Q < 2048 the web count is W = 8192 - Q, kept ceil(W / 2), removed floor(W / 2): Q1633 3280 + 3279, Q1024 3584 + 3584. The extra chunks (208 / 512 kept, 207 / 512 removed) come from the eligible lists without the stage-76 draws, after removing any chunk that shares a token 8-gram with the evaluation forms of the 512 target items (experiments.llm_once_filter.eval_forms: every field and option, alone and with a leading space). Extra kept = first k of default_rng(7811).permutation over the remaining kept list; extra removed = first k of default_rng(7812).permutation over the remaining removed list. Nested: the Q1633 web chunks are within the Q1024 web chunks. Counts and digests are journaled.",
+    "pool_layout": "Positions 0..Q-1 the QA chunks (in Q-subset order), then the kept web chunks (the stage-76 kept chunks first, in draw order, then the extras), then the removed web chunks likewise. Q2048 must reproduce the stage-76 pool digest f4d4285c..., else abort.",
+    "probe": "The 120 All/dev items (exposed), as stage 76."
+  },
+  "target": {
+    "items": "The 512 stage-76 target items (results/llm-cheap-filter-journal.jsonl, calibration.population.target_items), rebuilt by experiments.llm_cheap_filter.load_inputs; the rebuilt IDs must equal the journaled IDs, else abort.",
+    "exposure_status": "Per the owner's instruction no new ArabicMMLU test item is exposed. These items were evaluated in stage 76 (exposed) but never trained on and never used for selection or tuning. Under project rule 8 a result on exposed items is not confirmatory; this stage is therefore labelled exploratory (a pre-registered dose-response within the stage-76 setting), and its claims are worded accordingly.",
+    "format": "Cloze item loss and accuracy exactly as stages 73-77 (experiments.llm_web_filter.evaluate) with the 1.5B model. Step 0 equals the stage-76 step-0 value for every seed (LoRA B = 0); it is evaluated in every random run and must be identical across runs."
+  },
+  "design": {
+    "seeds": [37800, 37801, 37802, 37803, 37804, 37805],
+    "levels": [1024, 1633, 2048],
+    "N": "Fixed at 1633 (stage 76). Calibration before any target evaluation, seed 78999 on the Q2048 pool: c_r = median of steps 5-24 of 24 random 1.5B steps; S = wall-clock of complete 0.5B proxy scoring of all 8192 chunks. Journaled; implied N_cal = floor(B - S / c_r + 1e-9). If N_cal is outside [1470, 1796] (1633 +/- 10%), abort before any run and report (the charge would no longer match the hardware).",
+    "arms": {
+      "random": "Each step a pool chunk drawn uniformly with replacement; 3000 updates; evaluated at 0, N and 3000.",
+      "align05_once": "Score the run's pool with the 0.5B proxy at the seed's initial adapter (proxy freed before the 1.5B model is loaded); keep the N highest scores (ties to the lower index); train the 1.5B model on the kept chunks once each in random order; N updates; evaluated at N. The full scoring time is charged (as stage 76).",
+      "random_once": "Repetition-matched control: a uniformly random N-chunk subset of the pool, once each in the align05_once order; N updates; evaluated at N. No scoring, no charge."
+    },
+    "changes_from_stage_76": "The label oracle (qa_once) is not run (at Q1024 there are fewer QA chunks than N). The one-pass arms stop at N instead of continuing to 3000 (the amortized secondary of stage 76 is dropped) to keep the run near five hours.",
+    "schedule": "Per seed (the same for every level, so that levels are paired by seed and differ only in pool content): rng = default_rng(seed); in this order rand = rng.integers(8192, size=3000); subsetN = sort(rng.choice(8192, 1633, replace=False)); once = rng.permutation(1633). align05_once trains kept[once], random_once subsetN[once], random rand.",
+    "run_order": "Seeds in order; within seed index i, levels in the order (1024, 1633, 2048) rotated left by i mod 3; within each level, arms (random, align05_once, random_once) rotated left by i mod 3.",
+    "measurement": "Per run: losses and accuracies at the checkpoints, step seconds, adapter digest at step 50, views per training-set chunk (max and mean) at N and 3000. Per align05_once run: all 8192 scores, kept indices and digest, QA share of the kept set, scoring seconds. Per random_once run: subset digest and QA share. Per random run: QA chunks drawn and distinct QA chunks seen by N and 3000.",
+    "coverage": "6 seeds x 3 levels x 3 arms = 54 runs plus one calibration."
+  },
+  "primary": "T = D(1024) - D(2048), where D(Q) = align05_once loss at N minus random loss at 3000 on the Q pool (equal cost, proxy scoring charged), computed per seed; mean over six seeds with a paired seed-bootstrap 95% interval (seed 7803, 10000 resamples). Positive T means the equal-cost advantage of the filter is smaller when the useful supply is below N.",
+  "secondary": "Paired seed-bootstrap intervals, no multiplicity adjustment: (1) D(Q) for each level; (2) D(1633) - D(2048) and D(1024) - D(1633); (3) matched selection S(Q) = align05_once at N minus random_once at N, each level, and S(1024) - S(2048); (4) throughput term D(Q) - [align05_once at N minus random at N], and random at 3000 minus random at N, each level; (5) accuracy versions of D(Q) and T; (6) QA share of the kept sets per level; QA chunks drawn and distinct QA chunks seen by random; (7) random at 3000 minus no update, each level; (8) D(2048) compared descriptively with the stage-76 primary (-0.198) as a replication with new seeds.",
+  "prediction": {
+    "written": "Before any stage-78 code or run, 27 November 2026.",
+    "reasoning": "If the stage-76 win comes from the kept set holding mostly useful chunks seen once, a supply below N forces web chunks into the kept set: at Q1024 at most 1024 / 1633 = 0.63 of it can be QA, while random at 3000 on that pool draws about 375 QA chunks (about 330 distinct). Stage 75 (512 QA chunks against 1484 updates, kept share 0.33) gave -0.033 [-0.086, +0.019]; Q1024 lies between stage 75 and stage 76 in useful share, so D(1024) is expected to be smaller in magnitude than D(2048). At margin 0 (Q1633) a ranking error replaces a QA chunk by a web chunk, as in stage 77 (kept share 0.84), so D(1633) is expected between the two. Magnitudes are speculative and not part of the tested prediction.",
+    "items": [
+      "Primary: T > 0, with the 95% interval above 0.",
+      "D(2048) < 0 (replicates stage 76).",
+      "D(1633) < 0.",
+      "Kept QA share > 0.95 at Q2048, > 0.80 at Q1633, > 0.55 at Q1024 (maximum possible 0.627).",
+      "Ordering of means: D(1024) > D(1633) > D(2048)."
+    ],
+    "not_predicted": "The sign of D(1024) is not predicted."
+  },
+  "decision_rule": {
+    "supported": "T interval entirely above 0: useful supply below N reduces the equal-cost advantage of one-pass filtering in this setting (exploratory, exposed target). If in addition the D(1024) interval includes 0 or lies above it while the D(2048) interval lies below 0, the paper's condition that the useful subset must fill the update budget is supported at fixed pool size, scorer and budget.",
+    "not_established": "T interval includes 0: no claim about the effect of useful supply; the effect size and its interval are reported, and the stage-75/76 inference stays an inference.",
+    "refuted": "T interval entirely below 0: the filter's equal-cost advantage is larger with less useful supply, contrary to the prediction.",
+    "other_items": "Each other prediction item is reported as held or not held exactly as written; a failed item is not reinterpreted."
+  },
+  "resumption": "Append-only JSON-lines journal outside the repository (/content/stage78-journal/journal.jsonl); completed (seed, level, arm) entries skipped; population, pools, target and schedule digests re-verified on restart; outcomes not printed or read before the run finishes. After the calibration and every finished run the runner copies the journal and run log to branch colab/stage78-journal (results/stage78-interim/), commits and pushes, retrying a failed push once (stage-75 deviation 1). Resuming on another L4 uses the journaled calibration; another device type aborts.",
+  "audit": "tools/audit_llm_supply_filter.py: journal digest; summary recomputation; environments; calibration and the N_cal bound; 54-run grid and order; schedules; kept sets recomputed from journaled scores and their digests; subset digests; QA shares; random-arm QA draws; views per chunk; data and model hashes; QA subsets, web extras and the three pools rebuilt with their digests (Q2048 equal to stage 76); nesting of QA and web chunks across levels; web extras clean against the target evaluation forms; target IDs equal to stage 76 and disjoint from training; identical step-0 losses. On an L4: recompute the proxy scores of seed 37800 at Q1024 and Q2048; replay the first 50 steps of seed 37800 for random and align05_once at Q1024 to their adapter digests.",
+  "exposure": "No new ArabicMMLU item is evaluated or trained. The 512 stage-76 target items are evaluated again (already exposed). Up to 6,144 + 1,024 FineWeb-2 chunks are trained, of which at most 1,024 are new (the web extras), recorded by document index in data/evaluation_status.json after the run.",
+  "time_estimate": "From stage-76 timings on an L4 (step 0.110 s; proxy scoring 157 s; one 512-item evaluation about 34 s): random about 440 s, align05_once about 400 s, random_once about 235 s, i.e. about 1,075 s per seed and level; 18 x 1,075 s = about 5.4 h, plus data, pools and calibration about 25 min: about 5.8 h in total.",
+  "licenses": "As stage 76: FineWeb-2 ODC-By 1.0; ArabicMMLU CC BY-NC 4.0 (non-commercial research use); Qwen2.5 Apache-2.0. No dataset text is committed; journals hold indices, scores and digests only.",
+  "scope": "One trained model, one proxy, LoRA, one budget, one N, one pool size, three supply levels, one task scored by answer loss, six seeds, exposed target. The useful chunks are in-format items from the target benchmark itself, as stages 74-77; the stage-78 smokes found no natural substitute usable with this scorer, so the stage measures how the amount of in-distribution data in web noise changes the equal-cost advantage, not a general capability gain."
+}
