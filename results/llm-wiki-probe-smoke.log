@@ -1,0 +1,9 @@
+P0_cloze 78900 A {"auc": 0.644622802734375, "wiki_share_top512": 0.337890625, "wiki_share_top256": 0.3828125, "seconds": 41.829097325000475}
+P0_cloze 78900 B {"auc": 0.6540006001790365, "wiki_share_top512": 0.359375, "wiki_share_top256": 0.359375, "seconds": 41.32946651900056}
+P0_cloze 78901 A {"auc": 0.66015625, "wiki_share_top512": 0.373046875, "wiki_share_top256": 0.41015625, "seconds": 40.67431981200025}
+P0_cloze 78901 B {"auc": 0.6561050415039062, "wiki_share_top512": 0.35546875, "wiki_share_top256": 0.38671875, "seconds": 40.940059274000305}
+P1_plain 78900 A {"auc": 0.610931396484375, "wiki_share_top512": 0.3515625, "wiki_share_top256": 0.359375, "seconds": 49.7346870399997}
+P1_plain 78900 B {"auc": 0.6038970947265625, "wiki_share_top512": 0.3359375, "wiki_share_top256": 0.32421875, "seconds": 49.47496270299962}
+P1_plain 78901 A {"auc": 0.5929768880208334, "wiki_share_top512": 0.333984375, "wiki_share_top256": 0.32421875, "seconds": 49.507852069000364}
+P1_plain 78901 B {"auc": 0.5892562866210938, "wiki_share_top512": 0.322265625, "wiki_share_top256": 0.31640625, "seconds": 49.35155930599831}
+decision {"decision": "stop", "probe": null}

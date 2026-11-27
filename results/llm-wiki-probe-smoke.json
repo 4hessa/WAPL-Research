@@ -1,0 +1,111 @@
+{
+  "kind": "smoke",
+  "stage": "78 smoke 2",
+  "rule": "research/llm-wiki-probe-smoke-rule.json",
+  "rule_sha256": "086f9129f344afbf0aa2785c336e160fbe94305ad2b0d62225eb05aa71629453",
+  "time": "2026-11-27T00:22:43Z",
+  "device": "NVIDIA L4",
+  "torch": "2.14.1+cu130",
+  "transformers": "4.46.3",
+  "python": "3.13.16",
+  "wikipedia_file_sha256": "f035e9118745d465529d48b0b1893824a4f266af2474694dcd35823e767aad17",
+  "pool_sha256": {
+    "A": "187b4d2c2c4a11859da2e424810bdebd5c1aef75138187b18a85c77e0f981caf",
+    "B": "28a6a5b2fa0c99de610614665e807c290d144045531ed5b21d38ddd305c986a6"
+  },
+  "plain_probe_tokens": {
+    "mean": 36.141666666666666,
+    "max": 192
+  },
+  "cells": {
+    "P0_cloze": {
+      "78900_A": {
+        "auc": 0.644622802734375,
+        "wiki_share_top512": 0.337890625,
+        "wiki_share_top256": 0.3828125,
+        "seconds": 41.829097325000475
+      },
+      "78900_B": {
+        "auc": 0.6540006001790365,
+        "wiki_share_top512": 0.359375,
+        "wiki_share_top256": 0.359375,
+        "seconds": 41.32946651900056
+      },
+      "78901_A": {
+        "auc": 0.66015625,
+        "wiki_share_top512": 0.373046875,
+        "wiki_share_top256": 0.41015625,
+        "seconds": 40.67431981200025
+      },
+      "78901_B": {
+        "auc": 0.6561050415039062,
+        "wiki_share_top512": 0.35546875,
+        "wiki_share_top256": 0.38671875,
+        "seconds": 40.940059274000305
+      }
+    },
+    "P1_plain": {
+      "78900_A": {
+        "auc": 0.610931396484375,
+        "wiki_share_top512": 0.3515625,
+        "wiki_share_top256": 0.359375,
+        "seconds": 49.7346870399997
+      },
+      "78900_B": {
+        "auc": 0.6038970947265625,
+        "wiki_share_top512": 0.3359375,
+        "wiki_share_top256": 0.32421875,
+        "seconds": 49.47496270299962
+      },
+      "78901_A": {
+        "auc": 0.5929768880208334,
+        "wiki_share_top512": 0.333984375,
+        "wiki_share_top256": 0.32421875,
+        "seconds": 49.507852069000364
+      },
+      "78901_B": {
+        "auc": 0.5892562866210938,
+        "wiki_share_top512": 0.322265625,
+        "wiki_share_top256": 0.31640625,
+        "seconds": 49.35155930599831
+      }
+    }
+  },
+  "sanity": {
+    "smoke1_auc": 0.644622802734375,
+    "reproduced": 0.644622802734375,
+    "passes": true
+  },
+  "per_probe": {
+    "P0_cloze": {
+      "mean_auc": 0.6537211736043295,
+      "min_auc": 0.644622802734375,
+      "mean_share_top512": 0.3564453125,
+      "time_ratio_vs_P0": 1.0,
+      "checks": {
+        "mean AUC >= 0.80": false,
+        "every AUC >= 0.75": false,
+        "mean top-512 share >= 0.50": false,
+        "time <= 1.25 x P0": true
+      },
+      "passes": false
+    },
+    "P1_plain": {
+      "mean_auc": 0.5992654164632162,
+      "min_auc": 0.5892562866210938,
+      "mean_share_top512": 0.3359375,
+      "time_ratio_vs_P0": 1.2020727286648099,
+      "checks": {
+        "mean AUC >= 0.80": false,
+        "every AUC >= 0.75": false,
+        "mean top-512 share >= 0.50": false,
+        "time <= 1.25 x P0": true
+      },
+      "passes": false
+    }
+  },
+  "decision": {
+    "decision": "stop",
+    "probe": null
+  }
+}
