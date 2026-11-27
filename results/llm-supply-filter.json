@@ -1,0 +1,509 @@
+{
+  "stage": 78,
+  "protocol": {
+    "stage": 78,
+    "date": "2026-11-27",
+    "status": "Written and pushed before any stage-78 code or run (b97e572); amendment 1 (new unexposed target, confirmatory) approved by the owner on 27 November 2026 and pushed before any code. Six seeds approved.",
+    "reference_commit": "6de0b95",
+    "question": "With the stage-76 pool size, proxy scorer, budget and number of filter updates held fixed, how does the equal-cost advantage of the one-pass offline filter depend on the number of useful (in-format QA) chunks in the pool, when that number is below, equal to or above the number of filter updates N?",
+    "motivation": "Stages 75 and 76 differed in several factors at once (pool size, useful supply, scorer, budget, target), so the inference that useful supply was decisive (QA share of the kept set 0.33 vs 0.99; primary -0.033 vs -0.198) is untested. Stage 77 kept exactly as many chunks as there were QA chunks (margin 0) and its kept sets were 84% QA. This stage varies only the useful supply Q in {1024, 1633, 2048} at fixed M = 8192, N = 1633 and B = 3000. The owner chose this direction (option 3) after two pre-protocol smokes found no natural non-benchmark useful source the scorer can use (commits 26f973c, 14726f9).",
+    "factor": {
+      "varied": "Q = number of QA chunks in the pool: 1024 (Q < N), 1633 (Q = N, margin 0), 2048 (Q > N, the stage-76 pool).",
+      "fixed": "Pool size M = 8192; trained model Qwen2.5-1.5B and proxy Qwen2.5-0.5B with the stage-76 numerics, LoRA and optimizer; scorer (gradient alignment with the 120 All/dev probe at the seed's initial adapter, experiments.llm_web_filter.score align_grad, batch 16); budget B = 3000 random-step costs; N = 1633 filter updates (the stage-76 calibrated value); chunk length 65 tokens; arms and schedules as stage 76; target items.",
+      "inseparable": "At fixed M the QA share of the pool changes with Q (0.125, 0.199, 0.25) and the number of web chunks changes with it (7168, 6559, 6144). Supply and share are one factor here; the stage does not separate them."
+    },
+    "data": {
+      "qa_chunks": "Only the 2048 QA chunks of stages 74 and 76 (experiments.llm_qa_mix.qa_list, digest 12b3a1f8...), whose items are all among the 4,946 IDs already recorded as trained. Q2048 = all 2048. Q1633 = sort(default_rng(7801).choice(2048, 1633, replace=False)). Q1024 = sort(Q1633[default_rng(7802).choice(1633, 1024, replace=False)]). Nested: Q1024 within Q1633 within Q2048. No new ArabicMMLU item is trained.",
+      "web_chunks": "Q2048 uses exactly the stage-76 web chunks (3072 kept, 3072 removed; draws 7611 and 7612 over the 41,443 and 18,831 eligible chunks; counts must match, else abort). For Q < 2048 the web count is W = 8192 - Q, kept ceil(W / 2), removed floor(W / 2): Q1633 3280 + 3279, Q1024 3584 + 3584. The extra chunks (208 / 512 kept, 207 / 512 removed) come from the stage-74 decontaminated eligible lists (no token 8-gram shared with the content of any All/dev or All/test item) without the stage-76 draws: extra kept = first k of default_rng(7811).permutation over the remaining kept list; extra removed = first k of default_rng(7812).permutation over the remaining removed list. Nested: the Q1633 web chunks are within the Q1024 web chunks. Counts and digests are journaled. (Amendment 1: the earlier clause removing extras that overlap the stage-76 target is replaced by criterion (e) on the new target, below.)",
+      "pool_layout": "Positions 0..Q-1 the QA chunks (in Q-subset order), then the kept web chunks (the stage-76 kept chunks first, in draw order, then the extras), then the removed web chunks likewise. Q2048 must reproduce the stage-76 pool digest f4d4285c..., else abort.",
+      "probe": "The 120 All/dev items (exposed), as stage 76."
+    },
+    "target": {
+      "items": "Amendment 1: 512 new ArabicMMLU All/test items, never evaluated or trained in this project. Eligible rows: (1) not in any earlier evaluation set (stage-73 target, stage-74 pilot and target, stage-75, -76 and -77 targets; experiments.llm_deepseek_filter.excluded_rows plus the stage-77 journaled target IDs; 2,816 rows), (2) not one of the 4,946 IDs used for training (data/evaluation_status.json, stage_74.used_for_training), and (3) clean under criteria (a)-(e) of stage 75 (experiments.llm_once_filter.target_candidates, unchanged), with criterion (e) applied to all three stage-78 pools as trained (every QA and web chunk of Q1024, Q1633 and Q2048) plus the 4,946 items tokenized in the training template. Counts journaled; abort if fewer than 512 rows are eligible. Target = sort(eligible[default_rng(7822).choice(len(eligible), 512, replace=False)]) in row order. Used for evaluation only; exposed after this stage.",
+      "exposure_status": "Amendment 1: confirmatory. The target items are unexposed before this stage (checked against data/evaluation_status.json and the journals of stages 73-77), so project rule 8 is met.",
+      "format": "Cloze item loss and accuracy exactly as stages 73-77 (experiments.llm_web_filter.evaluate) with the 1.5B model. Step 0 is evaluated in every random run; with LoRA B = 0 it must be identical across runs."
+    },
+    "design": {
+      "seeds": [
+        37800,
+        37801,
+        37802,
+        37803,
+        37804,
+        37805
+      ],
+      "levels": [
+        1024,
+        1633,
+        2048
+      ],
+      "N": "Fixed at 1633 (stage 76). Calibration before any target evaluation, seed 78999 on the Q2048 pool: c_r = median of steps 5-24 of 24 random 1.5B steps; S = wall-clock of complete 0.5B proxy scoring of all 8192 chunks. Journaled; implied N_cal = floor(B - S / c_r + 1e-9). If N_cal is outside [1470, 1796] (1633 +/- 10%), abort before any run and report (the charge would no longer match the hardware).",
+      "arms": {
+        "random": "Each step a pool chunk drawn uniformly with replacement; 3000 updates; evaluated at 0, N and 3000.",
+        "align05_once": "Score the run's pool with the 0.5B proxy at the seed's initial adapter (proxy freed before the 1.5B model is loaded); keep the N highest scores (ties to the lower index); train the 1.5B model on the kept chunks once each in random order; N updates; evaluated at N. The full scoring time is charged (as stage 76).",
+        "random_once": "Repetition-matched control: a uniformly random N-chunk subset of the pool, once each in the align05_once order; N updates; evaluated at N. No scoring, no charge."
+      },
+      "changes_from_stage_76": "The label oracle (qa_once) is not run (at Q1024 there are fewer QA chunks than N). The one-pass arms stop at N instead of continuing to 3000 (the amortized secondary of stage 76 is dropped) to keep the run near five hours.",
+      "schedule": "Per seed (the same for every level, so that levels are paired by seed and differ only in pool content): rng = default_rng(seed); in this order rand = rng.integers(8192, size=3000); subsetN = sort(rng.choice(8192, 1633, replace=False)); once = rng.permutation(1633). align05_once trains kept[once], random_once subsetN[once], random rand.",
+      "run_order": "Seeds in order; within seed index i, levels in the order (1024, 1633, 2048) rotated left by i mod 3; within each level, arms (random, align05_once, random_once) rotated left by i mod 3.",
+      "measurement": "Per run: losses and accuracies at the checkpoints, step seconds, adapter digest at step 50, views per training-set chunk (max and mean) at N and 3000. Per align05_once run: all 8192 scores, kept indices and digest, QA share of the kept set, scoring seconds. Per random_once run: subset digest and QA share. Per random run: QA chunks drawn and distinct QA chunks seen by N and 3000.",
+      "coverage": "6 seeds x 3 levels x 3 arms = 54 runs plus one calibration."
+    },
+    "primary": "T = D(1024) - D(2048), where D(Q) = align05_once loss at N minus random loss at 3000 on the Q pool (equal cost, proxy scoring charged), computed per seed; mean over six seeds with a paired seed-bootstrap 95% interval (seed 7803, 10000 resamples). Positive T means the equal-cost advantage of the filter is smaller when the useful supply is below N.",
+    "secondary": "Paired seed-bootstrap intervals, no multiplicity adjustment: (1) D(Q) for each level; (2) D(1633) - D(2048) and D(1024) - D(1633); (3) matched selection S(Q) = align05_once at N minus random_once at N, each level, and S(1024) - S(2048); (4) throughput term D(Q) - [align05_once at N minus random at N], and random at 3000 minus random at N, each level; (5) accuracy versions of D(Q) and T; (6) QA share of the kept sets per level; QA chunks drawn and distinct QA chunks seen by random; (7) random at 3000 minus no update, each level; (8) D(2048) compared descriptively with the stage-76 primary (-0.198) as a replication with new seeds.",
+    "prediction": {
+      "written": "Before any stage-78 code or run, 27 November 2026.",
+      "reasoning": "If the stage-76 win comes from the kept set holding mostly useful chunks seen once, a supply below N forces web chunks into the kept set: at Q1024 at most 1024 / 1633 = 0.63 of it can be QA, while random at 3000 on that pool draws about 375 QA chunks (about 330 distinct). Stage 75 (512 QA chunks against 1484 updates, kept share 0.33) gave -0.033 [-0.086, +0.019]; Q1024 lies between stage 75 and stage 76 in useful share, so D(1024) is expected to be smaller in magnitude than D(2048). At margin 0 (Q1633) a ranking error replaces a QA chunk by a web chunk, as in stage 77 (kept share 0.84), so D(1633) is expected between the two. Magnitudes are speculative and not part of the tested prediction.",
+      "items": [
+        "Primary: T > 0, with the 95% interval above 0.",
+        "D(2048) < 0 (replicates stage 76).",
+        "D(1633) < 0.",
+        "Kept QA share > 0.95 at Q2048, > 0.80 at Q1633, > 0.55 at Q1024 (maximum possible 0.627).",
+        "Ordering of means: D(1024) > D(1633) > D(2048)."
+      ],
+      "not_predicted": "The sign of D(1024) is not predicted."
+    },
+    "decision_rule": {
+      "supported": "T interval entirely above 0: useful supply below N reduces the equal-cost advantage of one-pass filtering in this setting. If in addition the D(1024) interval includes 0 or lies above it while the D(2048) interval lies below 0, the paper's condition that the useful subset must fill the update budget is supported at fixed pool size, scorer and budget.",
+      "not_established": "T interval includes 0: no claim about the effect of useful supply; the effect size and its interval are reported, and the stage-75/76 inference stays an inference.",
+      "refuted": "T interval entirely below 0: the filter's equal-cost advantage is larger with less useful supply, contrary to the prediction.",
+      "other_items": "Each other prediction item is reported as held or not held exactly as written; a failed item is not reinterpreted."
+    },
+    "resumption": "Append-only JSON-lines journal outside the repository (/content/stage78-journal/journal.jsonl); completed (seed, level, arm) entries skipped; population, pools, target and schedule digests re-verified on restart; outcomes not printed or read before the run finishes. After the calibration and every finished run the runner copies the journal and run log to branch colab/stage78-journal (results/stage78-interim/), commits and pushes, retrying a failed push once (stage-75 deviation 1). Resuming on another L4 uses the journaled calibration; another device type aborts.",
+    "audit": "tools/audit_llm_supply_filter.py: journal digest; summary recomputation; environments; calibration and the N_cal bound; 54-run grid and order; schedules; kept sets recomputed from journaled scores and their digests; subset digests; QA shares; random-arm QA draws; views per chunk; data and model hashes; QA subsets, web extras and the three pools rebuilt with their digests (Q2048 equal to stage 76); nesting of QA and web chunks across levels; target eligibility recomputed (criteria (a)-(e) on all three pools, counts) and the 512 target IDs re-drawn; target disjoint from all 2,816 exposed and 4,946 trained IDs; identical step-0 losses. On an L4: recompute the proxy scores of seed 37800 at Q1024 and Q2048; replay the first 50 steps of seed 37800 for random and align05_once at Q1024 to their adapter digests.",
+    "exposure": "No new ArabicMMLU item is trained. The 512 new target items are evaluated and recorded as exposed in data/evaluation_status.json after the run. Up to 7,168 FineWeb-2 chunks are trained, of which at most 1,024 are new relative to stage 76 (the web extras), recorded by document index.",
+    "time_estimate": "From stage-76 timings on an L4 (step 0.110 s; proxy scoring 157 s; one 512-item evaluation about 34 s): random about 440 s, align05_once about 400 s, random_once about 235 s, i.e. about 1,075 s per seed and level; 18 x 1,075 s = about 5.4 h, plus data, pools, target eligibility and calibration about 35-40 min: about 6 h in total.",
+    "licenses": "As stage 76: FineWeb-2 ODC-By 1.0; ArabicMMLU CC BY-NC 4.0 (non-commercial research use); Qwen2.5 Apache-2.0. No dataset text is committed; journals hold indices, scores and digests only.",
+    "scope": "One trained model, one proxy, LoRA, one budget, one N, one pool size, three supply levels, one task scored by answer loss, six seeds, a fresh unexposed target (amendment 1). The useful chunks are in-format items from the target benchmark itself, as stages 74-77; the stage-78 smokes found no natural substitute usable with this scorer, so the stage measures how the amount of in-distribution data in web noise changes the equal-cost advantage, not a general capability gain.",
+    "amendment_1": {
+      "date": "2026-11-27",
+      "before": "any stage-78 code, run or evaluation",
+      "by": "the owner",
+      "change": "Target: the 512 exposed stage-76 target items are replaced by 512 new unexposed All/test items (eligibility and draw in target.items), used for evaluation only, so that the stage is confirmatory under project rule 8. The web-extras clause tied to the stage-76 target is replaced by criterion (e) on the new target against all three pools. Everything else (factor, pools, scorer, budget, N, arms, schedules, seeds, primary, prediction, decision rule) is unchanged.",
+      "time_effect": "Target eligibility adds about 10-15 minutes before the calibration (as stage 76); total about 6 h."
+    }
+  },
+  "journal_sha256": "dddd5512d6322ab5814c5ee63fd1f78b0b46bf5b86c6a65c28d5790658e2bf95",
+  "environments": [
+    {
+      "kind": "environment",
+      "time": "2026-11-27T00:57:17Z",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "device": "NVIDIA L4",
+      "resumed_runs": 0
+    }
+  ],
+  "calibration": {
+    "kind": "calibration",
+    "model": "qwen2.5-1.5b",
+    "proxy": "qwen2.5-0.5b",
+    "device": "NVIDIA L4",
+    "costs": {
+      "random": 0.11482005099878734,
+      "proxy_align_grad": 155.22979166599907
+    },
+    "N_cal": 1648,
+    "updates": 1633
+  },
+  "summary": {
+    "primary": {
+      "contrast": "D(1024) - D(2048), D = align05_once at N minus random at 3000",
+      "mean": -0.13723592506115287,
+      "ci95": [
+        -0.1654979838373644,
+        -0.10841891610471066
+      ],
+      "verdict": "refuted"
+    },
+    "prediction_holds": {
+      "primary T > 0 with interval above 0": false,
+      "D(2048) < 0": true,
+      "D(1633) < 0": true,
+      "kept QA share > 0.95 / 0.80 / 0.55 at 2048 / 1633 / 1024": true,
+      "D(1024) > D(1633) > D(2048)": false
+    },
+    "costs": {
+      "random": 0.11482005099878734,
+      "proxy_align_grad": 155.22979166599907
+    },
+    "N": 1633,
+    "N_cal": 1648,
+    "device": "NVIDIA L4",
+    "results": {
+      "loss0": 3.920079545088811,
+      "primary": {
+        "mean": -0.13723592506115287,
+        "ci95": [
+          -0.1654979838373644,
+          -0.10841891610471066
+        ],
+        "per_seed": [
+          -0.13415879783860873,
+          -0.0900621825712733,
+          -0.15187307324958965,
+          -0.09384348073945148,
+          -0.16840062486880925,
+          -0.18507739109918475
+        ],
+        "seeds_negative": 6,
+        "seeds_positive": 0
+      },
+      "levels": {
+        "1024": {
+          "charged": {
+            "mean": -0.28455810024994815,
+            "ci95": [
+              -0.33262266914486344,
+              -0.2376994277801714
+            ],
+            "per_seed": [
+              -0.3306151761644287,
+              -0.2521352503099479,
+              -0.24412335317174438,
+              -0.19710362996556796,
+              -0.30423718102974817,
+              -0.3791340108582517
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "matched": {
+            "mean": -0.3367088917536118,
+            "ci95": [
+              -0.34978808504335274,
+              -0.32719410460170667
+            ],
+            "per_seed": [
+              -0.3265761543007102,
+              -0.327738102118019,
+              -0.3243138069519773,
+              -0.3663947080785874,
+              -0.33480855080415495,
+              -0.34042202826822177
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "selection_term": -0.3195881306989274,
+          "throughput_term": 0.03503003044897923,
+          "accuracy_charged": {
+            "mean": 0.017578125,
+            "ci95": [
+              0.0068359375,
+              0.027018229166666668
+            ],
+            "per_seed": [
+              0.009765625,
+              0.01953125,
+              0.03125,
+              -0.005859375,
+              0.021484375,
+              0.029296875
+            ],
+            "seeds_negative": 1,
+            "seeds_positive": 5
+          },
+          "means": {
+            "random": {
+              "0": 3.920079545088811,
+              "1633": 3.4128870850836392,
+              "3000": 3.37785705463466
+            },
+            "align05_once": 3.093298954384712,
+            "random_once": 3.4300078461383237
+          },
+          "accuracy_means": {
+            "random": {
+              "0": 0.31640625,
+              "1633": 0.3264973958333333,
+              "3000": 0.3284505208333333
+            },
+            "align05_once": 0.3460286458333333,
+            "random_once": 0.3216145833333333
+          },
+          "random_late": -0.03503003044897923,
+          "random_minus_no_update": -0.5422224904541508,
+          "qa_share": {
+            "align05_once": 0.5941008369054909,
+            "random_once": 0.1282914880587875
+          },
+          "qa_share_range": [
+            0.5921616656460502,
+            0.5964482547458665
+          ],
+          "random_qa": {
+            "1633": {
+              "drawn": 212.16666666666666,
+              "distinct": 191.5
+            },
+            "3000": {
+              "drawn": 382,
+              "distinct": 315.5
+            }
+          },
+          "scoring_seconds": 155.55637370600047
+        },
+        "1633": {
+          "charged": {
+            "mean": -0.13656083784007933,
+            "ci95": [
+              -0.2173569494552794,
+              -0.06541927963553462
+            ],
+            "per_seed": [
+              -0.04800233232526807,
+              -0.09242366446414962,
+              -0.22463383691501804,
+              -0.042699528130469844,
+              -0.29822017696278635,
+              -0.11338548824278405
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "matched": {
+            "mean": -0.17250357196220042,
+            "ci95": [
+              -0.23830029037250522,
+              -0.10362652740514022
+            ],
+            "per_seed": [
+              -0.23757506888796343,
+              -0.1258182822202798,
+              -0.277300196888973,
+              -0.05080649921728764,
+              -0.24184774988680147,
+              -0.10167363467189716
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "selection_term": -0.20132121940211314,
+          "throughput_term": 0.06476038156203381,
+          "accuracy_charged": {
+            "mean": 0.009114583333333334,
+            "ci95": [
+              -0.0032552083333333335,
+              0.0244140625
+            ],
+            "per_seed": [
+              0.0,
+              0.00390625,
+              0.017578125,
+              0.00390625,
+              0.04296875,
+              -0.013671875
+            ],
+            "seeds_negative": 1,
+            "seeds_positive": 4
+          },
+          "means": {
+            "random": {
+              "0": 3.920079545088811,
+              "1633": 3.352346233021914,
+              "3000": 3.2875858514598804
+            },
+            "align05_once": 3.151025013619801,
+            "random_once": 3.3235285855820016
+          },
+          "accuracy_means": {
+            "random": {
+              "0": 0.31640625,
+              "1633": 0.3310546875,
+              "3000": 0.3352864583333333
+            },
+            "align05_once": 0.3444010416666667,
+            "random_once": 0.3343098958333333
+          },
+          "random_late": -0.06476038156203383,
+          "random_minus_no_update": -0.6324936936289305,
+          "qa_share": {
+            "align05_once": 0.910696060420494,
+            "random_once": 0.20228618085323535
+          },
+          "qa_share_range": [
+            0.904470300061237,
+            0.9167176974892836
+          ],
+          "random_qa": {
+            "1633": {
+              "drawn": 329.8333333333333,
+              "distinct": 297.1666666666667
+            },
+            "3000": {
+              "drawn": 598.5,
+              "distinct": 497.8333333333333
+            }
+          },
+          "scoring_seconds": 155.62860145116642
+        },
+        "2048": {
+          "charged": {
+            "mean": -0.14732217518879528,
+            "ci95": [
+              -0.17942264358377238,
+              -0.11472293788028765
+            ],
+            "per_seed": [
+              -0.19645637832581997,
+              -0.16207306773867458,
+              -0.09225027992215473,
+              -0.10326014922611648,
+              -0.13583655616093893,
+              -0.19405661975906696
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "matched": {
+            "mean": -0.18711033667204902,
+            "ci95": [
+              -0.22311763826292008,
+              -0.14861857795040123
+            ],
+            "per_seed": [
+              -0.2128981272544479,
+              -0.20460302170249633,
+              -0.23525989807967562,
+              -0.22864826084696688,
+              -0.11328466226404998,
+              -0.12796804988465738
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "selection_term": -0.16764399738409944,
+          "throughput_term": 0.02032182219530415,
+          "accuracy_charged": {
+            "mean": 0.010416666666666666,
+            "ci95": [
+              0.0029296875,
+              0.021158854166666668
+            ],
+            "per_seed": [
+              0.0078125,
+              0.01171875,
+              0.00390625,
+              0.03515625,
+              -0.001953125,
+              0.005859375
+            ],
+            "seeds_negative": 1,
+            "seeds_positive": 5
+          },
+          "means": {
+            "random": {
+              "0": 3.920079545088811,
+              "1633": 3.236999502929393,
+              "3000": 3.216677680734089
+            },
+            "align05_once": 3.069355505545294,
+            "random_once": 3.256465842217343
+          },
+          "accuracy_means": {
+            "random": {
+              "0": 0.31640625,
+              "1633": 0.345703125,
+              "3000": 0.3391927083333333
+            },
+            "align05_once": 0.349609375,
+            "random_once": 0.3349609375
+          },
+          "random_late": -0.02032182219530417,
+          "random_minus_no_update": -0.7034018643547219,
+          "qa_share": {
+            "align05_once": 0.994488671157379,
+            "random_once": 0.2527046335986936
+          },
+          "qa_share_range": [
+            0.9932639314145744,
+            0.9963257807715861
+          ],
+          "random_qa": {
+            "1633": {
+              "drawn": 410.6666666666667,
+              "distinct": 373.5
+            },
+            "3000": {
+              "drawn": 754.5,
+              "distinct": 628.5
+            }
+          },
+          "scoring_seconds": 155.6145010024999
+        }
+      },
+      "D1633_minus_D2048": {
+        "mean": 0.010761337348715946,
+        "ci95": [
+          -0.081554065838039,
+          0.09656193287082715
+        ],
+        "per_seed": [
+          0.1484540460005519,
+          0.06964940327452496,
+          -0.1323835569928633,
+          0.06056062109564664,
+          -0.16238362080184743,
+          0.08067113151628291
+        ],
+        "seeds_negative": 2,
+        "seeds_positive": 4
+      },
+      "D1024_minus_D1633": {
+        "mean": -0.1479972624098688,
+        "ci95": [
+          -0.23313751550085726,
+          -0.059970207386262096
+        ],
+        "per_seed": [
+          -0.28261284383916063,
+          -0.15971158584579825,
+          -0.019489516256726347,
+          -0.15440410183509812,
+          -0.0060170040669618174,
+          -0.26574852261546766
+        ],
+        "seeds_negative": 6,
+        "seeds_positive": 0
+      },
+      "S1024_minus_S2048": {
+        "mean": -0.14959855508156275,
+        "ci95": [
+          -0.1896511952751704,
+          -0.11105756658071186
+        ],
+        "per_seed": [
+          -0.11367802704626229,
+          -0.12313508041552268,
+          -0.08905390887230169,
+          -0.13774644723162055,
+          -0.22152388854010496,
+          -0.2124539783835644
+        ],
+        "seeds_negative": 6,
+        "seeds_positive": 0
+      },
+      "T_accuracy": {
+        "mean": 0.007161458333333333,
+        "ci95": [
+          -0.013997395833333334,
+          0.022135416666666668
+        ],
+        "per_seed": [
+          0.001953125,
+          0.0078125,
+          0.02734375,
+          -0.041015625,
+          0.0234375,
+          0.0234375
+        ],
+        "seeds_negative": 1,
+        "seeds_positive": 5
+      }
+    }
+  },
+  "runs": 54
+}
