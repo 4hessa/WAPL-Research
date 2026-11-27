@@ -1,0 +1,29 @@
+{
+  "stage": "78, pre-protocol smoke 2",
+  "date": "2026-11-27",
+  "status": "Decision rule written and pushed before any code or run of this smoke; chosen by the owner (option 2 of the stage-78 candidates, after smoke 1, commit 26f973c).",
+  "question": "Can the stage-76 proxy scorer (Qwen2.5-0.5B gradient alignment at the seed's initial adapter) separate natural Arabic Wikipedia chunks from FineWeb-2 web chunks well enough to justify a stage-78 protocol with Wikipedia as the useful data, either with the current probe or with a plain-text probe?",
+  "background": "Smoke 1 (commit 26f973c, results/llm-natural-source-smoke.json): random one-pass training on 1633 clean Wikipedia chunks (articles >= 2000 characters, first 65 tokens) lowered the exposed stage-76 target loss by 0.097 (both seeds, both exposed targets), against +0.146 for FineWeb-2 web and -0.833 for ArabicMMLU QA chunks; with the current probe the proxy separated Wikipedia from web with AUC 0.645 (top-512 Wikipedia share 0.338 at pool share 0.25), against 0.976 for QA.",
+  "data": {
+    "exposed_only": "Only exposed or non-benchmark data are used. Probe: the 120 ArabicMMLU All/dev items (exposed in every stage since 73). No ArabicMMLU test item is evaluated or scored, and no model is trained.",
+    "wikipedia": "The 1633 clean Wikipedia chunks of smoke 1, rebuilt exactly (same shard SHA-256 f035e911..., same filter, same decontamination, same draw default_rng(7811)); the rebuilt chunks must equal the smoke-1 chunks (checked through the smoke-1 AUC, below).",
+    "web": "Chunks of the stage-76 pool (pool digest f4d4285c..., rebuilt by experiments.llm_cheap_filter.load_inputs).",
+    "pools": "Pool A = Wikipedia chunks 0-511 + stage-76 kept web 0-767 + removed web 0-767 (exactly the smoke-1 pool). Pool B = Wikipedia chunks 512-1023 + kept web 768-1535 + removed web 768-1535 (fresh chunks). Each pool has 2048 chunks, Wikipedia share 0.25."
+  },
+  "probes": {
+    "P0_cloze": "Current stage-76 probe: gradient of the mean correct-continuation NLL of the 120 dev items in the cloze template (experiments.llm_web_filter.probe_gradient).",
+    "P1_plain": "Plain-text probe: gradient of the mean, over the 120 dev items, of the mean next-token NLL of the item written as plain text, (Context + newline if present) + Question + newline + correct option, no template words, first 192 tokens, one item per forward pass."
+  },
+  "scorer": "Qwen2.5-0.5B with LoRA at seeds 78900 and 78901, per-example LoRA gradients of every pool chunk (batch 16, experiments.llm_budget.PerExampleCapture) dotted with the probe gradient, exactly as the stage-76 align05 scorer; only the probe gradient differs between P0 and P1.",
+  "measurements": "For each probe, seed and pool (8 cells): AUC of Wikipedia vs web scores; Wikipedia share of the top 512 and top 256; scoring seconds (probe gradient included).",
+  "sanity_check": "P0, seed 78900, pool A must reproduce the smoke-1 AUC 0.644622802734375 within 1e-6. If it does not, no decision is taken; the discrepancy is reported to the owner.",
+  "decision_rule": {
+    "per_probe_pass": "A probe passes if, over its 4 cells (2 seeds x 2 pools): mean AUC >= 0.80, AND every cell AUC >= 0.75, AND mean top-512 Wikipedia share >= 0.50 (twice the pool share), AND its mean scoring seconds <= 1.25 x the mean of P0.",
+    "proceed": "If at least one probe passes: proceed to write the stage-78 protocol with Wikipedia as the useful data, using the passing probe with the higher mean AUC (P0 if the two means differ by less than 0.01), and with the selection contrast at matched updates (filter at N minus random_once at N) as a co-primary endpoint next to the equal-cost contrast, as agreed with the owner.",
+    "stop": "If no probe passes: do not write a stage-78 protocol with Wikipedia and this scorer; report the measurements and return the choice to the owner.",
+    "no_other_outcome": "The rule is applied as written. Thresholds, pools, probes and seeds are not changed after any measurement of this smoke."
+  },
+  "threshold_rationale": "Speculative, written before measuring: if the selection gain scales with the excess kept share (share - 0.25) / 0.75 of the label-oracle gap, a kept share of 0.50 gives about one third of that gap; with the smoke-1 effects (Wikipedia -0.097 vs web +0.146 at 1633 updates) this is of the order of -0.05 to -0.08, about the size the six-seed stage-76 intervals could resolve. A share near 0.34 (smoke 1) gives about -0.02, below that resolution.",
+  "time": "About 30-45 minutes on the L4: data rebuild about 20 minutes (stage-76 pool, ArabicMMLU banned sets, Wikipedia chunks), 8 scorings of 2048 chunks of about 41 s each.",
+  "outputs": "tools/smoke_llm_wiki_probe.py (committed before running), results/llm-wiki-probe-smoke.json and its log; no dataset text committed."
+}
