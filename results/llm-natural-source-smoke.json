@@ -1,0 +1,396 @@
+{
+  "kind": "smoke",
+  "stage": 78,
+  "time": "2026-11-26T22:38:14Z",
+  "transformers": "4.46.3",
+  "torch": "2.14.1+cu130",
+  "python": "3.13.16",
+  "mmlu_items": 14575,
+  "banned": {
+    "c1": 250728,
+    "c2": 406271,
+    "c3": 317988,
+    "c4": 356895
+  },
+  "evaluation_sets": {
+    "stage76_target": 512,
+    "stage73_target": 512
+  },
+  "sources": {
+    "wikipedia": {
+      "documents_read": 174171,
+      "min_chars": 2000,
+      "eligible": 4221,
+      "licence": "CC BY-SA 3.0 / GFDL (wikimedia/wikipedia b04c8d1)",
+      "file_sha256": "f035e9118745d465529d48b0b1893824a4f266af2474694dcd35823e767aad17",
+      "chunk_decontamination": {
+        "c1": 54,
+        "c2": 60,
+        "c3": 101,
+        "c4": 48,
+        "dropped_total": 144
+      },
+      "clean_chunks": 4077
+    },
+    "fineweb2_hq": {
+      "documents_read": 40000,
+      "min_chars": 0,
+      "eligible": 40000,
+      "licence": "ODC-By 1.0 (epfml/FineWeb2-HQ c0c06e9)",
+      "file_sha256": "9fddfaaf5f9a4b1b74ac066d95d1815ae3a7edb4f40680b3ed5abb8173f186f2",
+      "chunk_decontamination": {
+        "c1": 1060,
+        "c2": 1135,
+        "c3": 1225,
+        "c4": 394,
+        "dropped_total": 1485
+      },
+      "clean_chunks": 38515
+    },
+    "fineweb_edu_ar_mt": {
+      "documents_read": 48757,
+      "min_chars": 0,
+      "eligible": 48757,
+      "licence": "ODC-By 1.0, machine translated (nizarun/FineWeb-Edu-Arabic-24M f53906e)",
+      "file_sha256": "56ede6894c7b3dee53130ca641e95c8480d0b1291716668fd174ebb51aeb7657",
+      "chunk_decontamination": {
+        "c1": 779,
+        "c2": 894,
+        "c3": 1137,
+        "c4": 134,
+        "dropped_total": 1218
+      },
+      "clean_chunks": 47539
+    },
+    "exams_ar": {
+      "arabic_items": 562,
+      "item_near_duplicates": {
+        "identical": 534,
+        "jaccard": 534,
+        "containment": 510,
+        "ngram8": 532,
+        "dropped_total": 539
+      },
+      "item_field_or_char_hits": 4,
+      "clean_items": 19,
+      "subjects": {
+        "Islamic Studies": 1,
+        "Science": 8,
+        "Biology": 1,
+        "Social": 9
+      },
+      "eligible": 9,
+      "licence": "CC BY-SA 4.0 (mhardalov/exams 4ff1080)",
+      "file_sha256": null,
+      "chunk_decontamination": {
+        "c1": 0,
+        "c2": 3,
+        "c3": 0,
+        "c4": 0,
+        "dropped_total": 3
+      },
+      "clean_chunks": 6,
+      "note": "fewer than 1633 clean chunks: not trained"
+    }
+  },
+  "data_seconds": 599.3355474472046,
+  "device": "NVIDIA L4",
+  "step0": {
+    "stage76_target": {
+      "loss": 3.9251756430603564,
+      "accuracy": 0.318359375
+    },
+    "stage73_target": {
+      "loss": 3.8155883352446835,
+      "accuracy": 0.314453125
+    }
+  },
+  "training": {
+    "web_fineweb2": {
+      "78900": {
+        "checkpoints": {
+          "816": {
+            "stage76_target": {
+              "loss": 4.052666328730993,
+              "accuracy": 0.32421875
+            },
+            "stage73_target": {
+              "loss": 3.959733711904846,
+              "accuracy": 0.31640625
+            }
+          },
+          "1633": {
+            "stage76_target": {
+              "loss": 4.141970524506178,
+              "accuracy": 0.314453125
+            },
+            "stage73_target": {
+              "loss": 4.03922225459246,
+              "accuracy": 0.310546875
+            }
+          }
+        },
+        "median_step_seconds": 0.11409973449963218
+      },
+      "78901": {
+        "checkpoints": {
+          "816": {
+            "stage76_target": {
+              "loss": 3.9234904508921318,
+              "accuracy": 0.3125
+            },
+            "stage73_target": {
+              "loss": 3.771304545516614,
+              "accuracy": 0.310546875
+            }
+          },
+          "1633": {
+            "stage76_target": {
+              "loss": 3.999942464288324,
+              "accuracy": 0.30078125
+            },
+            "stage73_target": {
+              "loss": 3.8670126081851777,
+              "accuracy": 0.29296875
+            }
+          }
+        },
+        "median_step_seconds": 0.11489208400007556
+      }
+    },
+    "qa_arabicmmlu": {
+      "78900": {
+        "checkpoints": {
+          "816": {
+            "stage76_target": {
+              "loss": 3.1746586483495776,
+              "accuracy": 0.357421875
+            },
+            "stage73_target": {
+              "loss": 3.072723784862319,
+              "accuracy": 0.3359375
+            }
+          },
+          "1633": {
+            "stage76_target": {
+              "loss": 3.040577125560958,
+              "accuracy": 0.341796875
+            },
+            "stage73_target": {
+              "loss": 2.936409485846525,
+              "accuracy": 0.365234375
+            }
+          }
+        },
+        "median_step_seconds": 0.11456598850008959
+      },
+      "78901": {
+        "checkpoints": {
+          "816": {
+            "stage76_target": {
+              "loss": 3.1788410787121393,
+              "accuracy": 0.380859375
+            },
+            "stage73_target": {
+              "loss": 3.065845030505443,
+              "accuracy": 0.369140625
+            }
+          },
+          "1633": {
+            "stage76_target": {
+              "loss": 3.1440427371271653,
+              "accuracy": 0.361328125
+            },
+            "stage73_target": {
+              "loss": 2.996014887961792,
+              "accuracy": 0.359375
+            }
+          }
+        },
+        "median_step_seconds": 0.11434587150006337
+      }
+    },
+    "wikipedia": {
+      "78900": {
+        "checkpoints": {
+          "816": {
+            "stage76_target": {
+              "loss": 3.867367266153451,
+              "accuracy": 0.3046875
+            },
+            "stage73_target": {
+              "loss": 3.7169490025844425,
+              "accuracy": 0.31640625
+            }
+          },
+          "1633": {
+            "stage76_target": {
+              "loss": 3.8071393635473214,
+              "accuracy": 0.3359375
+            },
+            "stage73_target": {
+              "loss": 3.6973147378885187,
+              "accuracy": 0.30078125
+            }
+          }
+        },
+        "median_step_seconds": 0.11493976000019757
+      },
+      "78901": {
+        "checkpoints": {
+          "816": {
+            "stage76_target": {
+              "loss": 3.905462946393527,
+              "accuracy": 0.32421875
+            },
+            "stage73_target": {
+              "loss": 3.753484585438855,
+              "accuracy": 0.318359375
+            }
+          },
+          "1633": {
+            "stage76_target": {
+              "loss": 3.8491781164193526,
+              "accuracy": 0.30859375
+            },
+            "stage73_target": {
+              "loss": 3.724130259011872,
+              "accuracy": 0.30859375
+            }
+          }
+        },
+        "median_step_seconds": 0.11484832899986941
+      }
+    },
+    "fineweb2_hq": {
+      "78900": {
+        "checkpoints": {
+          "816": {
+            "stage76_target": {
+              "loss": 4.034637605655007,
+              "accuracy": 0.298828125
+            },
+            "stage73_target": {
+              "loss": 3.9375188220728887,
+              "accuracy": 0.31640625
+            }
+          },
+          "1633": {
+            "stage76_target": {
+              "loss": 3.9092751113930717,
+              "accuracy": 0.310546875
+            },
+            "stage73_target": {
+              "loss": 3.784228968404932,
+              "accuracy": 0.326171875
+            }
+          }
+        },
+        "median_step_seconds": 0.1143927180000901
+      },
+      "78901": {
+        "checkpoints": {
+          "816": {
+            "stage76_target": {
+              "loss": 3.9392151537467726,
+              "accuracy": 0.318359375
+            },
+            "stage73_target": {
+              "loss": 3.8188563878065906,
+              "accuracy": 0.310546875
+            }
+          },
+          "1633": {
+            "stage76_target": {
+              "loss": 4.051355090283323,
+              "accuracy": 0.314453125
+            },
+            "stage73_target": {
+              "loss": 3.9412097487365827,
+              "accuracy": 0.3125
+            }
+          }
+        },
+        "median_step_seconds": 0.11443281500032754
+      }
+    },
+    "fineweb_edu_ar_mt": {
+      "78900": {
+        "checkpoints": {
+          "816": {
+            "stage76_target": {
+              "loss": 3.829822405037703,
+              "accuracy": 0.333984375
+            },
+            "stage73_target": {
+              "loss": 3.7104059633566067,
+              "accuracy": 0.318359375
+            }
+          },
+          "1633": {
+            "stage76_target": {
+              "loss": 3.934514907130506,
+              "accuracy": 0.318359375
+            },
+            "stage73_target": {
+              "loss": 3.7758982646628283,
+              "accuracy": 0.298828125
+            }
+          }
+        },
+        "median_step_seconds": 0.11449922900101228
+      },
+      "78901": {
+        "checkpoints": {
+          "816": {
+            "stage76_target": {
+              "loss": 3.8826279296772555,
+              "accuracy": 0.3203125
+            },
+            "stage73_target": {
+              "loss": 3.7666524016531184,
+              "accuracy": 0.3046875
+            }
+          },
+          "1633": {
+            "stage76_target": {
+              "loss": 3.8293556430144235,
+              "accuracy": 0.318359375
+            },
+            "stage73_target": {
+              "loss": 3.706906957231695,
+              "accuracy": 0.3125
+            }
+          }
+        },
+        "median_step_seconds": 0.11453608599913423
+      }
+    }
+  },
+  "proxy": {
+    "qa_arabicmmlu": {
+      "auc": 0.9756736755371094,
+      "candidate_share_top512": 0.923828125,
+      "candidate_share_top256": 1.0,
+      "seconds": 40.949982209000154
+    },
+    "wikipedia": {
+      "auc": 0.644622802734375,
+      "candidate_share_top512": 0.337890625,
+      "candidate_share_top256": 0.3828125,
+      "seconds": 40.9643056449986
+    },
+    "fineweb2_hq": {
+      "auc": 0.5749677022298177,
+      "candidate_share_top512": 0.275390625,
+      "candidate_share_top256": 0.265625,
+      "seconds": 40.87340020099873
+    },
+    "fineweb_edu_ar_mt": {
+      "auc": 0.6391461690266927,
+      "candidate_share_top512": 0.326171875,
+      "candidate_share_top256": 0.38671875,
+      "seconds": 40.914786018000086
+    }
+  }
+}
