@@ -6,7 +6,7 @@
   "background": "Smoke 1 (commit 26f973c, results/llm-natural-source-smoke.json): random one-pass training on 1633 clean Wikipedia chunks (articles >= 2000 characters, first 65 tokens) lowered the exposed stage-76 target loss by 0.097 (both seeds, both exposed targets), against +0.146 for FineWeb-2 web and -0.833 for ArabicMMLU QA chunks; with the current probe the proxy separated Wikipedia from web with AUC 0.645 (top-512 Wikipedia share 0.338 at pool share 0.25), against 0.976 for QA.",
   "data": {
     "exposed_only": "Only exposed or non-benchmark data are used. Probe: the 120 ArabicMMLU All/dev items (exposed in every stage since 73). No ArabicMMLU test item is evaluated or scored, and no model is trained.",
-    "wikipedia": "The 1633 clean Wikipedia chunks of smoke 1, rebuilt exactly (same shard SHA-256 f035e911..., same filter, same decontamination, same draw default_rng(7811)); the rebuilt chunks must equal the smoke-1 chunks (checked through the smoke-1 AUC, below).",
+    "wikipedia": "The 1633 clean Wikipedia chunks of smoke 1, rebuilt exactly (same shard SHA-256 f035e911..., same filter, same decontamination, same draw default_rng(7810), i.e. 7810 + k with k = 0 for Wikipedia in tools/smoke_llm_natural_sources.py); the rebuilt chunks must equal the smoke-1 chunks (checked through the smoke-1 AUC, below).",
     "web": "Chunks of the stage-76 pool (pool digest f4d4285c..., rebuilt by experiments.llm_cheap_filter.load_inputs).",
     "pools": "Pool A = Wikipedia chunks 0-511 + stage-76 kept web 0-767 + removed web 0-767 (exactly the smoke-1 pool). Pool B = Wikipedia chunks 512-1023 + kept web 768-1535 + removed web 768-1535 (fresh chunks). Each pool has 2048 chunks, Wikipedia share 0.25."
   },
