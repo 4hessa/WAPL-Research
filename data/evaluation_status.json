@@ -27,8 +27,8 @@
       "protocol": "research/ud-cost-frontier-protocol.json"
     },
     "ArabicMMLU": {
-      "stage": 77,
-      "status": "Exposure accumulated over stages 73-77; see stage_73 to stage_77. Test items in none of the lists below remain unscored and untrained in this project.",
+      "stage": 78,
+      "status": "Exposure accumulated over stages 73-78; see stage_73 to stage_78. Test items in none of the lists below remain unscored and untrained in this project.",
       "revision": "7aa530e2893ac420352b3f5c1a1310c010e9758b",
       "protocol": [
         "research/llm-web-filter-protocol.json",
@@ -71,16 +71,23 @@
         "probe": "All 120 All/dev items, used again as the alignment probe (scored by DeepSeek-LLM-7B-base itself).",
         "target": "512 All/test items (default_rng(7722) over 5,337 items that were unscored, untrained and clean under criteria (a)-(e), with (e) on the stage-77 pool as trained in DeepSeek tokens and the 4,946 trained items in their template) evaluated as the stage-77 target; exposed. IDs: results/llm-deepseek-filter-journal.jsonl, calibration.population.target_items.",
         "used_for_training": "None new: the 4,946 stage-74 training items were trained again, repacked into 1,992 DeepSeek-tokenized QA chunks."
+      },
+      "stage_78": {
+        "protocol": "research/llm-supply-filter-protocol.json (amendment 1)",
+        "probe": "All 120 All/dev items, used again as the alignment probe (scored by the Qwen2.5-0.5B proxy).",
+        "target": "512 All/test items (default_rng(7822) over 4,822 items outside the 2,816 earlier evaluated rows and the 4,946 trained IDs and clean under criteria (a)-(e), with (e) on all three stage-78 pools as trained and the 4,946 trained items in their template) evaluated as the stage-78 target; exposed. IDs: results/llm-supply-filter-journal.jsonl, calibration.population.target_items.",
+        "used_for_training": "None new: subsets of the 2048 stage-74 QA chunks (items among the 4,946 already recorded under stage_74) were trained again."
       }
     },
     "FineWeb2_arb_Arab": {
-      "stage": 77,
+      "stage": 78,
       "status": "arb_Arab/test/000_00000.parquet (all) and arb_Arab_removed/train/000_00000.parquet (first 20 row groups) used as training pools; 2048 kept and 1024 removed chunks sampled.",
       "revision": "af9c13333eb981300149d5ca60a8e9d659b276b9",
       "protocol": "research/llm-web-filter-protocol.json",
       "stage_74": "Same files reused as training pools: 1843 kept and 922 removed chunks sampled (default_rng(7413), default_rng(7414)), first 65 tokens, decontaminated against all ArabicMMLU items; document indices in calibration.population.",
       "stage_76": "Same files reused as training pools: 3072 kept and 3072 removed chunks sampled (default_rng(7611).choice(41443), default_rng(7612).choice(18831)) from the stage-74 decontaminated chunk lists, first 65 tokens; document indices in results/llm-cheap-filter-journal.jsonl, calibration.population.",
-      "stage_77": "Same files reused as training pools: 2988 kept and 2988 removed chunks sampled (default_rng(7711).choice(41418), default_rng(7712).choice(18697)) from candidates decontaminated with Qwen-tokenized 8-grams (amendment 1), first 147 DeepSeek tokens; document indices in results/llm-deepseek-filter-journal.jsonl, calibration.population.kept_documents and removed_documents."
+      "stage_77": "Same files reused as training pools: 2988 kept and 2988 removed chunks sampled (default_rng(7711).choice(41418), default_rng(7712).choice(18697)) from candidates decontaminated with Qwen-tokenized 8-grams (amendment 1), first 147 DeepSeek tokens; document indices in results/llm-deepseek-filter-journal.jsonl, calibration.population.kept_documents and removed_documents.",
+      "stage_78": "Same files reused as training pools: the stage-76 draws (3072 kept, 3072 removed) plus extras from the stage-74 decontaminated lists (default_rng(7811) and default_rng(7812) permutations over the remaining chunks; 512 kept and 512 removed extras at Q1024), first 65 tokens; 7,154 distinct chunks trained in at least one run (3,575 kept, 3,579 removed), of which 1,010 (503 kept, 507 removed) are not in the stage-76 pool; document indices in results/llm-supply-filter-journal.jsonl, calibration.population.levels."
     },
     "Aya_dataset_Standard_Arabic": {
       "stage": 74,
