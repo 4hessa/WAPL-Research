@@ -1,0 +1,8 @@
+.....s.............................................s........................................................./content/WAPL-Research/tests/test_llm_selection.py:38: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  self.assertTrue(all(float(p.abs().sum()) == 0 for n, p in model.named_parameters() if n.endswith('.B')))
+...................................................................................................
+----------------------------------------------------------------------
+Ran 208 tests in 9.934s
+
+OK (skipped=2)
