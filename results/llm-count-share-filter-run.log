@@ -1,0 +1,154 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795811809.900506    6853 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795811809.961676    6853 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1795811812.306289    6853 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1795811812.306805    6853 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+backup pushed: 0 finished runs
+qwen2.5-1.5b qwen2.5-0.5b NVIDIA L4 N 1633 N_cal 1574 B_eq(4096) 2366
+1/72 runs complete
+backup pushed: 1 finished runs
+2/72 runs complete
+backup pushed: 2 finished runs
+3/72 runs complete
+backup pushed: 3 finished runs
+4/72 runs complete
+backup pushed: 4 finished runs
+5/72 runs complete
+backup pushed: 5 finished runs
+6/72 runs complete
+backup pushed: 6 finished runs
+7/72 runs complete
+backup pushed: 7 finished runs
+8/72 runs complete
+backup pushed: 8 finished runs
+9/72 runs complete
+backup pushed: 9 finished runs
+10/72 runs complete
+backup pushed: 10 finished runs
+11/72 runs complete
+backup pushed: 11 finished runs
+12/72 runs complete
+backup pushed: 12 finished runs
+13/72 runs complete
+backup pushed: 13 finished runs
+14/72 runs complete
+backup pushed: 14 finished runs
+15/72 runs complete
+backup pushed: 15 finished runs
+16/72 runs complete
+backup pushed: 16 finished runs
+17/72 runs complete
+backup pushed: 17 finished runs
+18/72 runs complete
+backup pushed: 18 finished runs
+19/72 runs complete
+backup pushed: 19 finished runs
+20/72 runs complete
+backup pushed: 20 finished runs
+21/72 runs complete
+backup pushed: 21 finished runs
+22/72 runs complete
+backup pushed: 22 finished runs
+23/72 runs complete
+backup pushed: 23 finished runs
+24/72 runs complete
+backup pushed: 24 finished runs
+25/72 runs complete
+backup pushed: 25 finished runs
+26/72 runs complete
+backup pushed: 26 finished runs
+27/72 runs complete
+backup pushed: 27 finished runs
+28/72 runs complete
+backup pushed: 28 finished runs
+29/72 runs complete
+backup pushed: 29 finished runs
+30/72 runs complete
+backup pushed: 30 finished runs
+31/72 runs complete
+backup pushed: 31 finished runs
+32/72 runs complete
+backup pushed: 32 finished runs
+33/72 runs complete
+backup pushed: 33 finished runs
+34/72 runs complete
+backup pushed: 34 finished runs
+35/72 runs complete
+backup pushed: 35 finished runs
+36/72 runs complete
+backup pushed: 36 finished runs
+37/72 runs complete
+backup pushed: 37 finished runs
+38/72 runs complete
+backup pushed: 38 finished runs
+39/72 runs complete
+backup pushed: 39 finished runs
+40/72 runs complete
+backup pushed: 40 finished runs
+41/72 runs complete
+backup pushed: 41 finished runs
+42/72 runs complete
+backup pushed: 42 finished runs
+43/72 runs complete
+backup pushed: 43 finished runs
+44/72 runs complete
+backup pushed: 44 finished runs
+45/72 runs complete
+backup pushed: 45 finished runs
+46/72 runs complete
+backup pushed: 46 finished runs
+47/72 runs complete
+backup pushed: 47 finished runs
+48/72 runs complete
+backup pushed: 48 finished runs
+49/72 runs complete
+backup pushed: 49 finished runs
+50/72 runs complete
+backup pushed: 50 finished runs
+51/72 runs complete
+backup pushed: 51 finished runs
+52/72 runs complete
+backup pushed: 52 finished runs
+53/72 runs complete
+backup pushed: 53 finished runs
+54/72 runs complete
+backup pushed: 54 finished runs
+55/72 runs complete
+backup pushed: 55 finished runs
+56/72 runs complete
+backup pushed: 56 finished runs
+57/72 runs complete
+backup pushed: 57 finished runs
+58/72 runs complete
+backup pushed: 58 finished runs
+59/72 runs complete
+backup pushed: 59 finished runs
+60/72 runs complete
+backup pushed: 60 finished runs
+61/72 runs complete
+backup pushed: 61 finished runs
+62/72 runs complete
+backup pushed: 62 finished runs
+63/72 runs complete
+backup pushed: 63 finished runs
+64/72 runs complete
+backup pushed: 64 finished runs
+65/72 runs complete
+backup pushed: 65 finished runs
+66/72 runs complete
+backup pushed: 66 finished runs
+67/72 runs complete
+backup pushed: 67 finished runs
+68/72 runs complete
+backup pushed: 68 finished runs
+69/72 runs complete
+backup pushed: 69 finished runs
+70/72 runs complete
+backup pushed: 70 finished runs
+71/72 runs complete
+backup pushed: 71 finished runs
+72/72 runs complete
+backup pushed: 72 finished runs
+summary written to results/llm-count-share-filter.json

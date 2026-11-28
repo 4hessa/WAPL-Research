@@ -1,0 +1,1063 @@
+{
+  "stage": 79,
+  "protocol": {
+    "stage": 79,
+    "date": "2026-11-27",
+    "status": "Written and pushed before any stage-79 code or run. Design choices approved by the owner on 27 November 2026: N and B fixed in every cell, exact equal cost at M = 4096 secondary; no fifth (128-chunk) cell; random_once kept; two co-primary contrasts with a Bonferroni correction, each with its own prediction and decision rule.",
+    "reference_commit": "637c087",
+    "question": "At the stage-78 trained model, proxy scorer, budget and number of filter updates, does the equal-cost advantage of the one-pass offline filter follow the number of useful (in-format QA) chunks in the pool, their share of the pool, or both? And does a pool with only 256 useful chunks suffice for the filter to beat random at equal cost?",
+    "motivation": "Stage 78 varied the useful supply Q at fixed pool size M = 8192, so supply and share moved together (0.125, 0.199, 0.25), and the primary was refuted: T = D(1024) - D(2048) = -0.137 [-0.165, -0.108], 6/6 seeds. In a post hoc split, the filter's loss barely changed from Q2048 to Q1024 (+0.024 [-0.014, +0.062]), while random at 3000 worsened by +0.161 [+0.149, +0.173] as its QA draws fell from 755 to 382. This suggests that the share drives the random control and that the count matters little to the filter above about 1000 chunks, but stage 78 cannot separate the two. This stage crosses two pool sizes with two shares, so that one count appears at two shares and each share at two counts, and includes a cell with 256 QA chunks.",
+    "factor": {
+      "varied": "Pool size M in {4096, 8192} crossed with QA share s in {1/16, 1/8}. Cells: a = (4096, 1/16), Q = 256; b = (4096, 1/8), Q = 512; c = (8192, 1/16), Q = 512; d = (8192, 1/8), Q = 1024.",
+      "fixed": "Trained model Qwen2.5-1.5B and proxy Qwen2.5-0.5B with the stage-76/78 numerics, LoRA (rank 8, alpha 16, q_proj and v_proj) and AdamW (lr 5e-4, weight decay 0); scorer: gradient alignment with the 120 All/dev probe at the seed's initial adapter (experiments.llm_web_filter.score, align_grad, batch 16); N = 1633 filter updates and B = 3000 random-step costs in every cell; chunk length 65 tokens; arms and schedule rules as stage 78.",
+      "identity": "Q = M x s, so only two of the three quantities can vary independently. The design separates count from share under the assumption that pool size affects the outcome only through them. Pool size per se is not separated from count or share, and this is stated as a limitation.",
+      "cost_note": "Scoring time scales with M: S(4096) is about half of S(8192) (about 676 against 1352 random steps). N and B are fixed in every cell (owner's choice), so at M = 4096 the filter leaves about 690 charged steps unused. The primary contrasts therefore compare the filter at no more than the random arm's cost, which is conservative against the filter in the M = 4096 cells. The exact equal-cost comparison at M = 4096 (random at B_eq(4096), below) is secondary."
+    },
+    "data": {
+      "qa_chunks": "Only the 2048 QA chunks of stages 74, 76 and 78 (experiments.llm_qa_mix.qa_list, digest 12b3a1f8...), all among the 4,946 IDs already recorded as trained. Q1024 = the stage-78 Q1024 subset (positions in the 2048; stage-78 draws 7801 and 7802, QA subset digest as journaled in stage 78). Q512 = sort(Q1024[default_rng(7901).choice(1024, 512, replace=False)]). Q256 = sort(Q512[default_rng(7902).choice(512, 256, replace=False)]). Nested: Q256 within Q512 within Q1024. Cells b and c use the same 512 QA chunks. No new ArabicMMLU item is trained.",
+      "web_chunks": "Ordering as stage 78: kept list = the stage-76 kept draws (3072, default_rng(7611)) followed by extras taken in order from the stage-78 permutation default_rng(7811) over the remaining decontaminated kept chunks; removed list likewise (stage-76 draws default_rng(7612), then the default_rng(7812) permutation). The first 512 extras of each permutation are the stage-78 extras. Per cell, the web part is the first k_kept of the kept list and the first k_removed of the removed list, with k_kept = ceil(W / 2), k_removed = floor(W / 2) and W = M - Q: a 1920 + 1920; b 1792 + 1792; c 3840 + 3840 (extras 1-768); d 3584 + 3584 (extras 1-512, equal to the stage-78 Q1024 web chunks). Nested: the web chunks of b are within a, a within d, and d within c. Counts and digests are journaled.",
+      "pool_layout": "Positions 0..Q-1 the QA chunks (in subset order), then the kept web chunks in list order, then the removed web chunks in list order. Cell d must reproduce the stage-78 Q1024 pool digest (calibration.population.levels['1024'].pool_sha256 in results/llm-supply-filter-journal.jsonl), else abort.",
+      "probe": "The 120 All/dev items (exposed), as stages 73-78."
+    },
+    "target": {
+      "items": "512 new ArabicMMLU All/test items, never evaluated or trained in this project. Eligible rows: (1) not in any earlier evaluation set (the 2,816 rows excluded in stage 78, experiments.llm_supply_filter.excluded_rows, plus the 512 stage-78 target IDs journaled in results/llm-supply-filter-journal.jsonl; 3,328 rows; abort if the count differs); (2) not one of the 4,946 IDs used for training (data/evaluation_status.json, stage_74.used_for_training); (3) clean under criteria (a)-(e) of stage 75 (experiments.llm_once_filter.target_candidates, unchanged), with criterion (e) applied to all four stage-79 pools as trained plus the 4,946 items tokenized in the training template. Counts journaled; abort if fewer than 512 rows are eligible. Target = sort(eligible[default_rng(7922).choice(len(eligible), 512, replace=False)]) in row order. Used for evaluation only; exposed after this stage.",
+      "expected_eligible": "About 4,200 (4,822 in stage 78, minus its 512 targets and a few more for criterion (e) on the 256 + 256 new web extras). Not a decision criterion.",
+      "exposure_status": "Confirmatory: the target items are unexposed before this stage (checked against data/evaluation_status.json and the journals of stages 73-78), so project rule 8 is met.",
+      "format": "Cloze item loss and accuracy exactly as stages 73-78 (experiments.llm_web_filter.evaluate) with the 1.5B model. Step 0 is evaluated in every random run; with LoRA B = 0 it must be identical across runs."
+    },
+    "design": {
+      "seeds": [
+        37900,
+        37901,
+        37902,
+        37903,
+        37904,
+        37905
+      ],
+      "cells": {
+        "a": {
+          "M": 4096,
+          "share": 0.0625,
+          "Q": 256
+        },
+        "b": {
+          "M": 4096,
+          "share": 0.125,
+          "Q": 512
+        },
+        "c": {
+          "M": 8192,
+          "share": 0.0625,
+          "Q": 512
+        },
+        "d": {
+          "M": 8192,
+          "share": 0.125,
+          "Q": 1024
+        }
+      },
+      "N": 1633,
+      "B": 3000,
+      "calibration": "Before any target evaluation, seed 79999: c_r = median of steps 5-24 of 24 random 1.5B steps on the cell-d pool; S(8192) = wall-clock of complete 0.5B proxy scoring of the cell-d pool; S(4096) = the same on the cell-b pool. Journaled. N_cal = floor(B - S(8192) / c_r + 1e-9); if N_cal is outside [1470, 1796] (1633 +/- 10%), abort before any run and report. B_eq(4096) = N + ceil(S(4096) / c_r); if B_eq(4096) is not below 3000, abort before any run. B_eq(8192) is taken as B = 3000 (as stage 78, whose N_cal 1648 left 15 charged steps unused).",
+      "arms": {
+        "random": "Each step a chunk drawn uniformly with replacement from the cell's pool; 3000 updates; evaluated at 0, N and 3000, and in the M = 4096 cells also at B_eq(4096).",
+        "align05_once": "Score the cell's pool with the 0.5B proxy at the seed's initial adapter (proxy freed before the 1.5B model is loaded); keep the N highest scores (ties to the lower index); train the 1.5B model on the kept chunks once each in random order; N updates; evaluated at N. The full scoring time is journaled.",
+        "random_once": "Repetition-matched control: a uniformly random N-chunk subset of the cell's pool, once each in the align05_once order; N updates; evaluated at N. No scoring."
+      },
+      "schedule": "Per seed and pool size: rng = default_rng(seed); in this order rand = rng.integers(M, size=3000); subsetN = sort(rng.choice(M, 1633, replace=False)); once = rng.permutation(1633). align05_once trains kept[once], random_once subsetN[once], random rand. Cells with the same M and seed share the schedule and differ only in pool content.",
+      "run_order": "Seeds in order; within seed index i, cells in the order (a, b, c, d) rotated left by i mod 4; within each cell, arms (random, align05_once, random_once) rotated left by i mod 3.",
+      "measurement": "As stage 78. Per run: losses and accuracies at the checkpoints, step seconds, adapter digest at step 50, views per training-set chunk (max and mean). Per align05_once run: all M scores, kept indices and digest, QA share and QA count of the kept set, scoring seconds. Per random_once run: subset digest and QA share. Per random run: QA chunks drawn and distinct QA chunks seen by N, B_eq(4096) (M = 4096 only) and 3000.",
+      "coverage": "6 seeds x 4 cells x 3 arms = 72 runs plus one calibration."
+    },
+    "primary": {
+      "definition": "D(cell) = align05_once loss at N minus random loss at 3000 in that cell, per seed. Two co-primary contrasts, each per seed, mean over six seeds with a paired seed-bootstrap interval (seed 7903, 10000 resamples) at 97.5% (Bonferroni for two contrasts: quantiles 0.0125 and 0.9875).",
+      "E_count": "Count effect at fixed share: E_count = 1/2 x [(D(c) - D(a)) + (D(d) - D(b))], i.e. doubling the QA count (256 to 512 at share 1/16; 512 to 1024 at share 1/8) with the share held fixed. Negative means a larger equal-cost advantage with more useful chunks.",
+      "E_share": "Share effect at fixed count: E_share = D(c) - D(b), i.e. the same 512 QA chunks at share 1/16 (M = 8192) against share 1/8 (M = 4096). Negative means a larger equal-cost advantage at the lower share."
+    },
+    "secondary": "Paired seed-bootstrap 95% intervals, no multiplicity adjustment: (1) D(cell) for each cell; (2) the exact equal-cost contrast at M = 4096, D_eq(cell) = align05_once at N minus random at B_eq(4096), cells a and b, and E_share and E_count recomputed with D_eq in the M = 4096 cells; (3) decomposition of each primary into its filter part and its random part (E_count and E_share computed on align05_once loss at N alone, and on random loss at 3000 alone, with the sign convention that D = filter - random); (4) matched selection S(cell) = align05_once at N minus random_once at N, each cell, and E_count and E_share computed on S; (5) selection term and throughput term per cell, and random at 3000 minus random at N; (6) accuracy versions of D, E_count and E_share; (7) QA share and QA count of the kept sets per cell; QA chunks drawn and distinct QA chunks seen by random; (8) random at 3000 minus no update, each cell; (9) share effect at fixed pool size, 1/2 x [(D(b) - D(a)) + (D(d) - D(c))] (count and share both change; descriptive only); (10) D(d) compared descriptively with the stage-78 D(1024) (-0.285 [-0.333, -0.238]) as a replication on the same pool with new seeds and target.",
+    "prediction": {
+      "written": "Before any stage-79 code or run, 27 November 2026.",
+      "reasoning": "In stage 78 the filter kept most of the available QA chunks (970 of 1024 at share 0.125) and its loss changed little between 970 and 1,624 kept QA chunks, while random's loss followed the number of QA chunks it drew, which is proportional to the share (about s x 3000 draws). At fixed count 512 (cells b and c), the filter is expected to keep about the same QA chunks, while random at share 1/16 draws about 188 QA chunks against about 375 at 1/8, so D should be more negative at the lower share. At fixed share, random draws the same expected number of QA chunks at both counts, so a count effect must come from the filter. With 256 or 512 QA chunks the kept set is mostly web (at least 1121 or 1377 of 1633 chunks), well below the range where stage 78 saw diminishing returns, so more QA chunks are expected to help the filter. This item rests on less evidence than E_share. Magnitudes are speculative and not part of the tested predictions.",
+      "E_count": "E_count < 0 with the 97.5% interval below 0.",
+      "E_share": "E_share < 0 with the 97.5% interval below 0.",
+      "other_items": [
+        "D(cell) < 0 in all four cells, each with its 95% interval below 0 (including cell a, 256 QA chunks).",
+        "Kept QA count of align05_once above 0.85 x Q in every cell (mean over seeds).",
+        "Decomposition of E_share: its random part is the larger, i.e. |random part| > |filter part|.",
+        "D(d) < 0 (replication of stage-78 Q1024 on the same pool)."
+      ]
+    },
+    "decision_rule": {
+      "E_count": {
+        "supported": "97.5% interval entirely below 0: at fixed share, more useful chunks increase the equal-cost advantage of one-pass filtering in this setting.",
+        "not_established": "97.5% interval includes 0: no claim about a count effect at fixed share; the estimate and its interval are reported.",
+        "refuted": "97.5% interval entirely above 0: at fixed share, more useful chunks reduce the equal-cost advantage, contrary to the prediction."
+      },
+      "E_share": {
+        "supported": "97.5% interval entirely below 0: at a fixed number of useful chunks, a lower share increases the equal-cost advantage of one-pass filtering in this setting.",
+        "not_established": "97.5% interval includes 0: no claim about a share effect at fixed count; the estimate and its interval are reported.",
+        "refuted": "97.5% interval entirely above 0: at a fixed number of useful chunks, a lower share reduces the equal-cost advantage, contrary to the prediction."
+      },
+      "joint_reading": "Only E_share supported: the advantage follows the share (through the random control), not the count. Only E_count supported: it follows the count, not the share. Both supported: both matter. Neither: no claim. A refuted contrast is reported as refuted whatever the other shows. Cell a's D interval below 0 is read as 256 QA chunks sufficing at share 1/16 in this setting, not as a minimum.",
+      "other_items": "Each other prediction item is reported as held or not held exactly as written; a failed item is not reinterpreted. The secondary contrasts, the decomposition and the exact equal-cost version do not change the primary verdicts."
+    },
+    "resumption": "As stage 78. Append-only JSON-lines journal outside the repository (/content/stage79-journal/journal.jsonl); completed (seed, cell, arm) entries skipped; population, pools, target and schedule digests re-verified on restart; outcomes not printed or read before the run finishes. After the calibration and every finished run the runner copies the journal and run log to branch colab/stage79-journal (results/stage79-interim/), commits and pushes, retrying a failed push once. Resuming on another L4 uses the journaled calibration; another device type aborts.",
+    "audit": "tools/audit_llm_count_share_filter.py, written as for stage 78: journal digest; summary recomputation; environments; calibration, the N_cal bound and B_eq(4096); 72-run grid and order; schedules per seed and pool size; update counts and checkpoints; kept sets recomputed from journaled scores and their digests; subset digests; QA shares and counts; random-arm QA draws; views per chunk; data and model hashes; QA subsets (Q512, Q256), web lists and the four pools rebuilt with their digests (cell d equal to the stage-78 Q1024 pool); nesting of QA and web chunks across cells; target eligibility recomputed (criteria (a)-(e) on all four pools, counts) and the 512 target IDs re-drawn; target disjoint from all 3,328 exposed and 4,946 trained IDs; identical step-0 losses. On an L4: recompute the proxy scores of seed 37900 in cells a and d; replay the first 50 steps of seed 37900 for random and align05_once in cell a to their adapter digests.",
+    "exposure": "No new ArabicMMLU item is trained. The 512 new target items are evaluated and recorded as exposed in data/evaluation_status.json after the run. Up to 7,680 FineWeb-2 chunks are trained, of which at most 512 (256 kept, 256 removed extras in cell c) are new relative to stage 78, recorded by document index.",
+    "time_estimate": "From stage 78 on an L4 (calibration plus 54 runs in about 5.6 h, about 370 s per run on average; proxy scoring of 8192 chunks 155.6 s; one 512-item evaluation about 34 s): 72 runs x 370 s = about 7.4 h; plus one extra random evaluation in the 12 random runs at M = 4096 (about +0.1 h); minus about 78 s of scoring in the 12 align05_once runs at M = 4096 (about -0.26 h); plus data, four pools, target eligibility and calibration (with the extra S(4096) scoring) about 40-45 min: about 8 h in total.",
+    "licenses": "As stage 78: FineWeb-2 ODC-By 1.0; ArabicMMLU CC BY-NC 4.0 (non-commercial research use); Qwen2.5 Apache-2.0. No dataset text is committed; journals hold indices, scores and digests only.",
+    "scope": "One trained model, one proxy, LoRA, one budget, one N, two pool sizes, two shares, four cells, one task scored by answer loss, six seeds, a fresh unexposed target. Count, share and pool size are linked (Q = M x s), so pool size per se is not separated. The useful chunks are in-format items from the target benchmark itself, as stages 74-78, so the stage measures how the amount and density of in-distribution data in web noise change the equal-cost advantage, not a general capability gain. The lowest count tested is 256; whether fewer suffice is not tested (a 128-chunk cell was considered and deferred by the owner)."
+  },
+  "journal_sha256": "07b62c21a5d908146b0579b7afcb0b0f03a74f605eecf1026f247169790139c9",
+  "environments": [
+    {
+      "kind": "environment",
+      "time": "2026-11-27T20:36:49Z",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "tokenizers": "0.20.3",
+      "cuda": "13.0",
+      "python": "3.13.16",
+      "device": "NVIDIA L4",
+      "resumed_runs": 0
+    }
+  ],
+  "calibration": {
+    "kind": "calibration",
+    "model": "qwen2.5-1.5b",
+    "proxy": "qwen2.5-0.5b",
+    "device": "NVIDIA L4",
+    "costs": {
+      "random": 0.10862121399998159,
+      "proxy_align_grad_8192": 154.8706990579999,
+      "proxy_align_grad_4096": 79.52535539600012
+    },
+    "N_cal": 1574,
+    "B_eq_4096": 2366,
+    "updates": 1633
+  },
+  "summary": {
+    "primary": {
+      "E_count": {
+        "mean": -0.0828333546257151,
+        "ci975": [
+          -0.14126421138644218,
+          -0.010367141656388412
+        ],
+        "verdict": "supported"
+      },
+      "E_share": {
+        "mean": -0.02127707139516133,
+        "ci975": [
+          -0.14685180007224213,
+          0.1482489083246037
+        ],
+        "verdict": "not established"
+      }
+    },
+    "prediction_holds": {
+      "E_count < 0 with 97.5% interval below 0": true,
+      "E_share < 0 with 97.5% interval below 0": false,
+      "D(cell) < 0 in all four cells, each 95% interval below 0": true,
+      "kept QA count > 0.85 x Q in every cell": true,
+      "E_share decomposition: |random part| > |filter part|": true,
+      "D(d) < 0": true
+    },
+    "costs": {
+      "random": 0.10862121399998159,
+      "proxy_align_grad_8192": 154.8706990579999,
+      "proxy_align_grad_4096": 79.52535539600012
+    },
+    "N": 1633,
+    "N_cal": 1574,
+    "B_eq_4096": 2366,
+    "device": "NVIDIA L4",
+    "results": {
+      "loss0": 3.7773680465179496,
+      "primary": {
+        "E_count": {
+          "mean": -0.0828333546257151,
+          "ci975": [
+            -0.14126421138644218,
+            -0.010367141656388412
+          ],
+          "per_seed": [
+            -0.0461102572735399,
+            -0.14468829683028162,
+            -0.15105124983892892,
+            0.059666415389074245,
+            -0.13441604049876332,
+            -0.08040069870185107
+          ],
+          "seeds_negative": 5,
+          "seeds_positive": 1,
+          "verdict": "supported"
+        },
+        "E_share": {
+          "mean": -0.02127707139516133,
+          "ci975": [
+            -0.14685180007224213,
+            0.1482489083246037
+          ],
+          "per_seed": [
+            -0.16250536673760507,
+            -0.13712449844751973,
+            -0.15356904279906303,
+            0.34306534333882155,
+            -0.028930257059982978,
+            0.011401393334381282
+          ],
+          "seeds_negative": 4,
+          "seeds_positive": 2,
+          "verdict": "not established"
+        }
+      },
+      "cells": {
+        "a": {
+          "charged": {
+            "mean": -0.13450219196480853,
+            "ci95": [
+              -0.2261360993328708,
+              -0.04114974731540618
+            ],
+            "per_seed": [
+              -0.3075872902700212,
+              -0.22908461849146988,
+              -0.08651210024254397,
+              -0.057439959127805196,
+              0.04204606465646066,
+              -0.16843524831347167
+            ],
+            "seeds_negative": 5,
+            "seeds_positive": 1
+          },
+          "matched": {
+            "mean": -0.09292744201714716,
+            "ci95": [
+              -0.18017046495030323,
+              0.004181789115439945
+            ],
+            "per_seed": [
+              -0.11915811966173351,
+              -0.2565561948285904,
+              -0.09274221950909123,
+              -0.027399005193728954,
+              0.11214831330289599,
+              -0.1738574262126349
+            ],
+            "seeds_negative": 5,
+            "seeds_positive": 1
+          },
+          "selection_term": -0.3170543667959767,
+          "throughput_term": 0.18255217483116817,
+          "accuracy_charged": {
+            "mean": -0.0029296875,
+            "ci95": [
+              -0.0126953125,
+              0.00390625
+            ],
+            "per_seed": [
+              -0.00390625,
+              0.0,
+              -0.025390625,
+              0.0078125,
+              0.001953125,
+              0.001953125
+            ],
+            "seeds_negative": 2,
+            "seeds_positive": 3
+          },
+          "accuracy_matched": {
+            "mean": 0.0016276041666666667,
+            "ci95": [
+              -0.008463541666666666,
+              0.01171875
+            ],
+            "per_seed": [
+              -0.01953125,
+              -0.00390625,
+              0.0,
+              0.015625,
+              -0.001953125,
+              0.01953125
+            ],
+            "seeds_negative": 3,
+            "seeds_positive": 2
+          },
+          "charged_exact_equal_cost": {
+            "mean": -0.1473506740803714,
+            "ci95": [
+              -0.20154804053890985,
+              -0.0791085472907677
+            ],
+            "per_seed": [
+              -0.2129510411323281,
+              -0.1669713598821545,
+              -0.11097258761583362,
+              -0.16809668898349628,
+              0.009129375001066364,
+              -0.2342417418694822
+            ],
+            "seeds_negative": 5,
+            "seeds_positive": 1
+          },
+          "accuracy_charged_exact_equal_cost": {
+            "mean": -0.0003255208333333333,
+            "ci95": [
+              -0.011067708333333334,
+              0.010091145833333334
+            ],
+            "per_seed": [
+              -0.001953125,
+              -0.015625,
+              -0.01953125,
+              0.015625,
+              0.005859375,
+              0.013671875
+            ],
+            "seeds_negative": 3,
+            "seeds_positive": 3
+          },
+          "M": 4096,
+          "Q": 256,
+          "means": {
+            "random": {
+              "0": 3.7773680465179496,
+              "1633": 3.5738631335758932,
+              "3000": 3.391310958744725,
+              "2366": 3.404159440860288
+            },
+            "align05_once": 3.256808766779917,
+            "random_once": 3.3497362087970637
+          },
+          "accuracy_means": {
+            "random": {
+              "0": 0.37109375,
+              "1633": 0.3580729166666667,
+              "3000": 0.3623046875,
+              "2366": 0.3597005208333333
+            },
+            "align05_once": 0.359375,
+            "random_once": 0.3577473958333333
+          },
+          "random_late": -0.18255217483116817,
+          "random_minus_no_update": {
+            "mean": -0.38605708777322434,
+            "ci95": [
+              -0.4210266121978445,
+              -0.34575705208650714
+            ],
+            "per_seed": [
+              -0.3047755833249539,
+              -0.34506638020684477,
+              -0.43881330188014545,
+              -0.38950120836670976,
+              -0.420845808199374,
+              -0.41734024466131814
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "kept_qa": {
+            "share": 0.15370483772198407,
+            "count": 251,
+            "count_range": [
+              250,
+              252
+            ],
+            "count_over_Q": 0.98046875
+          },
+          "random_once_qa": {
+            "share": 0.06062461726883037,
+            "count": 99
+          },
+          "random_qa": {
+            "1633": {
+              "drawn": 98.66666666666667,
+              "distinct": 81.33333333333333
+            },
+            "3000": {
+              "drawn": 179.33333333333334,
+              "distinct": 127.5
+            },
+            "2366": {
+              "drawn": 139.66666666666666,
+              "distinct": 106.66666666666667
+            }
+          },
+          "scoring_seconds": 79.49067273033317
+        },
+        "b": {
+          "charged": {
+            "mean": -0.20808716091050883,
+            "ci95": [
+              -0.259043796731324,
+              -0.16089371081034187
+            ],
+            "per_seed": [
+              -0.14677917322842404,
+              -0.132281242418685,
+              -0.18950617920199875,
+              -0.3137636182727874,
+              -0.25011994417582173,
+              -0.21607280816533603
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "matched": {
+            "mean": -0.23609480608259523,
+            "ci95": [
+              -0.28948930617965135,
+              -0.18635654322982495
+            ],
+            "per_seed": [
+              -0.3579274353396613,
+              -0.16252128113410436,
+              -0.2552702415996464,
+              -0.25183049776387634,
+              -0.1522468186885817,
+              -0.2367725619697012
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "selection_term": -0.6734110770230473,
+          "throughput_term": 0.4653239161125384,
+          "accuracy_charged": {
+            "mean": 0.009114583333333334,
+            "ci95": [
+              0.0016276041666666667,
+              0.017578125
+            ],
+            "per_seed": [
+              0.01171875,
+              -0.00390625,
+              0.0,
+              0.013671875,
+              0.02734375,
+              0.005859375
+            ],
+            "seeds_negative": 1,
+            "seeds_positive": 4
+          },
+          "accuracy_matched": {
+            "mean": 0.015625,
+            "ci95": [
+              0.0107421875,
+              0.019856770833333332
+            ],
+            "per_seed": [
+              0.017578125,
+              0.015625,
+              0.005859375,
+              0.01953125,
+              0.0234375,
+              0.01171875
+            ],
+            "seeds_negative": 0,
+            "seeds_positive": 6
+          },
+          "charged_exact_equal_cost": {
+            "mean": -0.2662240713810509,
+            "ci95": [
+              -0.32747821839075186,
+              -0.20180632538749732
+            ],
+            "per_seed": [
+              -0.21636254143959377,
+              -0.13620790909044445,
+              -0.3551062197802821,
+              -0.36498911280796165,
+              -0.29381779596587876,
+              -0.2308608492021449
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "accuracy_charged_exact_equal_cost": {
+            "mean": 0.022135416666666668,
+            "ci95": [
+              0.0107421875,
+              0.03515625
+            ],
+            "per_seed": [
+              0.01171875,
+              0.01171875,
+              0.013671875,
+              0.048828125,
+              0.0390625,
+              0.0078125
+            ],
+            "seeds_negative": 0,
+            "seeds_positive": 6
+          },
+          "M": 4096,
+          "Q": 512,
+          "means": {
+            "random": {
+              "0": 3.7773680465179496,
+              "1633": 3.7722980347510506,
+              "3000": 3.306974118638512,
+              "2366": 3.365111029109054
+            },
+            "align05_once": 3.0988869577280034,
+            "random_once": 3.3349817638105983
+          },
+          "accuracy_means": {
+            "random": {
+              "0": 0.37109375,
+              "1633": 0.3577473958333333,
+              "3000": 0.365234375,
+              "2366": 0.3522135416666667
+            },
+            "align05_once": 0.3743489583333333,
+            "random_once": 0.3587239583333333
+          },
+          "random_late": -0.4653239161125384,
+          "random_minus_no_update": {
+            "mean": -0.4703939278794375,
+            "ci95": [
+              -0.5239858760590627,
+              -0.39785751648742007
+            ],
+            "per_seed": [
+              -0.5218170523294248,
+              -0.5311849609570345,
+              -0.5450642846844858,
+              -0.30396807298529893,
+              -0.4552408986783121,
+              -0.46508829764206894
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "kept_qa": {
+            "share": 0.30291896305368443,
+            "count": 494.6666666666667,
+            "count_range": [
+              494,
+              495
+            ],
+            "count_over_Q": 0.9661458333333334
+          },
+          "random_once_qa": {
+            "share": 0.11818738518064911,
+            "count": 193
+          },
+          "random_qa": {
+            "1633": {
+              "drawn": 200.16666666666666,
+              "distinct": 163.5
+            },
+            "3000": {
+              "drawn": 360.8333333333333,
+              "distinct": 256.1666666666667
+            },
+            "2366": {
+              "drawn": 284,
+              "distinct": 215.5
+            }
+          },
+          "scoring_seconds": 79.48099183049946
+        },
+        "c": {
+          "charged": {
+            "mean": -0.22936423230567016,
+            "ci95": [
+              -0.30874436012769974,
+              -0.12255588659415177
+            ],
+            "per_seed": [
+              -0.3092845399660291,
+              -0.2694057408662047,
+              -0.3430752220010618,
+              0.029301725066034123,
+              -0.2790502012358047,
+              -0.20467141483095475
+            ],
+            "seeds_negative": 5,
+            "seeds_positive": 1
+          },
+          "matched": {
+            "mean": -0.2542830672852385,
+            "ci95": [
+              -0.32477949221599073,
+              -0.1453056824078279
+            ],
+            "per_seed": [
+              -0.3446889985789312,
+              -0.3103026232420234,
+              -0.3295490313466871,
+              0.007457170024281368,
+              -0.27385661759763025,
+              -0.2747583029704401
+            ],
+            "seeds_negative": 5,
+            "seeds_positive": 1
+          },
+          "selection_term": -0.30615511247500155,
+          "throughput_term": 0.07679088016933139,
+          "accuracy_charged": {
+            "mean": 0.009114583333333334,
+            "ci95": [
+              0.0016276041666666667,
+              0.018229166666666668
+            ],
+            "per_seed": [
+              0.029296875,
+              0.013671875,
+              0.00390625,
+              0.009765625,
+              -0.001953125,
+              0.0
+            ],
+            "seeds_negative": 1,
+            "seeds_positive": 4
+          },
+          "accuracy_matched": {
+            "mean": 0.0032552083333333335,
+            "ci95": [
+              -0.00390625,
+              0.011067708333333334
+            ],
+            "per_seed": [
+              0.01953125,
+              -0.005859375,
+              -0.0078125,
+              0.0,
+              0.00390625,
+              0.009765625
+            ],
+            "seeds_negative": 2,
+            "seeds_positive": 3
+          },
+          "M": 8192,
+          "Q": 512,
+          "means": {
+            "random": {
+              "0": 3.7773680465179496,
+              "1633": 3.44702940852585,
+              "3000": 3.3702385283565186
+            },
+            "align05_once": 3.1408742960508484,
+            "random_once": 3.395157363336087
+          },
+          "accuracy_means": {
+            "random": {
+              "0": 0.37109375,
+              "1633": 0.3570963541666667,
+              "3000": 0.3567708333333333
+            },
+            "align05_once": 0.3658854166666667,
+            "random_once": 0.3626302083333333
+          },
+          "random_late": -0.0767908801693314,
+          "random_minus_no_update": {
+            "mean": -0.4071295181614308,
+            "ci95": [
+              -0.4288081829775668,
+              -0.38462121666573995
+            ],
+            "per_seed": [
+              -0.43209254994872026,
+              -0.424546399328392,
+              -0.3697544546885183,
+              -0.37699414719827473,
+              -0.3946615169697907,
+              -0.4447280408348888
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "kept_qa": {
+            "share": 0.2995509287609716,
+            "count": 489.1666666666667,
+            "count_range": [
+              487,
+              490
+            ],
+            "count_over_Q": 0.9554036458333334
+          },
+          "random_once_qa": {
+            "share": 0.05960400081649316,
+            "count": 97.33333333333333
+          },
+          "random_qa": {
+            "1633": {
+              "drawn": 98.66666666666667,
+              "distinct": 89
+            },
+            "3000": {
+              "drawn": 179.33333333333334,
+              "distinct": 150.66666666666666
+            }
+          },
+          "scoring_seconds": 156.2502204903326
+        },
+        "d": {
+          "charged": {
+            "mean": -0.2788918298210774,
+            "ci95": [
+              -0.3312545926964958,
+              -0.23035184478673423
+            ],
+            "per_seed": [
+              -0.23730243807949591,
+              -0.3813367137045134,
+              -0.2350455571213388,
+              -0.28117247168847825,
+              -0.197855759281083,
+              -0.3406380390515551
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "matched": {
+            "mean": -0.5722988950413613,
+            "ci95": [
+              -1.1113137933926434,
+              -0.28791516554095625
+            ],
+            "per_seed": [
+              -1.9063726636086358,
+              -0.3184339107683627,
+              -0.2546856682165526,
+              -0.2980024766729912,
+              -0.3321864241879666,
+              -0.3241122267936589
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "selection_term": -0.4195388121855406,
+          "throughput_term": 0.1406469823644632,
+          "accuracy_charged": {
+            "mean": 0.017252604166666668,
+            "ci95": [
+              0.005208333333333333,
+              0.032893880208333094
+            ],
+            "per_seed": [
+              0.00390625,
+              0.052734375,
+              0.001953125,
+              0.00390625,
+              0.025390625,
+              0.015625
+            ],
+            "seeds_negative": 0,
+            "seeds_positive": 6
+          },
+          "accuracy_matched": {
+            "mean": 0.015625,
+            "ci95": [
+              0.007161458333333333,
+              0.024739583333333332
+            ],
+            "per_seed": [
+              0.03515625,
+              0.017578125,
+              0.0078125,
+              0.017578125,
+              0.015625,
+              0.0
+            ],
+            "seeds_negative": 0,
+            "seeds_positive": 5
+          },
+          "M": 8192,
+          "Q": 1024,
+          "means": {
+            "random": {
+              "0": 3.7773680465179496,
+              "1633": 3.414157812927442,
+              "3000": 3.2735108305629788
+            },
+            "align05_once": 2.9946190007419013,
+            "random_once": 3.566917895783263
+          },
+          "accuracy_means": {
+            "random": {
+              "0": 0.37109375,
+              "1633": 0.3678385416666667,
+              "3000": 0.36328125
+            },
+            "align05_once": 0.3805338541666667,
+            "random_once": 0.3649088541666667
+          },
+          "random_late": -0.14064698236446324,
+          "random_minus_no_update": {
+            "mean": -0.5038572159549707,
+            "ci95": [
+              -0.5594588590186808,
+              -0.4505302206295407
+            ],
+            "per_seed": [
+              -0.5250791919243056,
+              -0.39934188542247284,
+              -0.528920302305778,
+              -0.4961892151623033,
+              -0.6224565276352223,
+              -0.4511561732797418
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "kept_qa": {
+            "share": 0.5950193917125944,
+            "count": 971.6666666666666,
+            "count_range": [
+              967,
+              976
+            ],
+            "count_over_Q": 0.9488932291666666
+          },
+          "random_once_qa": {
+            "share": 0.11900387834251888,
+            "count": 194.33333333333334
+          },
+          "random_qa": {
+            "1633": {
+              "drawn": 200.16666666666666,
+              "distinct": 180.5
+            },
+            "3000": {
+              "drawn": 360.8333333333333,
+              "distinct": 304.1666666666667
+            }
+          },
+          "scoring_seconds": 156.2174967276657
+        }
+      },
+      "secondary": {
+        "exact_equal_cost": {
+          "E_count": {
+            "mean": -0.04734065833266262,
+            "ci95": [
+              -0.11575483613996766,
+              0.035176021562923175
+            ],
+            "per_seed": [
+              -0.05863669773680158,
+              -0.17378159279905958,
+              -0.056020985863142414,
+              0.1406075275845069,
+              -0.09610876977603766,
+              -0.04010343140544137
+            ],
+            "seeds_negative": 5,
+            "seeds_positive": 1
+          },
+          "E_share": {
+            "mean": 0.03685983907538078,
+            "ci95": [
+              -0.07525974412540866,
+              0.18613625375476944
+            ],
+            "per_seed": [
+              -0.09292199852643535,
+              -0.13319783177576028,
+              0.012030997779220343,
+              0.39429083787399577,
+              0.014767594730074052,
+              0.026189434371190146
+            ],
+            "seeds_negative": 2,
+            "seeds_positive": 4
+          }
+        },
+        "decomposition": {
+          "E_count": {
+            "filter_part": {
+              "mean": -0.11010121385758491,
+              "ci95": [
+                -0.15412054724341337,
+                -0.07170278151776681
+              ],
+              "per_seed": [
+                -0.1113998103828635,
+                -0.1185067686237744,
+                -0.10844983505376149,
+                -0.030190625115210423,
+                -0.20493170936242677,
+                -0.08712853460747283
+              ],
+              "seeds_negative": 6,
+              "seeds_positive": 0
+            },
+            "random_part": {
+              "mean": 0.027267859231869807,
+              "ci95": [
+                -0.013661397257844024,
+                0.0654604679584736
+              ],
+              "per_seed": [
+                0.0652895531093236,
+                -0.02618152820650721,
+                -0.042601414785167435,
+                0.08985704050428467,
+                0.07051566886366345,
+                0.00672783590562176
+              ],
+              "seeds_negative": 2,
+              "seeds_positive": 4
+            }
+          },
+          "E_share": {
+            "filter_part": {
+              "mean": 0.04198733832284537,
+              "ci95": [
+                -0.03090295918324652,
+                0.13885571798285432
+              ],
+              "per_seed": [
+                -0.07278086435690057,
+                -0.030485936818877235,
+                0.02174078719690442,
+                0.27003926912584575,
+                0.03164912464853842,
+                0.031761650141561404
+              ],
+              "seeds_negative": 2,
+              "seeds_positive": 4
+            },
+            "random_part": {
+              "mean": -0.06326440971800669,
+              "ci95": [
+                -0.12107195479378181,
+                -0.0007921873960488787
+              ],
+              "per_seed": [
+                -0.08972450238070451,
+                -0.10663856162864249,
+                -0.17530982999596745,
+                0.0730260742129758,
+                -0.060579381708521396,
+                -0.02036025680718012
+              ],
+              "seeds_negative": 5,
+              "seeds_positive": 1
+            }
+          }
+        },
+        "matched": {
+          "E_count": {
+            "mean": -0.24877985711342868,
+            "ci95": [
+              -0.5238143714656568,
+              -0.07041616558732737
+            ],
+            "per_seed": [
+              -0.8869880535930861,
+              -0.10482952902384568,
+              -0.11811111922725104,
+              -0.00565790184555226,
+              -0.2829722681999556,
+              -0.09412027079088148
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "E_share": {
+            "mean": -0.018188261202643236,
+            "ci95": [
+              -0.10767711804364807,
+              0.09671362040899112
+            ],
+            "per_seed": [
+              0.01323843676073011,
+              -0.14778134210791904,
+              -0.07427878974704072,
+              0.2592876677881577,
+              -0.12160979890904855,
+              -0.037985741000738926
+            ],
+            "seeds_negative": 4,
+            "seeds_positive": 2
+          }
+        },
+        "accuracy": {
+          "E_count": {
+            "mean": 0.010091145833333334,
+            "ci95": [
+              0.00048828125,
+              0.021647135416666668
+            ],
+            "per_seed": [
+              0.0126953125,
+              0.03515625,
+              0.015625,
+              -0.00390625,
+              -0.0029296875,
+              0.00390625
+            ],
+            "seeds_negative": 2,
+            "seeds_positive": 4
+          },
+          "E_share": {
+            "mean": 0.0,
+            "ci95": [
+              -0.013346354166666666,
+              0.01171875
+            ],
+            "per_seed": [
+              0.017578125,
+              0.017578125,
+              0.00390625,
+              -0.00390625,
+              -0.029296875,
+              -0.005859375
+            ],
+            "seeds_negative": 3,
+            "seeds_positive": 3
+          }
+        },
+        "share_effect_fixed_pool_size": {
+          "mean": -0.06155628323055377,
+          "ci95": [
+            -0.16012142878510835,
+            0.03543610278999646
+          ],
+          "per_seed": [
+            0.11639510946406517,
+            -0.007563798382761888,
+            0.002517792960134102,
+            -0.2833989279497473,
+            -0.10548578343878035,
+            -0.09180209203623235
+          ],
+          "seeds_negative": 4,
+          "seeds_positive": 2
+        },
+        "replication_d_vs_stage78": {
+          "D_d": {
+            "mean": -0.2788918298210774,
+            "ci95": [
+              -0.3312545926964958,
+              -0.23035184478673423
+            ],
+            "per_seed": [
+              -0.23730243807949591,
+              -0.3813367137045134,
+              -0.2350455571213388,
+              -0.28117247168847825,
+              -0.197855759281083,
+              -0.3406380390515551
+            ],
+            "seeds_negative": 6,
+            "seeds_positive": 0
+          },
+          "stage78_D1024": {
+            "mean": -0.285,
+            "ci95": [
+              -0.333,
+              -0.238
+            ]
+          }
+        }
+      }
+    }
+  },
+  "runs": 72
+}
