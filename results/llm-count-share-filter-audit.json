@@ -1,0 +1,93 @@
+{
+  "stage": 79,
+  "status": "passed",
+  "journal_sha256": "07b62c21a5d908146b0579b7afcb0b0f03a74f605eecf1026f247169790139c9",
+  "runs": 72,
+  "N": 1633,
+  "N_cal": 1574,
+  "B_eq_4096": 2366,
+  "environments": 1,
+  "summary_recomputed": true,
+  "step0_identical": true,
+  "data_hashes": {
+    "/content/inputs/fineweb2/data/arb_Arab/test/000_00000.parquet": "a84851f790551b08c141eab938448961812582629dbbabc737d997d519b3ed39",
+    "/content/inputs/fineweb2/data/arb_Arab_removed/train/000_00000.parquet": "2c3b8cf5ad625369fffbab09ba7b6dc81578c436216fd5a29ce547f8eeb29295",
+    "/content/inputs/arabicmmlu/All/dev.csv": "3c72bd01f3acf6c1ed8acf28ba344ea739fcf9ee7f999802ced958e3b4d8b5dc",
+    "/content/inputs/arabicmmlu/All/test.csv": "c4ba4d6c6903d2b7b4415f18c9bb3173ba55c1344a91339769deba931d0c2782"
+  },
+  "population": {
+    "web_eligible": [
+      41443,
+      18831
+    ],
+    "web_extras": [
+      768,
+      768
+    ],
+    "pools": {
+      "a": "50f66d73099fbc33a846049230a2018aa7beb2c4a0852a10d1130fac7bf217e3",
+      "b": "11825ee5393e2c3acc9eacdb8f5d72123b47078ac5cdfbadf856045abbcdd7c1",
+      "c": "3968a0e4068f93647de0accaae6faf767c5c1e4c0ff48afc12179989ab8bd04e",
+      "d": "5734b2ff3ab67308cff62d250cbad62251a9e94e790855b181d18ea63a949f3f"
+    },
+    "nesting_checked": true
+  },
+  "target": {
+    "items": 512,
+    "disjoint_from_exposed": 3328,
+    "disjoint_from_trained": 4946,
+    "eligibility": {
+      "candidates": 6181,
+      "decontamination": {
+        "identical": 210,
+        "jaccard": 717,
+        "containment": 237,
+        "ngram8": 1406,
+        "dropped_total": 1535,
+        "trained_tokenization_8gram_after_a_to_d": 338
+      },
+      "eligible": 4308
+    }
+  },
+  "step_seconds_median": {
+    "random": 0.10970419000022957,
+    "align05_once": 0.10991829199883796,
+    "random_once": 0.11007132350005122
+  },
+  "scoring_seconds_median": {
+    "4096": 79.46509049549968,
+    "8192": 156.23048231399935
+  },
+  "gpu": {
+    "score_recomputation": {
+      "a": {
+        "max_rel_diff": 0.0,
+        "audit_scoring_seconds": 80.86408911800027,
+        "journaled_scoring_seconds": 79.54316571200025,
+        "identical_kept_set": true
+      },
+      "d": {
+        "max_rel_diff": 0.0,
+        "audit_scoring_seconds": 156.07074405499952,
+        "journaled_scoring_seconds": 156.18695489499987,
+        "identical_kept_set": true
+      }
+    },
+    "replay_step50": {
+      "a/random": {
+        "identical_adapter_digest": true
+      },
+      "a/align05_once": {
+        "identical_adapter_digest": true
+      }
+    },
+    "environment": {
+      "device": "NVIDIA L4",
+      "torch": "2.14.1+cu130",
+      "transformers": "4.46.3",
+      "tokenizers": "0.20.3",
+      "cuda": "13.0",
+      "python": "3.13.16"
+    }
+  }
+}
