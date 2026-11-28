@@ -5,3 +5,7 @@ To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other ope
 WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
 I0000 00:00:1795895858.601742    8703 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
 I0000 00:00:1795895858.602289    8703 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+backup pushed: 0 finished runs
+qwen2.5-1.5b qwen2.5-0.5b NVIDIA L4 block 1 N {'8192': 1606, '4096': 2281}
+step-0 loss identical across journaled runs: True
+1/192 runs complete
