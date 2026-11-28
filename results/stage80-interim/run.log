@@ -11,3 +11,5 @@ step-0 loss identical across journaled runs: True
 1/192 runs complete
 backup pushed: 1 finished runs
 2/192 runs complete
+backup pushed: 2 finished runs
+3/192 runs complete
