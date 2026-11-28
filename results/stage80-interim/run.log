@@ -9,3 +9,5 @@ backup pushed: 0 finished runs
 qwen2.5-1.5b qwen2.5-0.5b NVIDIA L4 block 1 N {'8192': 1606, '4096': 2281}
 step-0 loss identical across journaled runs: True
 1/192 runs complete
+backup pushed: 1 finished runs
+2/192 runs complete
